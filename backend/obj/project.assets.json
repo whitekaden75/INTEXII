@@ -447,19 +447,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/kadenwhite/.nuget/packages/": {}
+    "/Users/brook/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/kadenwhite/Documents/IS413/brooklyn/backend/backend.csproj",
+      "projectUniqueName": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
       "projectName": "backend",
-      "projectPath": "/Users/kadenwhite/Documents/IS413/brooklyn/backend/backend.csproj",
-      "packagesPath": "/Users/kadenwhite/.nuget/packages/",
-      "outputPath": "/Users/kadenwhite/Documents/IS413/brooklyn/backend/obj/",
+      "projectPath": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
+      "packagesPath": "/Users/brook/.nuget/packages/",
+      "outputPath": "/Users/brook/Desktop/Intex/INTEXII/backend/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/kadenwhite/.nuget/NuGet/NuGet.Config"
+        "/Users/brook/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
