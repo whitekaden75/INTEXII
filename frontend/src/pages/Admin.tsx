@@ -44,6 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import AuthorizeView from '@/components/auth/AuthorizeView';
 
 const Admin = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -231,166 +232,169 @@ const Admin = () => {
   }
   
   return (
-    <Layout>
-      <div className="container py-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your movie catalog</p>
+    <AuthorizeView>
+      <Layout>
+        <div className="container py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+              <p className="text-muted-foreground">Manage your movie catalog</p>
+            </div>
+            <Button 
+              onClick={() => setShowAddForm(true)}
+              className="gap-2"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Add New Movie
+            </Button>
           </div>
-          <Button 
-            onClick={() => setShowAddForm(true)}
-            className="gap-2"
-          >
-            <PlusCircle className="h-4 w-4" />
-            Add New Movie
-          </Button>
+          
+          <Tabs defaultValue="movies" className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="movies">Movies</TabsTrigger>
+              <TabsTrigger value="stats" disabled>Admins</TabsTrigger>
+              <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="movies" className="space-y-6">
+              {/* Search and filters row */}
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
+              <form onSubmit={handleSearch} className="relative max-w-md">
+                <Input
+                  type="search"
+                  placeholder="Search movies..."
+                  className="pl-10 pr-4"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  // Or use handleSearchInputChange for instant search
+                />
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                <Button 
+                  type="submit" 
+                  className="absolute right-1 top-1 h-8 px-3"
+                  variant="ghost"
+                >
+                  Search
+                </Button>
+              </form>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Show:</span>
+                  <Select
+                    value={String(itemsPerPage)}
+                    onValueChange={handleItemsPerPageChange}
+                  >
+                    <SelectTrigger className="w-20">
+                      <SelectValue placeholder="5" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="15">15</SelectItem>
+                      <SelectItem value="20">20</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <span className="text-sm text-muted-foreground">per page</span>
+                </div>
+              </div>
+              
+              {/* Movies List */}
+              <div className="border rounded-lg">
+                {paginatedMovies.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <p className="text-muted-foreground">No movies found</p>
+                  </div>
+                ) : (
+                  paginatedMovies.map((movie) => (
+                    <MovieListItem
+                      key={movie.showId}
+                      movie={movie}
+                      onEdit={() => handleEditMovie(movie)}
+                      onDelete={() => handleDeleteClick(movie)}
+                    />
+                  ))
+                )}
+              </div>
+              
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <Pagination>
+                  <PaginationContent>
+                    {renderPaginationLinks()}
+                  </PaginationContent>
+                </Pagination>
+              )}
+              
+              {/* Results summary */}
+              <div className="text-sm text-muted-foreground">
+                Showing {paginatedMovies.length} of {filteredMovies.length} movies
+                {filteredMovies.length !== movies.length && (
+                  <span> (filtered from {movies.length} total)</span>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
         
-        <Tabs defaultValue="movies" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="movies">Movies</TabsTrigger>
-            <TabsTrigger value="stats" disabled>Statistics</TabsTrigger>
-            <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="movies" className="space-y-6">
-            {/* Search and filters row */}
-            <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <form onSubmit={handleSearch} className="relative max-w-md">
-              <Input
-                type="search"
-                placeholder="Search movies..."
-                className="pl-10 pr-4"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                // Or use handleSearchInputChange for instant search
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Button 
-                type="submit" 
-                className="absolute right-1 top-1 h-8 px-3"
-                variant="ghost"
-              >
-                Search
-              </Button>
-            </form>
-              
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Show:</span>
-                <Select
-                  value={String(itemsPerPage)}
-                  onValueChange={handleItemsPerPageChange}
-                >
-                  <SelectTrigger className="w-20">
-                    <SelectValue placeholder="5" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                  </SelectContent>
-                </Select>
-                <span className="text-sm text-muted-foreground">per page</span>
-              </div>
-            </div>
-            
-            {/* Movies List */}
-            <div className="border rounded-lg">
-              {paginatedMovies.length === 0 ? (
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">No movies found</p>
-                </div>
-              ) : (
-                paginatedMovies.map((movie) => (
-                  <MovieListItem
-                    key={movie.showId}
-                    movie={movie}
-                    onEdit={() => handleEditMovie(movie)}
-                    onDelete={() => handleDeleteClick(movie)}
-                  />
-                ))
-              )}
-            </div>
-            
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Pagination>
-                <PaginationContent>
-                  {renderPaginationLinks()}
-                </PaginationContent>
-              </Pagination>
-            )}
-            
-            {/* Results summary */}
-            <div className="text-sm text-muted-foreground">
-              Showing {paginatedMovies.length} of {filteredMovies.length} movies
-              {filteredMovies.length !== movies.length && (
-                <span> (filtered from {movies.length} total)</span>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-      
-      {/* Add Movie Form Dialog */}
-      <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
-        <DialogContent className="sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Add New Movie</DialogTitle>
-            <DialogDescription>
-              Fill in the details to add a new movie to the catalog
-            </DialogDescription>
-          </DialogHeader>
-          <MovieForm
-            onSubmit={handleAddMovie}
-            onCancel={() => setShowAddForm(false)}
-          />
-        </DialogContent>
-      </Dialog>
-      
-      {/* Edit Movie Form Dialog */}
-      <Dialog open={showEditForm} onOpenChange={setShowEditForm}>
-        <DialogContent className="sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Edit Movie</DialogTitle>
-            <DialogDescription>
-              Update the movie details
-            </DialogDescription>
-          </DialogHeader>
-          {currentMovie && (
+        {/* Add Movie Form Dialog */}
+        <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
+          <DialogContent className="sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Add New Movie</DialogTitle>
+              <DialogDescription>
+                Fill in the details to add a new movie to the catalog
+              </DialogDescription>
+            </DialogHeader>
             <MovieForm
-              movie={currentMovie}
-              onSubmit={handleUpdateMovie}
-              onCancel={() => setShowEditForm(false)}
-              isEditing
+              onSubmit={handleAddMovie}
+              onCancel={() => setShowAddForm(false)}
             />
-          )}
-        </DialogContent>
-      </Dialog>
-      
-      {/* Delete Confirmation Dialog - Using AlertDialog instead of normal Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{currentMovie?.title}"? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={confirmDelete}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Layout>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Edit Movie Form Dialog */}
+        <Dialog open={showEditForm} onOpenChange={setShowEditForm}>
+          <DialogContent className="sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Edit Movie</DialogTitle>
+              <DialogDescription>
+                Update the movie details
+              </DialogDescription>
+            </DialogHeader>
+            {currentMovie && (
+              <MovieForm
+                movie={currentMovie}
+                onSubmit={handleUpdateMovie}
+                onCancel={() => setShowEditForm(false)}
+                isEditing
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+        
+        {/* Delete Confirmation Dialog - Using AlertDialog instead of normal Dialog */}
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete "{currentMovie?.title}"? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmDelete}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </Layout>
+    </AuthorizeView>
+    
   );
 };
 

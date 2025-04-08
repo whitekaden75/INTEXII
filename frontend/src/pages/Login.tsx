@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import LoginForm from '@/components/auth/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthorizeView from '@/components/auth/AuthorizeView';
+import { Cookie } from 'lucide-react';
+import CookieConsent from '@/components/auth/CookieConsent';
 
 const Login = () => {
   const { isAuthenticated } = useAuth();
@@ -17,13 +20,15 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <Layout>
-      <div className="container py-16 md:py-24">
-        <div className="max-w-md mx-auto">
-          <LoginForm />
+  
+      <Layout>
+        <div className="container py-16 md:py-24">
+          <div className="max-w-md mx-auto">
+            <LoginForm />
+          </div>
         </div>
-      </div>
-    </Layout>
+        <CookieConsent />
+      </Layout>
   );
 };
 

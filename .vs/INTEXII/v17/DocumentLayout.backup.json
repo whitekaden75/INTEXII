@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\controllers\\moviecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\controllers\\moviecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\data\\moviedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\data\\moviedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,11 +34,61 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "backend\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T20:23:09.714Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "backend\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Properties\\launchSettings.json",
+              "RelativeToolTip": "backend\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-04-08T17:37:45.111Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\appsettings.json",
+              "RelativeDocumentMoniker": "backend\\appsettings.json",
+              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\appsettings.json",
+              "RelativeToolTip": "backend\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-04-08T17:35:37.352Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
+              "RelativeDocumentMoniker": "backend\\Program.cs",
+              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
+              "RelativeToolTip": "backend\\Program.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACoAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T17:21:23.444Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "MovieDbContext.cs",
               "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Data\\MovieDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\MovieDbContext.cs",
@@ -30,21 +96,19 @@
               "RelativeToolTip": "backend\\Data\\MovieDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T16:32:39.115Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-08T16:32:39.115Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "MovieController.cs",
               "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\MovieController.cs",
               "RelativeDocumentMoniker": "backend\\Controllers\\MovieController.cs",
               "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\MovieController.cs",
               "RelativeToolTip": "backend\\Controllers\\MovieController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T16:31:53.113Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-08T16:31:53.113Z"
             }
           ]
         }
