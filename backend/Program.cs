@@ -40,7 +40,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("https://witty-desert-035a21e1e.6.azurestaticapps.net", "https://localhost:4005")
+            policy.WithOrigins("https://witty-desert-035a21e1e.6.azurestaticapps.net", "http://localhost:4005")
                 .AllowCredentials() // Required to allow cookies
                 .AllowAnyMethod()
                 .AllowAnyHeader();

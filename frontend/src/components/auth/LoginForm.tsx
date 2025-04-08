@@ -88,7 +88,8 @@ const LoginForm: React.FC = () => {
       }
       
       console.log(`[Login Success] Login successful. Navigating to /movies...`);
-      navigate('/movies');
+      navigate("/movies");
+      console.log('navigating to movies');
     } catch (error: any) {
       console.error(`[Fetch Error] Login attempt failed:`, error);
       setError(error.message || 'Error logging in.');
