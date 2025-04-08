@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
-import { Movie } from '@/contexts/MovieContext';
+import { Movie } from '@/data/MovieType';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInView } from '../hooks/useInView';
 

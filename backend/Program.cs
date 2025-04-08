@@ -13,6 +13,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlite("Data Source=movies.db"));
 
+builder.Services.AddDbContext<MovieRecommendationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("MovieRecommendationConnection")));
+
+
+
 builder.Services.AddCors (options => 
     options.AddPolicy("AllowReactAppBlah",
         policy => {
