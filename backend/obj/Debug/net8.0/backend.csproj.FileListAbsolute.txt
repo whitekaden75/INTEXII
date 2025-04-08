@@ -272,8 +272,6 @@
 /Users/brook/Desktop/Intex/INTEXII/backend/obj/Debug/net8.0/backend.pdb
 /Users/brook/Desktop/Intex/INTEXII/backend/obj/Debug/net8.0/backend.genruntimeconfig.cache
 /Users/brook/Desktop/Intex/INTEXII/backend/obj/Debug/net8.0/ref/backend.dll
-C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\appsettings.Development.json
-C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\appsettings.json
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\backend.staticwebassets.endpoints.json
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\backend.exe
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\backend.deps.json
@@ -542,3 +540,5 @@ C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\Services\appsettings.Development.json
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\Services\appsettings.json

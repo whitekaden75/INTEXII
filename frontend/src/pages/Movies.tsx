@@ -14,12 +14,13 @@ const Movies = () => {
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
+
   const { movies, filteredMovies, loading, filters, setFilters, featuredMovies } = useMovies();
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
-  // Auto-rotate featured movies every 10 seconds
-  useEffect(() => {
+   // Auto-rotate featured movies every 10 seconds
+    useEffect(() => {
     if (featuredMovies.length <= 1) return;
 
     const intervalId = setInterval(() => {
@@ -102,7 +103,6 @@ const Movies = () => {
       setVisibleGenreCount((prev) => prev + 2);
     }
   }, [inView, filters, filteredMovies.length, displayCount]);
-  
   useEffect(() => {
     setDisplayCount(12);
   }, [filters.genre, filters.searchQuery]);
@@ -140,7 +140,7 @@ const Movies = () => {
                 Found {filteredMovies.length}{" "}
                 {filteredMovies.length === 1 ? "movie" : "movies"}
               </p>
-              <MovieGrid movies={filteredMovies.slice(0, displayCount)} loading={loading} />
+              <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
               <div
                 ref={ref}
                 className="h-10 w-full flex justify-center items-center">
@@ -161,7 +161,7 @@ const Movies = () => {
                 Found {filteredMovies.length}{" "}
                 {filteredMovies.length === 1 ? "movie" : "movies"}
               </p>
-              <MovieGrid movies={filteredMovies.slice(0, displayCount)} loading={loading} />
+              <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
               <div
                 ref={ref}
                 className="h-10 w-full flex justify-center items-center">
@@ -214,6 +214,7 @@ const Movies = () => {
         </div>
       </Layout>
     </AuthorizeView>
+    
   );
 };
 
