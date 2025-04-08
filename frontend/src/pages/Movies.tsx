@@ -1,20 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import MovieGrid from "@/components/movies/MovieGrid";
 import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useInView } from "@/hooks/useInView";
 
 const Movies = () => {
+  const [displayCount, setDisplayCount] = useState(12); // start with 12
+  const { ref, inView } = useInView();
+  const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
+
   const { isAuthenticated } = useAuth();
-  const {
-    movies,
-    filteredMovies,
-    loading,
-    filters,
-    setFilters,
-  } = useMovies();
+  const { movies, filteredMovies, loading, filters, setFilters } = useMovies();
   const navigate = useNavigate();
 
   // Redirect if not authenticated
@@ -27,8 +26,8 @@ const Movies = () => {
   // Extract all unique genres from movies
   const allGenres = movies
     .reduce<string[]>((genres, movie) => {
-      const movieGenres = movie.genre.split(',').map(g => g.trim());
-      movieGenres.forEach(genre => {
+      const movieGenres = movie.genre.split(",").map((g) => g.trim());
+      movieGenres.forEach((genre) => {
         if (!genres.includes(genre)) {
           genres.push(genre);
         }
@@ -56,8 +55,8 @@ const Movies = () => {
 
     // Group movies by genre
     const moviesByGenre = movies.reduce((acc, movie) => {
-      const genres = movie.genre.split(',').map(g => g.trim());
-      genres.forEach(genre => {
+      const genres = movie.genre.split(",").map((g) => g.trim());
+      genres.forEach((genre) => {
         if (!acc[genre]) {
           acc[genre] = [];
         }
@@ -68,7 +67,7 @@ const Movies = () => {
 
     return {
       recentReleases,
-      ...moviesByGenre
+      ...moviesByGenre,
     };
   };
 
@@ -79,9 +78,33 @@ const Movies = () => {
     return null; // Don't render anything while redirecting
   }
 
+  useEffect(() => {
+    if (!inView) return;
+
+    const hasMoreFiltered =
+      (filters.genre || filters.searchQuery) &&
+      filteredMovies.length > displayCount;
+
+    const hasMoreCategories =
+      !filters.genre &&
+      !filters.searchQuery &&
+      Object.keys(categories).length > visibleGenreCount;
+
+    if (hasMoreFiltered) {
+      setDisplayCount((prev) => prev + 12);
+    }
+
+    if (!filters.genre && !filters.searchQuery && hasMoreCategories) {
+      setVisibleGenreCount((prev) => prev + 2);
+    }
+  }, [inView, filters, filteredMovies.length, displayCount]);
+  useEffect(() => {
+    setDisplayCount(12);
+  }, [filters.genre, filters.searchQuery]);
+
   return (
     <Layout onSearch={handleSearch}>
-      <div className="container py-8">
+      <div className="container py-8 min-h-[80vh]">
         {/* Genre Filter */}
         <GenreFilter
           genres={allGenres}
@@ -89,7 +112,7 @@ const Movies = () => {
           onSelectGenre={handleGenreFilter}
         />
 
-        {/* Search Results Display */}
+        {/* Search Results */}
         {filters.searchQuery && (
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">
@@ -99,11 +122,20 @@ const Movies = () => {
               Found {filteredMovies.length}{" "}
               {filteredMovies.length === 1 ? "movie" : "movies"}
             </p>
-            <MovieGrid movies={filteredMovies} loading={loading} />
+            <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
+            <div
+              ref={ref}
+              className="h-10 w-full flex justify-center items-center">
+              <p className="text-sm text-muted-foreground">
+                {filteredMovies.length > displayCount
+                  ? "Loading more..."
+                  : "No more results"}
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Genre Results Display */}
+        {/* Genre Filtered Results (no search) */}
         {filters.genre && !filters.searchQuery && (
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">{filters.genre} Movies</h2>
@@ -111,36 +143,54 @@ const Movies = () => {
               Found {filteredMovies.length}{" "}
               {filteredMovies.length === 1 ? "movie" : "movies"}
             </p>
-            <MovieGrid movies={filteredMovies} loading={loading} />
+            <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
+            <div
+              ref={ref}
+              className="h-10 w-full flex justify-center items-center">
+              <p className="text-sm text-muted-foreground">
+                {filteredMovies.length > displayCount
+                  ? "Loading more..."
+                  : "No more results"}
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Category Sections - Only show when no filters active */}
+        {/* Default Category Sections (no filters) */}
         {!filters.genre && !filters.searchQuery && (
           <>
-            {/* Recent Releases Section */}
+            {/* Recent Releases */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Recent Releases</h2>
-              <MovieGrid 
-                movies={categories.recentReleases} 
-                loading={loading} 
+              <MovieGrid
+                movies={categories.recentReleases.slice(0, 8)}
+                loading={loading}
               />
             </div>
 
             {/* Genre Categories */}
             {Object.entries(categories)
-              .filter(([key]) => key !== 'recentReleases')
-              .map(([genre, movies]) => (
-                movies.length > 0 && (
+              .filter(([key]) => key !== "recentReleases")
+              .slice(0, visibleGenreCount)
+              .map(([genre, movies]) =>
+                movies.length > 0 ? (
                   <div key={genre} className="mb-8">
                     <h2 className="text-2xl font-bold mb-4">{genre}</h2>
-                    <MovieGrid 
-                      movies={movies.slice(0, 10)} 
-                      loading={loading} 
-                    />
+                    <MovieGrid movies={movies.slice(0, 8)} loading={loading} />
                   </div>
-                )
-              ))}
+                ) : null
+              )}
+
+            {/* Infinite Scroll Trigger for genres */}
+            <div
+              ref={ref}
+              className="h-10 w-full flex justify-center items-center">
+              <p className="text-sm text-muted-foreground">
+                {movies.length > displayCount
+                  ? "Loading more..."
+                  : "No more results"}
+              </p>
+            </div>
           </>
         )}
       </div>

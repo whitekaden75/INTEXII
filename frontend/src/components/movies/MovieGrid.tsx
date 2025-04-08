@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
-import { Movie } from '@/contexts/MovieContext';
+import { Movie } from '@/data/MovieType';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInView } from '../hooks/useInView';
 
@@ -60,7 +60,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
         {displayedMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie.showId} movie={movie} />
         ))}
       </div>
       {displayedMovies.length < movies.length && (
