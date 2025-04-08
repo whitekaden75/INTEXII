@@ -90,7 +90,8 @@ const FeaturedMovies: React.FC<FeaturedMoviesProps> = ({ title, movies }) => {
             
             <div className="flex gap-3">
               <Button 
-                className="bg-white text-black hover:bg-white/90 px-8"
+              variant="outline"
+                className="bg-white text-black hover:bg-white/20 px-8"
                 onClick={() => navigate(`/movies/${currentMovie.showId}`)}
               >
                 <Play className="h-4 w-4 mr-2" />
@@ -98,7 +99,7 @@ const FeaturedMovies: React.FC<FeaturedMoviesProps> = ({ title, movies }) => {
               </Button>
               <Button 
                 variant="outline" 
-                className="border-white text-white hover:bg-white/20 px-8"
+                className="border-white text-black hover:bg-white/20 px-8"
                 onClick={() => navigate(`/movies/${currentMovie.showId}`)}
               >
                 Details
