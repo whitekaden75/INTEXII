@@ -42,29 +42,63 @@ const LoginForm: React.FC = () => {
     navigate('/register');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    console.log(`[Form Submit] Login form submitted.`);
+    setError(''); // clear any previous errors
+
+    // Validate inputs
+    if (!email || !password) {
+      console.log(`[Validation Error] Missing email or password.`);
+      setError('Please fill in all fields.');
+      return;
+    }
+    
+    // Determine login URL based on rememberme flag
+    const loginUrl = rememberme
+      ? 'http://localhost:5000/login?useCookies=true'
+      : 'http://localhost:5000/login?useSessionCookies=true';
+    console.log(`[Login Request] URL: ${loginUrl}`);
+    console.log(`[Login Request] Attempting login with email: ${email}`);
 
     try {
-      await login(email, password);
-      navigate("/movies");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
+      const response = await fetch(loginUrl, {
+        method: 'POST',
+        credentials: 'include', // ensures cookies are sent & received
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      console.log(`[Login Response] HTTP status: ${response.status}`);
+      console.log(`[Login Response] Full response:`, response);
+
+      // Only parse JSON if there is content
+      let data = null;
+      const contentLength = response.headers.get('content-length');
+      console.log(`[Login Response] Content-Length header: ${contentLength}`);
+      if (contentLength && parseInt(contentLength, 10) > 0) {
+        data = await response.json();
+        console.log(`[Login Response] Parsed JSON data:`, data);
       } else {
-        setError("Failed to log in");
+        console.log(`[Login Response] No JSON content to parse.`);
       }
-    } finally {
-      setLoading(false);
+      
+      if (!response.ok) {
+        console.error(`[Login Error] Response error: ${data?.message || 'Invalid email or password.'}`);
+        throw new Error(data?.message || 'Invalid email or password.');
+      }
+      
+      console.log(`[Login Success] Login successful. Navigating to /movies...`);
+      navigate('/movies');
+    } catch (error: any) {
+      console.error(`[Fetch Error] Login attempt failed:`, error);
+      setError(error.message || 'Error logging in.');
     }
   };
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Log In</CardTitle>
+        <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
         <CardDescription>
           Enter your credentials to access your account
         </CardDescription>
@@ -72,82 +106,80 @@ const LoginForm: React.FC = () => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email address</Label>
             <Input
               id="email"
               type="email"
+              name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               placeholder="yourname@example.com"
               required
               autoComplete="email"
             />
           </div>
-
+  
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <a
-                href="#"
-                className="text-xs text-cineniche-purple hover:underline">
-                Forgot password?
-              </a>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
+              name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               placeholder="••••••••"
               required
               autoComplete="current-password"
             />
           </div>
-
-          {error && <div className="text-destructive text-sm">{error}</div>}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Logging in..." : "Log In"}
-          </Button>
-
-          <div className="text-sm text-center text-muted-foreground">
-            <span>Demo accounts:</span>
-            <div className="flex justify-center gap-2 mt-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail("demo@cineniche.com");
-                  setPassword("password");
-                }}>
-                User
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail("admin@cineniche.com");
-                  setPassword("admin");
-                }}>
-                Admin
-              </Button>
-              <GoogleLoginButton />
-            </div>
+  
+          <div className="flex items-center space-x-2">
+            <input
+              id="rememberme"
+              name="rememberme"
+              type="checkbox"
+              checked={rememberme}
+              onChange={handleChange}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <Label htmlFor="rememberme" className="text-sm font-medium">
+              Remember password
+            </Label>
           </div>
+  
+          <Button type="submit" className="w-full">
+            Sign In
+          </Button>
+  
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleRegisterClick}
+          >
+            Register
+          </Button>
+  
+          <hr className="my-4" />
+  
+          <Button
+            type="button"
+            className="w-full bg-google text-white hover:bg-google-dark"
+          >
+            <i className="fa-brands fa-google mr-2"></i> Sign in with Google
+          </Button>
+  
+          <Button
+            type="button"
+            className="w-full bg-facebook text-white hover:bg-facebook-dark"
+          >
+            <i className="fa-brands fa-facebook-f mr-2"></i> Sign in with Facebook
+          </Button>
         </form>
+  
+        {error && <p className="text-destructive text-sm mt-2">{error}</p>}
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <div className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <a
-            onClick={() => navigate("/register")}
-            className="text-cineniche-purple hover:underline cursor-pointer">
-            Sign up
-          </a>
-        </div>
-      </CardFooter>
     </Card>
-  );
-};
+  );}
 
 export default LoginForm;
