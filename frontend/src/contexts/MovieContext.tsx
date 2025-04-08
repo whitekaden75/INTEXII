@@ -8,6 +8,7 @@ import {
   deleteMovie as deleteMovieAPI,
   createMovie,
 } from "../api/MovieAPI";
+
 export interface MovieFilter {
   genre?: string;
   searchQuery?: string;
@@ -23,8 +24,11 @@ interface MovieContextType {
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
   deleteMovie: (id: string) => Promise<void>;
   getMovieById: (id: string) => Movie | undefined;
+<<<<<<< HEAD
   getMovieRecommendations: (id: string) => Promise<Movie[]>;
   //rateMovie: (id: string, rating: number) => void;
+=======
+>>>>>>> 9eba555d5519e0050fd09500da35200c3bd87ffe
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -34,8 +38,13 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<MovieFilter>({});
+  const [filters, setFiltersState] = useState<MovieFilter>({});
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+
+  // Wrapper function for setFilters to expose to consumers
+  const setFilters = (newFilters: MovieFilter) => {
+    setFiltersState(newFilters);
+  };
 
   // Load movies from API
   useEffect(() => {
@@ -54,19 +63,17 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchMovies();
   }, []);
 
-  // Apply filters when movies or filters change
-  // In your MovieContext.tsx, update the filtering:
   useEffect(() => {
     let result = [...movies];
-
+  
     if (filters.genre) {
       result = result.filter((movie) =>
         movie.genre.toLowerCase().includes(filters.genre!.toLowerCase())
       );
     }
-
+  
     if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
+      const query = filters.searchQuery.toLowerCase(); // Ensure it's never null or undefined
       result = result.filter(
         (movie) =>
           movie.title.toLowerCase().includes(query) ||
@@ -74,11 +81,11 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
           movie.cast.toLowerCase().includes(query)
       );
     }
-
+  
     setFilteredMovies(result);
   }, [movies, filters]);
+  
 
-  // Add a new movie
   // Add a new movie
   const addMovie = async (movieData: Omit<Movie, "showId">) => {
     try {
@@ -86,8 +93,7 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
       setMovies((prevMovies) => [...prevMovies, newMovie]);
       toast.success("Movie added successfully");
     } catch (error) {
-      toast.error("Failed to fetch movies");
-
+      toast.error("Failed to add movie");
       throw error;
     }
   };
@@ -99,10 +105,9 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
       setMovies((prevMovies) =>
         prevMovies.map((movie) => (movie.showId === id ? updatedMovie : movie))
       );
-      toast.error("Failed to fetch movies");
+      toast.success("Movie updated successfully");
     } catch (error) {
-      toast.success("Movie added successfully");
-
+      toast.error("Failed to update movie");
       throw error;
     }
   };
@@ -114,14 +119,14 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
       setMovies((prevMovies) =>
         prevMovies.filter((movie) => movie.showId !== id)
       );
-      toast.success("Movie added successfully");
+      toast.success("Movie deleted successfully");
     } catch (error) {
-      toast.error("Failed to fetch movies");
-
+      toast.error("Failed to delete movie");
       throw error;
     }
   };
 
+<<<<<<< HEAD
   // Function to your MovieProvider
 const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
   try {
@@ -140,6 +145,8 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
   //return movies.find(movie => movie.id === id);
   //};
 
+=======
+>>>>>>> 9eba555d5519e0050fd09500da35200c3bd87ffe
   // Get a movie by ID
   const getMovieById = (id: string) => {
     return movies.find((movie) => movie.showId === id);
@@ -165,85 +172,6 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
   );
 };
 
-//   // Get recommended movies based on movie ID
-//   const getRecommendedMoviesById = (id: string) => {
-//     const movie = getMovieById(id);
-//     if (!movie) return [];
-
-//     // Find movies with similar genres
-//     return movies
-//       .filter(m =>
-//         m.id !== movie.id && // Exclude current movie
-//         m.genres.some(genre => movie.genres.includes(genre)) // Must share at least one genre
-//       )
-//       .sort((a, b) => {
-//         // Count matching genres for better sorting
-//         const aMatches = a.genres.filter(genre => movie.genres.includes(genre)).length;
-//         const bMatches = b.genres.filter(genre => movie.genres.includes(genre)).length;
-//         return bMatches - aMatches; // Sort by most matching genres first
-//       })
-//       .slice(0, 6); // Limit to 6 recommendations
-//   };
-
-  // // Rate a movie
-  //   const rateMovie = (id: string, rating: number) => {
-  //   setMovies(prevMovies =>
-  //     prevMovies.map(movie =>
-  //       movie.id === id ? { ...movie, userRating: rating } : movie
-  //     )
-  //   );
-  //   toast.success('Rating submitted successfully!');
-  // };
-
-//   // Add a new movie
-//   const addMovie = (movie: Omit<Movie, 'id'>) => {
-//     const newMovie = {
-//       ...movie,
-//       id: Date.now().toString(),
-//     };
-
-//     setMovies(prevMovies => [...prevMovies, newMovie]);
-//     toast.success(`Movie "${movie.title}" added successfully!`);
-//   };
-
-//   // Update a movie
-//   const updateMovie = (id: string, updates: Partial<Movie>) => {
-//     setMovies(prevMovies =>
-//       prevMovies.map(movie =>
-//         movie.id === id ? { ...movie, ...updates } : movie
-//       )
-//     );
-//     toast.success('Movie updated successfully!');
-//   };
-
-//   // Delete a movie
-//   const deleteMovie = (id: string) => {
-//     setMovies(prevMovies => prevMovies.filter(movie => movie.id !== id));
-//     toast.success('Movie deleted successfully!');
-//   };
-
-//   return (
-//     <MovieContext.Provider
-//       value={{
-//         movies,
-//         featuredMovies,
-//         loading,
-//         filteredMovies,
-//         filters,
-//         setFilters,
-//         getMovieById,
-//         rateMovie,
-//         addMovie,
-//         updateMovie,
-//         deleteMovie,
-//         getRecommendedMoviesById,
-//       }}
-//     >
-//       {children}
-//     </MovieContext.Provider>
-//   );
-// };
-
 // Custom hook to use the movie context
 export const useMovies = () => {
   const context = useContext(MovieContext);
@@ -252,3 +180,4 @@ export const useMovies = () => {
   }
   return context;
 };
+export type { Movie };
