@@ -1,11 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Search, Settings } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import MovieListItem from '@/components/admin/MovieListItem';
 import MovieForm from '@/components/admin/MovieForm';
-import { useMovies, Movie } from '@/contexts/MovieContext';
+import { useMovies } from '@/contexts/MovieContext';
+import { Movie } from '@/data/MovieType';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,6 +44,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+
+import { MovieFormInput } from '@/data/MovieFormType';
+
+
+interface MovieFormProps {
+  movie?: MovieFormInput;
+  onSubmit: (movieData: MovieFormInput) => void;
+  onCancel: () => void;
+  isEditing?: boolean;
+}
 
 const Admin = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -122,16 +132,54 @@ const Admin = () => {
     }
   };
   
-  // Handle add movie
-  const handleAddMovie = (movieData: Omit<Movie, 'id'>) => {
-    addMovie(movieData);
+  // FIXED: Handle add movie - Map MovieFormInput to Movie type
+  const handleAddMovie = (movieData: MovieFormInput) => {
+    // Create a new movie object with the correct properties
+    const newMovie: Movie = {
+      // Use properties from movieData or provide defaults
+      showId: movieData.showId || `movie-${Date.now()}`, // Generate a unique ID if not provided
+      title: movieData.title,
+      director: movieData.director,
+      cast: Array.isArray(movieData.cast) ? movieData.cast.join(', ') : '',
+      rating: movieData.contentRating || '',
+      duration: movieData.duration || '',
+      description: movieData.description || '',
+      genre: movieData.genres?.join(', ') || '',
+      posterUrl: movieData.posterUrl || '',
+      bannerUrl: movieData.bannerUrl || '',
+      featured: movieData.featured || false,
+      // Use optional properties if available
+      type: movieData.type || 'movie',
+      country: movieData.country || '',
+      releaseYear: movieData.releaseYear || new Date(movieData.releaseDate).getFullYear(),
+    };
+    
+    addMovie(newMovie);
     setShowAddForm(false);
   };
   
-  // Handle update movie
-  const handleUpdateMovie = (movieData: Partial<Movie>) => {
+  // FIXED: Handle update movie - Map MovieFormInput to Movie type
+  const handleUpdateMovie = (movieData: MovieFormInput) => {
     if (currentMovie) {
-      updateMovie(currentMovie.showId, movieData);
+      // Create an updated movie object with the correct properties
+      const updatedMovie: Partial<Movie> = {
+        title: movieData.title,
+        director: movieData.director,
+        cast: Array.isArray(movieData.cast) ? movieData.cast.join(', ') : '',
+        rating: movieData.contentRating || '',
+        duration: movieData.duration || '',
+        description: movieData.description || '',
+        genre: movieData.genres?.join(', ') || '',
+        posterUrl: movieData.posterUrl || '',
+        bannerUrl: movieData.bannerUrl || '',
+        featured: movieData.featured || false,
+        // Use optional properties if available
+        type: movieData.type || 'movie',
+        country: movieData.country || '',
+        releaseYear: movieData.releaseYear || new Date(movieData.releaseDate).getFullYear(),
+      };
+      
+      updateMovie(currentMovie.showId, updatedMovie);
       setShowEditForm(false);
       setCurrentMovie(null);
     }
@@ -353,8 +401,31 @@ const Admin = () => {
           </DialogHeader>
           {currentMovie && (
             <MovieForm
-              movie={currentMovie}
-              onSubmit={handleUpdateMovie}
+              movie={{
+                // FIXED: Map Movie to MovieFormInput type
+                title: currentMovie.title || '',
+                director: currentMovie.director || '',
+                description: currentMovie.description || '',
+                // Convert string genres to array
+                genres: currentMovie.genre ? currentMovie.genre.split(', ') : [],
+                contentRating: currentMovie.rating || '',
+                // Convert rating string to number if needed
+                userRating: currentMovie.rating ? parseFloat(currentMovie.rating) : 0,
+                posterUrl: currentMovie.posterUrl || '',
+                bannerUrl: currentMovie.bannerUrl || '',
+                duration: currentMovie.duration || '',
+                // Convert string cast to array
+                cast: typeof currentMovie.cast === 'string' ? currentMovie.cast.split(', ') : [],
+                featured: currentMovie.featured || false,
+                // Convert date if available or provide placeholder
+                releaseDate: currentMovie.releaseYear ? `${currentMovie.releaseYear}-01-01` : '',
+                // Include these properties for passing through
+                showId: currentMovie.showId || '',
+                type: currentMovie.type || '',
+                country: currentMovie.country || '',
+                releaseYear: currentMovie.releaseYear || 0
+              }}
+              onSubmit={(movieData) => handleUpdateMovie(movieData)}
               onCancel={() => setShowEditForm(false)}
               isEditing
             />

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Movie } from '@/contexts/MovieContext';
+import { type MovieFormInput } from '@/data/MovieFormType';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,8 +25,8 @@ const genreOptions = [
 const contentRatingOptions = ['G', 'PG', 'PG-13', 'R', 'NC-17', 'NR'];
 
 interface MovieFormProps {
-  movie?: Movie;
-  onSubmit: (movieData: Omit<Movie, 'id'> | Partial<Movie>) => void;
+  movie?: MovieFormInput;
+  onSubmit: (movieData: MovieFormInput) => void;
   onCancel: () => void;
   isEditing?: boolean;
 }
@@ -37,7 +37,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
   onCancel, 
   isEditing = false 
 }) => {
-  const [formData, setFormData] = useState<Omit<Movie, 'id'> | Partial<Movie>>({
+  const [formData, setFormData] = useState<Omit<MovieFormInput, 'id'> | Partial<MovieFormInput>>({
     title: '',
     releaseDate: '',
     genres: [],
@@ -108,7 +108,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData as MovieFormInput);
   };
 
   return (
