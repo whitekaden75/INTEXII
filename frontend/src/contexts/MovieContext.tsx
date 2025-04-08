@@ -65,12 +65,18 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();
-      result = result.filter(
-        (movie) =>
-          movie.title.toLowerCase().includes(query) ||
-          movie.director.toLowerCase().includes(query) ||
-          movie.cast.toLowerCase().includes(query)
-      );
+
+      result = result.filter((movie) => {
+        const title = movie.title?.toLowerCase() || "";
+        const director = movie.director?.toLowerCase() || "";
+        const cast = movie.cast?.toLowerCase() || "";
+
+        return (
+          title.includes(query) ||
+          director.includes(query) ||
+          cast.includes(query)
+        );
+      });
     }
 
     setFilteredMovies(result);
@@ -145,8 +151,7 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
         updateMovie,
         deleteMovie,
         getMovieById,
-      }}
-    >
+      }}>
       {children}
     </MovieContext.Provider>
   );

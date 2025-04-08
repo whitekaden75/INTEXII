@@ -1,9 +1,8 @@
-
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Film, Search, Menu, X, User, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Film, Search, Menu, X, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,10 +10,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import SearchBar from "./SearchBar";
+import { useMovies } from "@/contexts/MovieContext";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -23,19 +24,17 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { filters, setFilters } = useMovies(); // or from props/context
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onSearch) {
-      onSearch(searchQuery);
-    }
+  const handleSearch = (query: string) => {
+    setFilters({ ...filters, searchQuery: query });
   };
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -51,15 +50,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         <nav className="hidden md:flex items-center gap-6">
           {user && (
             <>
-              <Link to="/movies" className="text-sm font-medium hover:text-cineniche-blue transition-colors">
+              <Link
+                to="/movies"
+                className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Movies
               </Link>
               {isAdmin && (
-                <Link to="/admin" className="text-sm font-medium hover:text-cineniche-blue transition-colors">
+                <Link
+                  to="/admin"
+                  className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                   Admin
                 </Link>
               )}
-              <Link to="/privacy" className="text-sm font-medium hover:text-cineniche-blue transition-colors">
+              <Link
+                to="/privacy"
+                className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Privacy
               </Link>
             </>
@@ -68,26 +73,19 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
         {/* Search and Auth (Desktop) */}
         <div className="hidden md:flex items-center gap-4">
-          {user && onSearch && (
-            <form onSubmit={handleSearch} className="relative w-64">
-              <Input
-                type="search"
-                placeholder="Search movies..."
-                className="pl-8"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            </form>
-          )}
+          <SearchBar onSearch={handleSearch} />
 
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user.avatar} alt={user.username} />
-                    <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -99,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   <span>{user.username}</span>
                 </DropdownMenuItem>
                 {isAdmin && (
-                  <DropdownMenuItem onClick={() => navigate('/admin')}>
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>
                     Admin Dashboard
                   </DropdownMenuItem>
                 )}
@@ -112,8 +110,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate('/login')}>Log in</Button>
-              <Button onClick={() => navigate('/register')}>Sign up</Button>
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Log in
+              </Button>
+              <Button onClick={() => navigate("/register")}>Sign up</Button>
             </div>
           )}
         </div>
@@ -123,8 +123,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           variant="ghost"
           size="icon"
           className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
+          onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? (
             <X className="h-6 w-6" />
           ) : (
@@ -138,24 +137,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         className={cn(
           "md:hidden absolute w-full bg-background border-b transition-transform duration-200 ease-in-out",
           isMenuOpen ? "translate-y-0" : "-translate-y-full"
-        )}
-      >
+        )}>
         <div className="container py-4 space-y-4">
-          {user && onSearch && (
-            <form onSubmit={handleSearch} className="relative">
-              <Input
-                type="search"
-                placeholder="Search movies..."
-                className="pl-8"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Button type="submit" className="absolute right-1 top-1 h-7 px-2">
-                Search
-              </Button>
-            </form>
-          )}
+          <SearchBar onSearch={handleSearch} />
 
           <nav className="space-y-2">
             {user ? (
@@ -163,34 +147,35 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <div className="flex items-center gap-2 p-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user.avatar} alt={user.username} />
-                    <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">{user.username}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
                   </div>
                 </div>
                 <Link
                   to="/movies"
                   className="block p-2 text-sm hover:bg-secondary rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                  onClick={() => setIsMenuOpen(false)}>
                   Movies
                 </Link>
                 {isAdmin && (
                   <Link
                     to="/admin"
                     className="block p-2 text-sm hover:bg-secondary rounded-md"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
+                    onClick={() => setIsMenuOpen(false)}>
                     Admin Dashboard
                   </Link>
                 )}
                 <Link
                   to="/privacy"
                   className="block p-2 text-sm hover:bg-secondary rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                  onClick={() => setIsMenuOpen(false)}>
                   Privacy Policy
                 </Link>
                 <Button
@@ -199,29 +184,26 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   onClick={() => {
                     handleLogout();
                     setIsMenuOpen(false);
-                  }}
-                >
+                  }}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
                 </Button>
               </>
             ) : (
               <div className="flex flex-col gap-2">
-                <Button 
+                <Button
                   onClick={() => {
-                    navigate('/login');
+                    navigate("/login");
                     setIsMenuOpen(false);
-                  }}
-                >
+                  }}>
                   Log in
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => {
-                    navigate('/register');
+                    navigate("/register");
                     setIsMenuOpen(false);
-                  }}
-                >
+                  }}>
                   Sign up
                 </Button>
               </div>
