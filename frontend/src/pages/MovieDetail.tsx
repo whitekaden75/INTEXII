@@ -17,10 +17,18 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import RecommendedMovies from "@/components/movies/RecommendedMovies";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, getMovieRecommendations, rateMovie, loading, } = useMovies(); 
+  const { getMovieById, getMovieRecommendations, rateMovie, loading } =
+    useMovies();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
@@ -28,6 +36,24 @@ const MovieDetail = () => {
   const [recommendations, setRecommendations] = useState<Movie[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
+  useEffect(() => {
+    async function fetchRecommendations() {
+      if (id) {
+        setLoadingRecommendations(true);
+        try {
+          const recommendedMovies = await getMovieRecommendations(id);
+          console.log("Recommendations loaded:", recommendedMovies);
+          setRecommendations(recommendedMovies);
+        } catch (error) {
+          console.error("Error fetching recommendations:", error);
+        } finally {
+          setLoadingRecommendations(false);
+        }
+      }
+    }
+  
+    fetchRecommendations();
+  }, [id, getMovieRecommendations]);
 
   const movie = id ? getMovieById(id) : undefined;
 
@@ -78,7 +104,8 @@ const MovieDetail = () => {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
           className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
-          onInteractOutside={(e) => e.preventDefault()}>
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           {!isAuthenticated ? (
             <>
               <DialogHeader>
@@ -106,17 +133,20 @@ const MovieDetail = () => {
                 <Button
                   variant="outline"
                   onClick={handleClose}
-                  className="w-full sm:w-auto">
+                  className="w-full sm:w-auto"
+                >
                   Back to Movies
                 </Button>
                 <Button
                   onClick={() => navigate("/login")}
-                  className="w-full sm:w-auto">
+                  className="w-full sm:w-auto"
+                >
                   Login
                 </Button>
                 <Button
                   onClick={() => navigate("/register")}
-                  className="w-full sm:w-auto">
+                  className="w-full sm:w-auto"
+                >
                   Create Account
                 </Button>
               </DialogFooter>
@@ -138,11 +168,11 @@ const MovieDetail = () => {
                 {/* Movie Poster */}
                 <div className="md:col-span-4">
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-                  <img
+                    {/* <img
                       src={`https://picsum.photos/seed/${movie.showId}/300/450`}
                       alt={movie.title}
                       className="w-full h-full object-cover"
-                    />
+                    /> */}
                   </div>
                 </div>
 
@@ -157,10 +187,11 @@ const MovieDetail = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-2 ml-4">
-                    {movie.genre.split(',').map((genre) => (
+                      {movie.genre.split(",").map((genre) => (
                         <span
                           key={genre}
-                          className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
+                          className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium"
+                        >
                           {genre}
                         </span>
                       ))}
@@ -187,12 +218,15 @@ const MovieDetail = () => {
                       <div>
                         <h2 className="text-lg font-semibold mb-2">Cast</h2>
                         <div className="space-y-1">
-                        {movie.cast?.split(',').slice(0, 3).map((actor) => (
-                          <div key={actor} className="flex items-center">
-                            <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                            <span>{actor}</span>
-                          </div>
-                        ))}
+                          {movie.cast
+                            ?.split(",")
+                            .slice(0, 3)
+                            .map((actor) => (
+                              <div key={actor} className="flex items-center">
+                                <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                                <span>{actor}</span>
+                              </div>
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -206,7 +240,8 @@ const MovieDetail = () => {
                           <button
                             key={rating}
                             onClick={() => setUserRating(rating)}
-                            className="p-1">
+                            className="p-1"
+                          >
                             <Star
                               className={`h-6 w-6 ${
                                 userRating !== null && rating <= userRating
@@ -220,7 +255,8 @@ const MovieDetail = () => {
                           onClick={handleRateMovie}
                           disabled={userRating === null}
                           className="ml-4"
-                          size="sm">
+                          size="sm"
+                        >
                           Submit Rating
                         </Button>
                       </div>
@@ -231,24 +267,23 @@ const MovieDetail = () => {
 
               <Separator className="my-6" />
 
-             {/* Recommended Movies */}
-            {!loadingRecommendations && recommendations.length > 0 && (
-              <div className="mt-6">
-                <RecommendedMovies
-                  title="Recommended For You"
-                  movies={recommendations}
-                  sourceMovieId={id}
-                  visibleCount={4}
-                />
-              </div>
-            )}
+              {/* Recommended Movies */}
+{!loadingRecommendations && recommendations.length > 0 && (
+  <div className="mt-4">
+    <RecommendedMovies 
+      title="Recommended For You"
+      movies={recommendations} 
+      sourceMovieId={id}
+    />
+  </div>
+)}
 
-            {loadingRecommendations && (
-              <div className="mt-6 text-center">
-                <div className="h-8 w-8 rounded-full border-2 border-cineniche-purple border-t-transparent animate-spin mx-auto"></div>
-                <p className="mt-2 text-sm text-muted-foreground">Loading recommendations...</p>
-              </div>
-            )}
+{loadingRecommendations && (
+  <div className="mt-6 text-center">
+    <div className="h-8 w-8 rounded-full border-2 border-cineniche-purple border-t-transparent animate-spin mx-auto"></div>
+    <p className="mt-2 text-sm text-muted-foreground">Loading recommendations...</p>
+  </div>
+)}
 
               <div className="mt-6 flex justify-end">
                 <Button variant="outline" onClick={handleClose}>

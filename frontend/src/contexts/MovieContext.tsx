@@ -7,6 +7,7 @@ import {
   updateMovie as updateMovieAPI,
   deleteMovie as deleteMovieAPI,
   createMovie,
+  getMovieRecommendationsAPI,
 } from "../api/MovieAPI";
 
 export interface MovieFilter {
@@ -24,11 +25,8 @@ interface MovieContextType {
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
   deleteMovie: (id: string) => Promise<void>;
   getMovieById: (id: string) => Movie | undefined;
-<<<<<<< HEAD
   getMovieRecommendations: (id: string) => Promise<Movie[]>;
-  //rateMovie: (id: string, rating: number) => void;
-=======
->>>>>>> 9eba555d5519e0050fd09500da35200c3bd87ffe
+
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -126,11 +124,24 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-<<<<<<< HEAD
+
   // Function to your MovieProvider
+// Add this function to the MovieProvider component
 const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
   try {
-    return await getMovieRecommendationsAPI(id);
+    // Get recommendation IDs
+    const recommendationIds = await getMovieRecommendationsAPI(id);
+    
+    if (!recommendationIds.length) {
+      return [];
+    }
+    
+    // Map IDs to movies from our loaded movies array
+    const recommendedMovies = recommendationIds
+      .map(recId => movies.find(movie => movie.showId === recId))
+      .filter((movie): movie is Movie => movie !== undefined);
+    
+    return recommendedMovies;
   } catch (error) {
     toast.error("Failed to fetch movie recommendations");
     return [];
@@ -145,8 +156,7 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
   //return movies.find(movie => movie.id === id);
   //};
 
-=======
->>>>>>> 9eba555d5519e0050fd09500da35200c3bd87ffe
+
   // Get a movie by ID
   const getMovieById = (id: string) => {
     return movies.find((movie) => movie.showId === id);
