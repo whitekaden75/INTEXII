@@ -11,7 +11,7 @@ import { Film, Play } from 'lucide-react';
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
-  const { featuredMovies, movies, loading } = useMovies();
+  const { movies, loading } = useMovies();
   const navigate = useNavigate();
 
   // Now we don't automatically redirect users to the movies page
@@ -85,43 +85,47 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Feature Movie Carousel Section */}
-      {featuredMovies.length > 0 && (
-        <div className="bg-cineniche-dark-blue py-6">
-          <div className="container">
-            <h2 className="text-2xl font-bold mb-6 text-white">Featured Movies</h2>
-            <div className="space-y-4">
-              {featuredMovies.slice(0, 5).map((movie) => (
-                <div key={movie.id} className="p-1">
-                  <Hero 
-                    movie={movie} 
-                  />
-                </div>
-              ))}
+      {/*
+  {featuredMovies.length > 0 && (
+    <div className="bg-cineniche-dark-blue py-6">
+      <div className="container">
+        <h2 className="text-2xl font-bold mb-6 text-white">Featured Movies</h2>
+        <div className="space-y-4">
+          {featuredMovies.slice(0, 5).map((movie) => (
+            <div key={movie.id} className="p-1">
+              <Hero movie={movie} />
             </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
+    </div>
+  )}
+*/}
 
-      {/* Popular Movies Section */}
-      {movies.length > 0 && (
-        <>
-          <FeaturedMovies 
-            title="Popular Movies" 
-            movies={movies.filter(m => m.userRating >= 4).slice(0, 10)} 
-          />
-          
-          <FeaturedMovies 
-            title="Recent Releases" 
-            movies={movies.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()).slice(0, 10)} 
-          />
-          
-          <FeaturedMovies 
-            title="Action Movies" 
-            movies={movies.filter(m => m.genres.includes('Action')).slice(0, 10)} 
-          />
-        </>
-      )}
+
+{/* 
+  {movies && movies.length > 0 && (
+    <>
+      <FeaturedMovies 
+        title="Popular Movies" 
+        movies={movies.filter(m => m.userRating >= 4).slice(0, 10)} 
+      />
+      
+      <FeaturedMovies 
+        title="Recent Releases" 
+        movies={[...movies]
+          .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
+          .slice(0, 10)} 
+      />
+      
+      <FeaturedMovies 
+        title="Action Movies" 
+        movies={movies.filter(m => m.genres.includes('Action')).slice(0, 10)} 
+      />
+    </>
+  )}
+*/}
+
 
       {/* Features Section */}
       <section className="py-20 bg-gradient-to-b from-background to-secondary/20">
