@@ -17,10 +17,30 @@ import GoogleLoginButton from "./GoogleLoginButton";
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberme, setRememberme] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, type, checked, value } = e.target;
+    if (type === 'checkbox') {
+      console.log(`[Input Change] Checkbox "${name}" changed to: ${checked}`);
+      setRememberme(checked);
+    } else if (name === 'email') {
+      console.log(`[Input Change] Email input changed to: ${value}`);
+      setEmail(value);
+    } else if (name === 'password') {
+      console.log(`[Input Change] Password input changed.`);
+      setPassword(value);
+    }
+  };
+
+  const handleRegisterClick = () => {
+    console.log(`[Navigation] Navigating to the register page.`);
+    navigate('/register');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
