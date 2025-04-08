@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Movie } from "@/data/MovieType";
+import MovieCard from "@/components/movies/MovieCard";
 import {
   Dialog,
   DialogContent,
@@ -19,12 +20,14 @@ import RecommendedMovies from "@/components/movies/RecommendedMovies";
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, rateMovie, loading, } = // inside {} getRecommendedMoviesById
-    useMovies(); 
+  const { getMovieById, getMovieRecommendations, rateMovie, loading, } = useMovies(); 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(true);
+  const [recommendations, setRecommendations] = useState<Movie[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
 
   const movie = id ? getMovieById(id) : undefined;
 
@@ -135,11 +138,11 @@ const MovieDetail = () => {
                 {/* Movie Poster */}
                 <div className="md:col-span-4">
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-                    {/* <img
-                      src={movie.posterUrl}
+                  <img
+                      src={`https://picsum.photos/seed/${movie.showId}/300/450`}
                       alt={movie.title}
                       className="w-full h-full object-cover"
-                    /> */}
+                    />
                   </div>
                 </div>
 
@@ -184,12 +187,12 @@ const MovieDetail = () => {
                       <div>
                         <h2 className="text-lg font-semibold mb-2">Cast</h2>
                         <div className="space-y-1">
-                        {movie.cast.split(',').slice(0, 3).map((actor) => (
-                            <div key={actor} className="flex items-center">
-                              <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>{actor}</span>
-                            </div>
-                          ))}
+                        {movie.cast?.split(',').slice(0, 3).map((actor) => (
+                          <div key={actor} className="flex items-center">
+                            <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{actor}</span>
+                          </div>
+                        ))}
                         </div>
                       </div>
                     </div>
@@ -228,35 +231,24 @@ const MovieDetail = () => {
 
               <Separator className="my-6" />
 
-              {/* Recommended Movies
-              {recommendedMovies.length > 0 && (
-                <div className="mt-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Recommended For You
-                  </h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                    {recommendedMovies.map((movie) => (
-                      <div
-                        key={movie.id}
-                        className="cursor-pointer"
-                        onClick={() => {
-                          navigate(`/movies/${movie.id}`);
-                        }}>
-                        <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md">
-                          <img
-                            src={movie.posterUrl}
-                            alt={movie.title}
-                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                          />
-                        </div>
-                        <h3 className="mt-2 text-sm font-medium line-clamp-1">
-                          {movie.title}
-                        </h3>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )} */}
+             {/* Recommended Movies */}
+            {!loadingRecommendations && recommendations.length > 0 && (
+              <div className="mt-6">
+                <RecommendedMovies
+                  title="Recommended For You"
+                  movies={recommendations}
+                  sourceMovieId={id}
+                  visibleCount={4}
+                />
+              </div>
+            )}
+
+            {loadingRecommendations && (
+              <div className="mt-6 text-center">
+                <div className="h-8 w-8 rounded-full border-2 border-cineniche-purple border-t-transparent animate-spin mx-auto"></div>
+                <p className="mt-2 text-sm text-muted-foreground">Loading recommendations...</p>
+              </div>
+            )}
 
               <div className="mt-6 flex justify-end">
                 <Button variant="outline" onClick={handleClose}>

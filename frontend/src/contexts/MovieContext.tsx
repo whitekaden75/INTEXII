@@ -23,6 +23,7 @@ interface MovieContextType {
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
   deleteMovie: (id: string) => Promise<void>;
   getMovieById: (id: string) => Movie | undefined;
+  getMovieRecommendations: (id: string) => Promise<Movie[]>;
   //rateMovie: (id: string, rating: number) => void;
 }
 
@@ -121,6 +122,16 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Function to your MovieProvider
+const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
+  try {
+    return await getMovieRecommendationsAPI(id);
+  } catch (error) {
+    toast.error("Failed to fetch movie recommendations");
+    return [];
+  }
+};
+
   // Get featured movies
   //const featuredMovies = movies.filter(movie => movie.featured);
 
@@ -146,6 +157,7 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
         updateMovie,
         deleteMovie,
         getMovieById,
+        getMovieRecommendations
       }}
     >
       {children}

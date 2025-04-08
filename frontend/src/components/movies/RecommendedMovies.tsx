@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Movie } from '@/contexts/MovieContext';
+import { Movie } from '@/data/MovieType';
 import { 
   Carousel, 
   CarouselContent, 
@@ -14,12 +14,14 @@ interface RecommendedMoviesProps {
   title: string;
   movies: Movie[];
   sourceMovieId?: string;
+  visibleCount?: number;
 }
 
 const RecommendedMovies: React.FC<RecommendedMoviesProps> = ({ 
   title, 
   movies,
-  sourceMovieId
+  sourceMovieId,
+  visibleCount = 5 // Default to showing 5 movies
 }) => {
   const navigate = useNavigate();
   
@@ -35,26 +37,28 @@ const RecommendedMovies: React.FC<RecommendedMoviesProps> = ({
             opts={{
               align: "start",
               loop: true,
+              slidesToScroll: 1,
+              startIndex: 0,
             }}
             className="w-full"
           >
             <CarouselContent>
               {movies.map((movie) => (
-                <CarouselItem key={movie.id} className="md:basis-1/4 lg:basis-1/5">
+                <CarouselItem key={movie.showId} className="md:basis-1/4 lg:basis-1/5">
                   <div 
                     className="p-1 cursor-pointer" 
-                    onClick={() => navigate(`/movies/${movie.id}`)}
+                    onClick={() => navigate(`/movies/${movie.showId}`)}
                   >
                     <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md">
-                      <img 
+                      {/* <img 
                         src={movie.posterUrl} 
                         alt={movie.title}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                      />
+                      /> */}
                     </div>
                     <h3 className="mt-2 text-sm font-medium line-clamp-1">{movie.title}</h3>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {movie.releaseDate.split('-')[0]}
+                      {movie.releaseYear}
                     </div>
                   </div>
                 </CarouselItem>

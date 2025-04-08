@@ -89,3 +89,17 @@ export const deleteMovie = async (id: string): Promise<void> => {
     throw error;
   }
 };
+
+// Function to get movie recommendations
+export const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${id}/recommendations`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch movie recommendations');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching movie recommendations:', error);
+    throw error;
+  }
+};

@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
-import { Movie } from '@/contexts/MovieContext';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useInView } from '../hooks/useInView';
+import React, { useState, useEffect } from "react";
+import MovieCard from "./MovieCard";
+import { Movie } from "@/data/MovieType";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useInView } from "../hooks/useInView";
 
 interface MovieGridProps {
   movies: Movie[];
@@ -27,7 +26,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     if (inView && !loading && displayedMovies.length < movies.length) {
       const nextPage = page + 1;
       const nextMovies = movies.slice(0, nextPage * moviesPerPage);
-      
+
       setDisplayedMovies(nextMovies);
       setPage(nextPage);
     }
@@ -51,7 +50,9 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     return (
       <div className="text-center py-12">
         <h3 className="text-xl font-semibold mb-2">No movies found</h3>
-        <p className="text-muted-foreground">Try adjusting your filters or search query.</p>
+        <p className="text-muted-foreground">
+          Try adjusting your filters or search query.
+        </p>
       </div>
     );
   }
@@ -60,7 +61,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
         {displayedMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie.showId} movie={movie} />
         ))}
       </div>
       {displayedMovies.length < movies.length && (
