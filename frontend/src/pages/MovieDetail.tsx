@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Movie } from "@/data/MovieType";
+import MovieCard from "@/components/movies/MovieCard";
 import {
   Dialog,
   DialogContent,
@@ -20,12 +21,33 @@ import AuthorizeView from "@/components/auth/AuthorizeView";
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, rateMovie, loading, } = // inside {} getRecommendedMoviesById
-    useMovies(); 
+  const { getMovieById, getMovieRecommendations, rateMovie, loading } =
+    useMovies();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(true);
+  const [recommendations, setRecommendations] = useState<Movie[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
+  useEffect(() => {
+    async function fetchRecommendations() {
+      if (id) {
+        setLoadingRecommendations(true);
+        try {
+          const recommendedMovies = await getMovieRecommendations(id);
+          console.log("Recommendations loaded:", recommendedMovies);
+          setRecommendations(recommendedMovies);
+        } catch (error) {
+          console.error("Error fetching recommendations:", error);
+        } finally {
+          setLoadingRecommendations(false);
+        }
+      }
+    }
+  
+    fetchRecommendations();
+  }, [id, getMovieRecommendations]);
 
   const movie = id ? getMovieById(id) : undefined;
 

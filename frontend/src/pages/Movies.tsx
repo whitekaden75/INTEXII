@@ -16,6 +16,20 @@ const Movies = () => {
 
   const { movies, filteredMovies, loading, filters, setFilters } = useMovies();
   const navigate = useNavigate();
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+
+   // Auto-rotate featured movies every 10 seconds
+    useEffect(() => {
+    if (featuredMovies.length <= 1) return;
+
+    const intervalId = setInterval(() => {
+      setCurrentFeaturedIndex((prevIndex) =>
+        prevIndex === featuredMovies.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [featuredMovies.length]);
 
   // Extract all unique genres from movies
   const allGenres = movies

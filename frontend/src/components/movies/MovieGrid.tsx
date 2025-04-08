@@ -27,7 +27,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     if (inView && !loading && displayedMovies.length < movies.length) {
       const nextPage = page + 1;
       const nextMovies = movies.slice(0, nextPage * moviesPerPage);
-      
+
       setDisplayedMovies(nextMovies);
       setPage(nextPage);
     }
@@ -51,7 +51,9 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     return (
       <div className="text-center py-12">
         <h3 className="text-xl font-semibold mb-2">No movies found</h3>
-        <p className="text-muted-foreground">Try adjusting your filters or search query.</p>
+        <p className="text-muted-foreground">
+          Try adjusting your filters or search query.
+        </p>
       </div>
     );
   }

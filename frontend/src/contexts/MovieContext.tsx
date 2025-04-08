@@ -7,7 +7,9 @@ import {
   updateMovie as updateMovieAPI,
   deleteMovie as deleteMovieAPI,
   createMovie,
+  getMovieRecommendationsAPI,
 } from "../api/MovieAPI";
+import { getUserRecommendations } from "../api/MovieAPI";
 
 export interface MovieFilter {
   genre?: string;
@@ -19,11 +21,14 @@ interface MovieContextType {
   loading: boolean;
   filteredMovies: Movie[];
   filters: MovieFilter;
+  featuredMovies: Movie[]; // Add this line
   setFilters: (filters: MovieFilter) => void;
   addMovie: (movie: Omit<Movie, "showId">) => Promise<void>;
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
   deleteMovie: (id: string) => Promise<void>;
   getMovieById: (id: string) => Movie | undefined;
+  getMovieRecommendations: (id: string) => Promise<Movie[]>;
+
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -35,6 +40,8 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [filters, setFiltersState] = useState<MovieFilter>({});
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const [featuredMovies, setFeaturedMovies] = useState<Movie[]>([]);
+
 
   // Wrapper function for setFilters to expose to consumers
   const setFilters = (newFilters: MovieFilter) => {
@@ -58,6 +65,45 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchMovies();
   }, []);
 
+  // Add this useEffect after the movies data loading useEffect
+useEffect(() => {
+  const fetchFeaturedMovies = async () => {
+    if (movies.length === 0) return;
+    
+    try {
+      // For demo purposes, we'll use user ID 1
+      // In a real app, you'd get the current user's ID from auth context
+      const userId = 1;
+      const recommendationIds = await getUserRecommendations(userId);
+      
+      if (recommendationIds.length > 0) {
+        const userRecommendedMovies = recommendationIds
+          .map(id => movies.find(movie => movie.showId === id))
+          .filter((movie): movie is Movie => movie !== undefined);
+        
+        setFeaturedMovies(userRecommendedMovies);
+      } else {
+        // Fallback: use some popular movies if no recommendations
+        const fallbackFeatured = movies
+          .sort((a, b) => b.releaseYear - a.releaseYear)
+          .slice(0, 5);
+        
+        setFeaturedMovies(fallbackFeatured);
+      }
+    } catch (error) {
+      console.error('Error loading featured movies:', error);
+      // Fallback to recent movies if there's an error
+      const fallbackFeatured = movies
+        .sort((a, b) => b.releaseYear - a.releaseYear)
+        .slice(0, 5);
+      
+      setFeaturedMovies(fallbackFeatured);
+    }
+  };
+
+  fetchFeaturedMovies();
+}, [movies]);
+
   useEffect(() => {
     let result = [...movies];
   
@@ -68,13 +114,20 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   
     if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase(); // Ensure it's never null or undefined
-      result = result.filter(
-        (movie) =>
-          movie.title.toLowerCase().includes(query) ||
-          movie.director.toLowerCase().includes(query) ||
-          movie.cast.toLowerCase().includes(query)
-      );
+
+      const query = filters.searchQuery.toLowerCase();
+
+      result = result.filter((movie) => {
+        const title = movie.title?.toLowerCase() || "";
+        const director = movie.director?.toLowerCase() || "";
+        const cast = movie.cast?.toLowerCase() || "";
+
+        return (
+          title.includes(query) ||
+          director.includes(query) ||
+          cast.includes(query)
+        );
+      });
     }
   
     setFilteredMovies(result);
@@ -121,6 +174,39 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+
+  // Function to your MovieProvider
+// Add this function to the MovieProvider component
+const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
+  try {
+    // Get recommendation IDs
+    const recommendationIds = await getMovieRecommendationsAPI(id);
+    
+    if (!recommendationIds.length) {
+      return [];
+    }
+    
+    // Map IDs to movies from our loaded movies array
+    const recommendedMovies = recommendationIds
+      .map(recId => movies.find(movie => movie.showId === recId))
+      .filter((movie): movie is Movie => movie !== undefined);
+    
+    return recommendedMovies;
+  } catch (error) {
+    toast.error("Failed to fetch movie recommendations");
+    return [];
+  }
+};
+
+  // Get featured movies
+  //const featuredMovies = movies.filter(movie => movie.featured);
+
+  // Get a movie by ID
+  //const getMovieById = (id: string) => {
+  //return movies.find(movie => movie.id === id);
+  //};
+
+
   // Get a movie by ID
   const getMovieById = (id: string) => {
     return movies.find((movie) => movie.showId === id);
@@ -133,13 +219,14 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         filters,
         filteredMovies,
+        featuredMovies,
         setFilters,
         addMovie,
         updateMovie,
         deleteMovie,
         getMovieById,
-      }}
-    >
+
+      }}>
       {children}
     </MovieContext.Provider>
   );
