@@ -9,6 +9,7 @@ import {
   createMovie,
   getMovieRecommendationsAPI,
 } from "../api/MovieAPI";
+import { getUserRecommendations } from "../api/MovieAPI";
 
 export interface MovieFilter {
   genre?: string;
@@ -20,6 +21,7 @@ interface MovieContextType {
   loading: boolean;
   filteredMovies: Movie[];
   filters: MovieFilter;
+  featuredMovies: Movie[]; // Add this line
   setFilters: (filters: MovieFilter) => void;
   addMovie: (movie: Omit<Movie, "showId">) => Promise<void>;
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
@@ -38,6 +40,8 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [filters, setFiltersState] = useState<MovieFilter>({});
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const [featuredMovies, setFeaturedMovies] = useState<Movie[]>([]);
+
 
   // Wrapper function for setFilters to expose to consumers
   const setFilters = (newFilters: MovieFilter) => {
@@ -60,6 +64,45 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
 
     fetchMovies();
   }, []);
+
+  // Add this useEffect after the movies data loading useEffect
+useEffect(() => {
+  const fetchFeaturedMovies = async () => {
+    if (movies.length === 0) return;
+    
+    try {
+      // For demo purposes, we'll use user ID 1
+      // In a real app, you'd get the current user's ID from auth context
+      const userId = 1;
+      const recommendationIds = await getUserRecommendations(userId);
+      
+      if (recommendationIds.length > 0) {
+        const userRecommendedMovies = recommendationIds
+          .map(id => movies.find(movie => movie.showId === id))
+          .filter((movie): movie is Movie => movie !== undefined);
+        
+        setFeaturedMovies(userRecommendedMovies);
+      } else {
+        // Fallback: use some popular movies if no recommendations
+        const fallbackFeatured = movies
+          .sort((a, b) => b.releaseYear - a.releaseYear)
+          .slice(0, 5);
+        
+        setFeaturedMovies(fallbackFeatured);
+      }
+    } catch (error) {
+      console.error('Error loading featured movies:', error);
+      // Fallback to recent movies if there's an error
+      const fallbackFeatured = movies
+        .sort((a, b) => b.releaseYear - a.releaseYear)
+        .slice(0, 5);
+      
+      setFeaturedMovies(fallbackFeatured);
+    }
+  };
+
+  fetchFeaturedMovies();
+}, [movies]);
 
   useEffect(() => {
     let result = [...movies];
@@ -169,6 +212,7 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
         loading,
         filters,
         filteredMovies,
+        featuredMovies,
         setFilters,
         addMovie,
         updateMovie,

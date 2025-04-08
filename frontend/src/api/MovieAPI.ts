@@ -6,6 +6,8 @@ interface FetchMovieResponse {
 
 const API_BASE_URL = "http://localhost:5000/api/Movies";
 const RECOMMENDATION_API_URL = "http://localhost:5000/api/MovieRecommendations";
+const USER_API_URL = "http://localhost:5000/api/UserRecommendations";
+
 
 // Function to fetch all movies
 export const getAllMovies = async (): Promise<Movie[]> => {
@@ -105,6 +107,27 @@ export const getMovieRecommendationsAPI = async (showId: string): Promise<string
     return await response.json();
   } catch (error) {
     console.error('Error fetching recommendations:', error);
+    return [];
+  }
+};
+
+// Function to fetch user recommendations
+export const getUserRecommendations = async (userId: number): Promise<string[]> => {
+  try {
+    console.log(`Fetching user recommendations for user ${userId}`);
+    const response = await fetch(`${USER_API_URL}/${userId}`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('No recommendations found for this user');
+        return []; // No recommendations found
+      }
+      throw new Error('Failed to fetch user recommendations');
+    }
+    const data = await response.json();
+    console.log('Received user recommendations:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching user recommendations:', error);
     return [];
   }
 };

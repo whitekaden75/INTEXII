@@ -6,6 +6,8 @@ import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useInView } from "@/hooks/useInView";
+import FeaturedMovies from "@/components/movies/FeaturedMovies";
+import Hero from "@/components/movies/Hero";
 
 const Movies = () => {
   const [displayCount, setDisplayCount] = useState(12); // start with 12
@@ -13,8 +15,22 @@ const Movies = () => {
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
   const { isAuthenticated } = useAuth();
-  const { movies, filteredMovies, loading, filters, setFilters } = useMovies();
+  const { movies, filteredMovies, loading, filters, setFilters, featuredMovies } = useMovies();
   const navigate = useNavigate();
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+
+   // Auto-rotate featured movies every 10 seconds
+    useEffect(() => {
+    if (featuredMovies.length <= 1) return;
+
+    const intervalId = setInterval(() => {
+      setCurrentFeaturedIndex((prevIndex) =>
+        prevIndex === featuredMovies.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [featuredMovies.length]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -104,6 +120,18 @@ const Movies = () => {
 
   return (
     <Layout onSearch={handleSearch}>
+      {/* Auto-Rotating Featured Movie */}
+      {featuredMovies.length > 0 && !filters.searchQuery && !filters.genre && (
+  <div className="bg-cineniche-dark-blue py-6">
+    <div className="container">
+      <FeaturedMovies 
+        title="Recommended For You" 
+        movies={featuredMovies}
+      />
+    </div>
+  </div>
+)}
+
       <div className="container py-8 min-h-[80vh]">
         {/* Genre Filter */}
         <GenreFilter
