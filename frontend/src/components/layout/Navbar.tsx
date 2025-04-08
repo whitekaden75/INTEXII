@@ -22,6 +22,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
   const { user, isAdmin, logout } = useAuth();
+  // const isAdmin = user?.role === 'admin'; // Example: Check if the user's role is 'admin'
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);

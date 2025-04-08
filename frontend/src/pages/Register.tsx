@@ -18,7 +18,6 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <AuthorizeView>
       <Layout>
         <div className="container py-16 md:py-24">
           <div className="max-w-md mx-auto">
@@ -26,7 +25,6 @@ const Register = () => {
           </div>
         </div>
       </Layout>    
-    </AuthorizeView>
 
   );
 };

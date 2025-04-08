@@ -252,7 +252,7 @@ const Admin = () => {
           <Tabs defaultValue="movies" className="w-full">
             <TabsList className="mb-6">
               <TabsTrigger value="movies">Movies</TabsTrigger>
-              <TabsTrigger value="stats" disabled>Statistics</TabsTrigger>
+              <TabsTrigger value="stats" disabled>Admins</TabsTrigger>
               <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
             </TabsList>
             
