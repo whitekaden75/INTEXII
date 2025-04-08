@@ -240,3 +240,5 @@ export const useMovies = () => {
   }
   return context;
 };
+export type { Movie };
+

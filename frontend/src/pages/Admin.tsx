@@ -116,7 +116,7 @@ const Admin = () => {
   // Confirm delete
   const confirmDelete = () => {
     if (currentMovie) {
-      deleteMovie(currentMovie.id);
+      deleteMovie(currentMovie.showId);
       setShowDeleteDialog(false);
       setCurrentMovie(null);
     }
@@ -131,7 +131,7 @@ const Admin = () => {
   // Handle update movie
   const handleUpdateMovie = (movieData: Partial<Movie>) => {
     if (currentMovie) {
-      updateMovie(currentMovie.id, movieData);
+      updateMovie(currentMovie.showId, movieData);
       setShowEditForm(false);
       setCurrentMovie(null);
     }
@@ -297,7 +297,7 @@ const Admin = () => {
               ) : (
                 paginatedMovies.map((movie) => (
                   <MovieListItem
-                    key={movie.id}
+                    key={movie.showId}
                     movie={movie}
                     onEdit={() => handleEditMovie(movie)}
                     onDelete={() => handleDeleteClick(movie)}
