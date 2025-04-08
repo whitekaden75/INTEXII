@@ -23,6 +23,7 @@ interface MovieContextType {
   updateMovie: (id: string, movie: Partial<Movie>) => Promise<void>;
   deleteMovie: (id: string) => Promise<void>;
   getMovieById: (id: string) => Movie | undefined;
+  //rateMovie: (id: string, rating: number) => void;
 }
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
@@ -172,15 +173,15 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
 //       .slice(0, 6); // Limit to 6 recommendations
 //   };
 
-//   // Rate a movie
-//   const rateMovie = (id: string, rating: number) => {
-//     setMovies(prevMovies =>
-//       prevMovies.map(movie =>
-//         movie.id === id ? { ...movie, userRating: rating } : movie
-//       )
-//     );
-//     toast.success('Rating submitted successfully!');
-//   };
+  // // Rate a movie
+  //   const rateMovie = (id: string, rating: number) => {
+  //   setMovies(prevMovies =>
+  //     prevMovies.map(movie =>
+  //       movie.id === id ? { ...movie, userRating: rating } : movie
+  //     )
+  //   );
+  //   toast.success('Rating submitted successfully!');
+  // };
 
 //   // Add a new movie
 //   const addMovie = (movie: Omit<Movie, 'id'>) => {

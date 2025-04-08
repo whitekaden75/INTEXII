@@ -15,7 +15,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
   return (
     <Link
       to={`/movies/${movie.showId}`}
-      className={cn("movie-card block", className)}>
+      className={cn("movie-card block", className)}
+    >
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
         {/* <img
           src={movie.posterUrl}
@@ -41,13 +42,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
             )} */}
           </div>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
-          {movie.genre && (
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              <span className="inline-flex items-center rounded-full bg-cineniche-blue/20 px-2 py-0.5 text-xs font-medium text-cineniche-light-blue">
-                {movie.genre}
-              </span>
-            </div>
-          )}
+            {movie.genre && (
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                <span className="inline-flex items-center rounded-full bg-cineniche-blue/20 px-2 py-0.5 text-xs font-medium text-cineniche-light-blue">
+                  {movie.genre}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

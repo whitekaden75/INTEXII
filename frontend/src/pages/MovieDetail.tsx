@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Star, Film, User } from "lucide-react";
 import Layout from "@/components/layout/Layout";
-import { useMovies, Movie } from "@/contexts/MovieContext";
+import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Movie } from "@/data/MovieType";
 import {
   Dialog,
   DialogContent,
@@ -18,8 +19,8 @@ import RecommendedMovies from "@/components/movies/RecommendedMovies";
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, rateMovie, loading, getRecommendedMoviesById } =
-    useMovies();
+  const { getMovieById, rateMovie, loading, } = // inside {} getRecommendedMoviesById
+    useMovies(); 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
@@ -43,7 +44,7 @@ const MovieDetail = () => {
   };
 
   // Get recommended movies based on genre
-  const recommendedMovies = id ? getRecommendedMoviesById(id) : [];
+  //const recommendedMovies = id ? getRecommendedMoviesById(id) : [];
 
   if (loading) {
     return (
@@ -86,11 +87,11 @@ const MovieDetail = () => {
               </DialogHeader>
 
               <div className="mt-6 flex flex-col items-center space-y-4">
-                <img
+                {/* <img
                   src={movie.posterUrl}
                   alt={movie.title}
                   className="w-1/2 max-w-[200px] aspect-[2/3] rounded-lg object-cover mb-4 opacity-80"
-                />
+                /> */}
                 <h2 className="text-xl font-semibold">{movie.title}</h2>
                 <p className="text-center text-muted-foreground">
                   Create an account to access our full library of movies and
@@ -122,11 +123,11 @@ const MovieDetail = () => {
               <DialogHeader>
                 <DialogTitle className="text-2xl">{movie.title}</DialogTitle>
                 <DialogDescription className="flex items-center gap-2 text-sm">
-                  <span>{movie.releaseDate.split("-")[0]}</span>
+                  <span>{movie.releaseYear}</span>
                   <span>•</span>
                   <span>{movie.duration}</span>
                   <span>•</span>
-                  <span>{movie.contentRating}</span>
+                  <span>{movie.rating}</span>
                 </DialogDescription>
               </DialogHeader>
 
@@ -134,11 +135,11 @@ const MovieDetail = () => {
                 {/* Movie Poster */}
                 <div className="md:col-span-4">
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-                    <img
+                    {/* <img
                       src={movie.posterUrl}
                       alt={movie.title}
                       className="w-full h-full object-cover"
-                    />
+                    /> */}
                   </div>
                 </div>
 
@@ -147,13 +148,13 @@ const MovieDetail = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center">
                       <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-1" />
-                      <span className="font-medium">
+                      {/* <span className="font-medium">
                         {movie.userRating.toFixed(1)}
-                      </span>
+                      </span> */}
                     </div>
 
                     <div className="flex flex-wrap gap-2 ml-4">
-                      {movie.genres.map((genre) => (
+                    {movie.genre.split(',').map((genre) => (
                         <span
                           key={genre}
                           className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
@@ -183,7 +184,7 @@ const MovieDetail = () => {
                       <div>
                         <h2 className="text-lg font-semibold mb-2">Cast</h2>
                         <div className="space-y-1">
-                          {movie.cast.slice(0, 3).map((actor) => (
+                        {movie.cast.split(',').slice(0, 3).map((actor) => (
                             <div key={actor} className="flex items-center">
                               <User className="h-4 w-4 mr-2 text-muted-foreground" />
                               <span>{actor}</span>
@@ -227,7 +228,7 @@ const MovieDetail = () => {
 
               <Separator className="my-6" />
 
-              {/* Recommended Movies */}
+              {/* Recommended Movies
               {recommendedMovies.length > 0 && (
                 <div className="mt-6">
                   <h2 className="text-xl font-semibold mb-4">
@@ -255,7 +256,7 @@ const MovieDetail = () => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className="mt-6 flex justify-end">
                 <Button variant="outline" onClick={handleClose}>
