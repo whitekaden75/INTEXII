@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import RegisterForm from '@/components/auth/RegisterForm';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthorizeView from '@/components/auth/AuthorizeView';
 
 const Register = () => {
   const { isAuthenticated } = useAuth();
@@ -17,13 +18,16 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <Layout>
-      <div className="container py-16 md:py-24">
-        <div className="max-w-md mx-auto">
-          <RegisterForm />
+    <AuthorizeView>
+      <Layout>
+        <div className="container py-16 md:py-24">
+          <div className="max-w-md mx-auto">
+            <RegisterForm />
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>    
+    </AuthorizeView>
+
   );
 };
 

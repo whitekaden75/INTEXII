@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import LoginForm from '@/components/auth/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthorizeView from '@/components/auth/AuthorizeView';
 
 const Login = () => {
   const { isAuthenticated } = useAuth();
@@ -17,13 +18,15 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <Layout>
-      <div className="container py-16 md:py-24">
-        <div className="max-w-md mx-auto">
-          <LoginForm />
+    <AuthorizeView>
+      <Layout>
+        <div className="container py-16 md:py-24">
+          <div className="max-w-md mx-auto">
+            <LoginForm />
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </AuthorizeView>
   );
 };
 

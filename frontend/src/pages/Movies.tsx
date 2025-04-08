@@ -13,7 +13,7 @@ const Movies = () => {
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
-  const { isAuthenticated } = useAuth();
+
   const { movies, filteredMovies, loading, filters, setFilters } = useMovies();
   const navigate = useNavigate();
 
@@ -67,10 +67,6 @@ const Movies = () => {
 
   // Get all category movies
   const categories = getMoviesByCategory();
-
-  if (!isAuthenticated) {
-    return null; // Don't render anything while redirecting
-  }
 
   useEffect(() => {
     if (!inView) return;
