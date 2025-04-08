@@ -1,25 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kadenwhite/Documents/IS413/INTEXApr/backend/backend.csproj": {}
+    "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj": {}
   },
   "projects": {
-    "/Users/kadenwhite/Documents/IS413/INTEXApr/backend/backend.csproj": {
+    "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kadenwhite/Documents/IS413/INTEXApr/backend/backend.csproj",
+        "projectUniqueName": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
         "projectName": "backend",
-        "projectPath": "/Users/kadenwhite/Documents/IS413/INTEXApr/backend/backend.csproj",
-        "packagesPath": "/Users/kadenwhite/.nuget/packages/",
-        "outputPath": "/Users/kadenwhite/Documents/IS413/INTEXApr/backend/obj/",
+        "projectPath": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
+        "packagesPath": "/Users/brook/.nuget/packages/",
+        "outputPath": "/Users/brook/Desktop/Intex/INTEXII/backend/obj/",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/kadenwhite/.nuget/NuGet/NuGet.Config"
+          "/Users/brook/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -88,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

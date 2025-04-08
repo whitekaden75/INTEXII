@@ -5,6 +5,9 @@ interface FetchMovieResponse {
 }
 
 const API_BASE_URL = "http://localhost:5000/api/Movies";
+const RECOMMENDATION_API_URL = "http://localhost:5000/api/MovieRecommendations";
+const USER_API_URL = "http://localhost:5000/api/UserRecommendations";
+
 
 // Function to fetch all movies
 export const getAllMovies = async (): Promise<Movie[]> => {
@@ -21,6 +24,7 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     throw error;
   }
 };
+
 // Function to fetch a single movie by ID
 export const getMovieById = async (id: string): Promise<Movie> => {
   try {
@@ -87,5 +91,43 @@ export const deleteMovie = async (id: string): Promise<void> => {
   } catch (error) {
     console.error('Error deleting movie:', error);
     throw error;
+  }
+};
+
+// Function to fetch movie recommendations by showId
+export const getMovieRecommendationsAPI = async (showId: string): Promise<string[]> => {
+  try {
+    const response = await fetch(`${RECOMMENDATION_API_URL}/${showId}`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        return []; // No recommendations found
+      }
+      throw new Error('Failed to fetch recommendations');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    return [];
+  }
+};
+
+// Function to fetch user recommendations
+export const getUserRecommendations = async (userId: number): Promise<string[]> => {
+  try {
+    console.log(`Fetching user recommendations for user ${userId}`);
+    const response = await fetch(`${USER_API_URL}/${userId}`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('No recommendations found for this user');
+        return []; // No recommendations found
+      }
+      throw new Error('Failed to fetch user recommendations');
+    }
+    const data = await response.json();
+    console.log('Received user recommendations:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching user recommendations:', error);
+    return [];
   }
 };

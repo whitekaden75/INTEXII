@@ -16,7 +16,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
   return (
     <Link
       to={`/movies/${movie.showId}`}
-      className={cn("movie-card block", className)}>
+      className={cn("movie-card block", className)}
+    >
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
         <img
           src={defaultPosterUrl}
