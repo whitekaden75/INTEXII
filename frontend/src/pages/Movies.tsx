@@ -6,6 +6,7 @@ import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useInView } from "@/hooks/useInView";
+import FeaturedMovies from "@/components/movies/FeaturedMovies";
 import AuthorizeView from "@/components/auth/AuthorizeView";
 
 const Movies = () => {
@@ -13,23 +14,22 @@ const Movies = () => {
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
-
-  const { movies, filteredMovies, loading, filters, setFilters } = useMovies();
+  const { movies, filteredMovies, loading, filters, setFilters, featuredMovies } = useMovies();
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
-  //  // Auto-rotate featured movies every 10 seconds
-  //   useEffect(() => {
-  //   if (featuredMovies.length <= 1) return;
+  // Auto-rotate featured movies every 10 seconds
+  useEffect(() => {
+    if (featuredMovies.length <= 1) return;
 
-  //   const intervalId = setInterval(() => {
-  //     setCurrentFeaturedIndex((prevIndex) =>
-  //       prevIndex === featuredMovies.length - 1 ? 0 : prevIndex + 1
-  //     );
-  //   }, 10000);
+    const intervalId = setInterval(() => {
+      setCurrentFeaturedIndex((prevIndex) =>
+        prevIndex === featuredMovies.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 10000);
 
-  //   return () => clearInterval(intervalId);
-  // }, [featuredMovies.length]);
+    return () => clearInterval(intervalId);
+  }, [featuredMovies.length]);
 
   // Extract all unique genres from movies
   const allGenres = movies
@@ -102,6 +102,7 @@ const Movies = () => {
       setVisibleGenreCount((prev) => prev + 2);
     }
   }, [inView, filters, filteredMovies.length, displayCount]);
+  
   useEffect(() => {
     setDisplayCount(12);
   }, [filters.genre, filters.searchQuery]);
@@ -109,6 +110,18 @@ const Movies = () => {
   return (
     <AuthorizeView>
       <Layout onSearch={handleSearch}>
+        {/* Auto-Rotating Featured Movie */}
+        {featuredMovies.length > 0 && !filters.searchQuery && !filters.genre && (
+          <div className="bg-cineniche-dark-blue py-6">
+            <div className="container">
+              <FeaturedMovies 
+                title="Recommended For You" 
+                movies={featuredMovies}
+              />
+            </div>
+          </div>
+        )}
+        
         <div className="container py-8 min-h-[80vh]">
           {/* Genre Filter */}
           <GenreFilter
@@ -127,7 +140,7 @@ const Movies = () => {
                 Found {filteredMovies.length}{" "}
                 {filteredMovies.length === 1 ? "movie" : "movies"}
               </p>
-              <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
+              <MovieGrid movies={filteredMovies.slice(0, displayCount)} loading={loading} />
               <div
                 ref={ref}
                 className="h-10 w-full flex justify-center items-center">
@@ -148,7 +161,7 @@ const Movies = () => {
                 Found {filteredMovies.length}{" "}
                 {filteredMovies.length === 1 ? "movie" : "movies"}
               </p>
-              <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
+              <MovieGrid movies={filteredMovies.slice(0, displayCount)} loading={loading} />
               <div
                 ref={ref}
                 className="h-10 w-full flex justify-center items-center">
@@ -201,7 +214,6 @@ const Movies = () => {
         </div>
       </Layout>
     </AuthorizeView>
-    
   );
 };
 

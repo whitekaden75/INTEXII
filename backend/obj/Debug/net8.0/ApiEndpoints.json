@@ -1,5 +1,31 @@
 [
   {
+    "ContainingType": "MovieRecommendationsController",
+    "Method": "GetRecommendations",
+    "RelativePath": "api/MovieRecommendations/{showId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "showId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MoviesController",
     "Method": "GetMovies",
     "RelativePath": "api/Movies",
@@ -107,6 +133,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "UserRecommendationsController",
+    "Method": "GetUserRecommendations",
+    "RelativePath": "api/UserRecommendations/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "RootkitAuth.API.Controllers.AuthController",
