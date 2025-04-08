@@ -2857,24 +2857,31 @@
     ]
   },
   "packageFolders": {
-    "/Users/brook/.nuget/packages/": {}
+    "C:\\Users\\dalle\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
+      "projectUniqueName": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "/Users/brook/Desktop/Intex/INTEXII/backend/backend.csproj",
-      "packagesPath": "/Users/brook/.nuget/packages/",
-      "outputPath": "/Users/brook/Desktop/Intex/INTEXII/backend/obj/",
+      "projectPath": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\dalle\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/Users/brook/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\dalle\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2943,7 +2950,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
