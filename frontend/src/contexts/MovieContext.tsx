@@ -114,13 +114,20 @@ useEffect(() => {
     }
   
     if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase(); // Ensure it's never null or undefined
-      result = result.filter(
-        (movie) =>
-          movie.title.toLowerCase().includes(query) ||
-          movie.director.toLowerCase().includes(query) ||
-          movie.cast.toLowerCase().includes(query)
-      );
+
+      const query = filters.searchQuery.toLowerCase();
+
+      result = result.filter((movie) => {
+        const title = movie.title?.toLowerCase() || "";
+        const director = movie.director?.toLowerCase() || "";
+        const cast = movie.cast?.toLowerCase() || "";
+
+        return (
+          title.includes(query) ||
+          director.includes(query) ||
+          cast.includes(query)
+        );
+      });
     }
   
     setFilteredMovies(result);
@@ -218,9 +225,8 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
         updateMovie,
         deleteMovie,
         getMovieById,
-        getMovieRecommendations
-      }}
-    >
+
+      }}>
       {children}
     </MovieContext.Provider>
   );

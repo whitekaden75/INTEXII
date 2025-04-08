@@ -10,7 +10,8 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
   // Temporary default poster URL until you have real poster URLs
-  const defaultPosterUrl = `https://picsum.photos/seed/${movie.showId}/300/450`;
+  const safeTitle = movie.title.replace(/[:'&]/g, "");
+  const defaultPosterUrl = `/Movie_Posters/${safeTitle}.jpg`;
 
   return (
     <Link
@@ -18,11 +19,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
       className={cn("movie-card block", className)}
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
-        {/* <img
-          src={movie.posterUrl}
+        <img
+          src={defaultPosterUrl}
           alt={movie.title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        /> */}
+        />
         <div className="movie-card-content">
           <h3 className="font-medium text-base md:text-lg mb-1 text-balance">
             {movie.title}
