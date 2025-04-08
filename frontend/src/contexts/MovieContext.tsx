@@ -225,6 +225,7 @@ const getMovieRecommendations = async (id: string): Promise<Movie[]> => {
         updateMovie,
         deleteMovie,
         getMovieById,
+        getMovieRecommendations,
 
       }}>
       {children}
