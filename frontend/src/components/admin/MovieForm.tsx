@@ -136,13 +136,13 @@ const MovieForm: React.FC<MovieFormProps> = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="genre">Genres</Label>
+            <Label htmlFor="genre">Genre</Label>
             <Input
               id="genre"
               name="genre"
               value={formData.genre}
               onChange={handleInputChange}
-              placeholder="Comma-separated genres (e.g., Action, Comedy)"
+              placeholder="Genre (e.g., Action, Comedy)"
               required
             />
           </div>

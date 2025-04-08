@@ -75,7 +75,14 @@ const Admin = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setFilters({ ...filters, searchQuery });
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setFilters({ ...filters, searchQuery: value });
+    setCurrentPage(1);
   };
   
   // Calculate pagination
@@ -250,23 +257,24 @@ const Admin = () => {
           <TabsContent value="movies" className="space-y-6">
             {/* Search and filters row */}
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-              <form onSubmit={handleSearch} className="relative max-w-md">
-                <Input
-                  type="search"
-                  placeholder="Search movies..."
-                  className="pl-10 pr-4"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-                <Button 
-                  type="submit" 
-                  className="absolute right-1 top-1 h-8 px-3"
-                  variant="ghost"
-                >
-                  Search
-                </Button>
-              </form>
+            <form onSubmit={handleSearch} className="relative max-w-md">
+              <Input
+                type="search"
+                placeholder="Search movies..."
+                className="pl-10 pr-4"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                // Or use handleSearchInputChange for instant search
+              />
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Button 
+                type="submit" 
+                className="absolute right-1 top-1 h-8 px-3"
+                variant="ghost"
+              >
+                Search
+              </Button>
+            </form>
               
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Show:</span>
