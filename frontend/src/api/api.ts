@@ -1,49 +1,27 @@
-import axios from "axios";
+// src/api/api.ts
+import axios from 'axios';
 
+// Create an instance with the correct base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
-  withCredentials: true,
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://your-azure-backend-url.azurewebsites.net',
+  withCredentials: true // Required for cookies if you're using cookie auth
 });
 
-// Function to check if we're currently redirecting
-const isRedirecting = () => {
-  return sessionStorage.getItem("isAuthRedirecting") === "true";
-};
-
-// Function to set redirecting state
-const setRedirecting = (value: boolean) => {
-  if (value) {
-    sessionStorage.setItem("isAuthRedirecting", "true");
-  } else {
-    sessionStorage.removeItem("isAuthRedirecting");
-  }
-};
+// Add debugging
+api.interceptors.request.use(config => {
+  console.log(`[API Request] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.data);
+  return config;
+});
 
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Check if we should skip the redirect for this request
-    const skipRedirect = error.config?.headers?.["X-Skip-Auth-Redirect"];
-
-    // Only redirect if we get a 401, we're not already redirecting, and we haven't been asked to skip
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !isRedirecting() &&
-      !skipRedirect
-    ) {
-      console.log("API interceptor: 401 detected, redirecting to login page");
-      setRedirecting(true);
-      window.location.href = "/login";
-    }
+  response => {
+    console.log(`[API Response] ${response.status} from ${response.config.url}`, response.data);
+    return response;
+  },
+  error => {
+    console.error(`[API Error] ${error.response?.status || 'Network Error'} from ${error.config?.url}:`, error);
     return Promise.reject(error);
   }
 );
-
-// Clear the redirecting flag when the page loads
-// This ensures a fresh state when the app initializes
-window.addEventListener("load", () => {
-  setRedirecting(false);
-});
 
 export default api;

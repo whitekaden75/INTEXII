@@ -19,16 +19,16 @@
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\services\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\services\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Services\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\Services\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,7 +54,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "backend\\Controllers\\AuthController.cs",
@@ -66,7 +66,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "launchSettings.json",
               "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "backend\\Properties\\launchSettings.json",
@@ -78,7 +78,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Services\\appsettings.json",
               "RelativeDocumentMoniker": "backend\\Services\\appsettings.json",
@@ -120,7 +120,7 @@
               "RelativeDocumentMoniker": "backend\\Controllers\\MovieController.cs",
               "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\MovieController.cs",
               "RelativeToolTip": "backend\\Controllers\\MovieController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T16:31:53.113Z",
               "EditorCaption": ""

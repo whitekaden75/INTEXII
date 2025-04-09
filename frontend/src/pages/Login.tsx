@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import AuthorizeView from "@/components/auth/AuthorizeView";
 import { Cookie } from "lucide-react";
 import CookieConsent from "@/components/auth/CookieConsent";
+import ApiTester from '@/components/debug/ApiTester';
 
 const Login = () => {
   const { isAuthenticated } = useAuth();
@@ -24,16 +25,30 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  return (
-    <Layout>
-      <div className="container py-16 md:py-24">
-        <div className="max-w-md mx-auto">
-          <LoginForm />
-        </div>
-      </div>
-      <CookieConsent />
-    </Layout>
-  );
-};
+// original before debugging
+//   return (
+//     <Layout>
+//       <div className="container py-16 md:py-24">
+//         <div className="max-w-md mx-auto">
+//           <LoginForm />
+//         </div>
+//       </div>
+//       <CookieConsent />
+//     </Layout>
+//   );
+// };
 
+return (
+  <Layout>
+    <div className="container py-16 md:py-24">
+      {/* Add this for debugging */}
+      {import.meta.env.DEV && <ApiTester />}
+      <div className="max-w-md mx-auto">
+        <LoginForm />
+      </div>
+    </div>
+    <CookieConsent />
+  </Layout>
+);
+}
 export default Login;

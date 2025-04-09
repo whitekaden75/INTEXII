@@ -162,5 +162,14 @@ app.MapGet("/pingauth", (ClaimsPrincipal user, ILogger<Program> logger) =>
     });
 });
 
+// Add this near the end of your Program.cs, before app.Run()
+app.MapGet("/health", () => 
+{
+    return Results.Ok(new 
+    { 
+        status = "healthy", 
+        timestamp = DateTime.UtcNow.ToString() 
+    });
+});
 
 app.Run();

@@ -8,12 +8,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import GoogleLoginButton from "./GoogleLoginButton";
-import api from "@/api/api";
+import api from "@/api/api"; // Make sure this import exists
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -47,27 +46,42 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
+  
     if (!email || !password) {
       setError("Please fill in all fields.");
       setLoading(false);
       return;
     }
-
+  
     try {
+      console.log("Attempting login with email:", email);
+      
+      // Directly use the AuthContext login function (don't do an API call first)
       await login(email, password);
+      
+      console.log("Login successful, redirecting to movies page");
       sessionStorage.removeItem("isAuthRedirecting");
       navigate("/movies");
     } catch (error: any) {
       console.error("Login failed:", error);
-      setError(error.message || "Error logging in.");
+      
+      // Enhanced error handling
+      setError(error.message || "Error logging in. Please check your credentials.");
+      
+      // Log additional error details for debugging
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // The rest of your component remains the same
   return (
     <Card className="w-full max-w-md mx-auto">
+      {/* Rest of your JSX content... */}
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
         <CardDescription>
@@ -118,8 +132,8 @@ const LoginForm: React.FC = () => {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign In
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
 
           <Button
@@ -127,6 +141,7 @@ const LoginForm: React.FC = () => {
             variant="outline"
             className="w-full"
             onClick={handleRegisterClick}
+            disabled={loading}
           >
             Register
           </Button>
@@ -136,6 +151,7 @@ const LoginForm: React.FC = () => {
           <Button
             type="button"
             className="w-full bg-google text-white hover:bg-google-dark"
+            disabled={loading}
           >
             <i className="fa-brands fa-google mr-2"></i> Sign in with Google
           </Button>
@@ -143,13 +159,18 @@ const LoginForm: React.FC = () => {
           <Button
             type="button"
             className="w-full bg-facebook text-white hover:bg-facebook-dark"
+            disabled={loading}
           >
             <i className="fa-brands fa-facebook-f mr-2"></i> Sign in with
             Facebook
           </Button>
         </form>
 
-        {error && <p className="text-destructive text-sm mt-2">{error}</p>}
+        {error && (
+          <p className="text-destructive text-sm mt-2 p-2 bg-destructive/10 rounded">
+            {error}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

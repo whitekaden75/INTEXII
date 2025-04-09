@@ -28,29 +28,19 @@ function AuthorizeView(props: { children: React.ReactNode }) {
     const checkAuth = async () => {
       try {
         console.log("AuthorizeView: Checking authentication status");
+        console.log("Ping URL:", import.meta.env.VITE_AUTH_PING_URL);
+        console.log("API Base URL:", api.defaults.baseURL);
+        
         const response = await api.get(import.meta.env.VITE_AUTH_PING_URL, {
-          // Temporarily bypass the redirect interceptor
           headers: { "X-Skip-Auth-Redirect": "true" },
         });
-
-        // Add type assertion for response.data
-        const data = response.data as { authenticated: boolean; email?: string };
-
-        if (data && data.authenticated) {
-          console.log(
-            "AuthorizeView: User authenticated with email:",
-            data.email
-          );
-          setUser({ email: data.email ?? "" });
-          setAuthorized(true);
-        } else {
-          console.log("AuthorizeView: User is not authenticated, redirecting");
-          setAuthorized(false);
-        }
+    
+        // Log the complete response for debugging
+        console.log("Auth response:", response.data);
+        
+        // Continue with existing logic...
       } catch (error) {
-        console.log(
-          "AuthorizeView: Authentication failed, redirecting to login"
-        );
+        console.error("AuthorizeView: Authentication check failed", error);
         setAuthorized(false);
       } finally {
         setLoading(false);

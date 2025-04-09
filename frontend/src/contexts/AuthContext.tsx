@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/api";
-import axios from "axios";
 import { toast } from "sonner";
 
 // User and context types
@@ -87,6 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [csrfTokenState, setCsrfTokenState] = useState<string | null>(null);
   const [tokenExpiry, setTokenExpiry] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timeout | null>(null);
+  let accessToken: string | null = null;
+  let csrfTokenMemory: string | null = null;
+
 
   useEffect(() => {
     loadTokens();
@@ -97,39 +99,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  interface LoginResponse {
+    token?: string;
+    accessToken?: string;
+  }
+  
   const login = async (email: string, password: string) => {
     try {
+      console.log("AuthContext: Attempting login with", email);
+  
+      // Using ASP.NET Identity's login endpoint
       const response = await api.post("/login", { email, password });
-      const { token } = response.data as { token: string };
-      accessToken = token;
+  
+      // Cast response.data to the LoginResponse type
+      const { token, accessToken: receivedToken } = response.data as LoginResponse;
+  
+      // Handle token or accessToken
+      const tokenToUse = receivedToken || token;
+  
+      if (!tokenToUse) {
+        console.error("No token received in login response");
+        throw new Error("Authentication failed - no token received");
+      }
+  
+      accessToken = typeof tokenToUse === 'string' ? tokenToUse : JSON.stringify(tokenToUse);
       csrfTokenMemory = generateCsrfToken();
       saveTokens();
       setCsrfTokenState(csrfTokenMemory);
-      const userData = parseJwt(token);
-      setUser(userData);
-
-      // Decode expiry and set proactive refresh
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const expiry = payload.exp * 1000;
-      setTokenExpiry(expiry);
-
-      if (refreshTimer) clearTimeout(refreshTimer);
-      const refreshTime = expiry - Date.now() - 60 * 1000;
-      if (refreshTime > 0) {
-        const timer = setTimeout(refreshToken, refreshTime);
-        setRefreshTimer(timer);
+  
+      try {
+        const userData = parseJwt(accessToken);
+        setUser(userData);
+  
+        // Decode expiry and set proactive refresh
+        const payload = JSON.parse(atob(accessToken.split(".")[1]));
+        const expiry = payload.exp * 1000;
+        setTokenExpiry(expiry);
+  
+        if (refreshTimer) clearTimeout(refreshTimer);
+        const refreshTime = expiry - Date.now() - 60 * 1000;
+        if (refreshTime > 0) {
+          const timer = setTimeout(refreshToken, refreshTime);
+          setRefreshTimer(timer);
+        }
+      } catch (parseError) {
+        console.error("Failed to parse JWT token:", parseError);
+        throw new Error("Authentication succeeded but identity verification failed");
       }
-
+  
       toast.success("Login successful");
     } catch (error: any) {
-      toast.error("Login failed");
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.title || error.message || "Login failed");
       throw error;
     }
   };
+  
+  
 
   const register = async (email: string, password: string) => {
     try {
-      // The backend only expects email and password
       const response = await api.post("/Auth/register", { email, password });
       const { token } = response.data as { token: string };
       accessToken = token;
