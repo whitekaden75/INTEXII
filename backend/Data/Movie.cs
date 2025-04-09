@@ -35,6 +35,6 @@ public class Movie
     [Column("description")]
     public string? Description { get; set; }
 
-   [Column("genre")]
-       public string? Genre { get; set; }
+    [Column("genre")]
+    public string? Genre { get; set; }
 }
