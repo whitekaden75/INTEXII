@@ -11,8 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { postData } from "../../apiService"; // Adjust path if needed
 
 const RegisterForm: React.FC = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,43 +29,53 @@ const RegisterForm: React.FC = () => {
     if (name === 'confirmPassword') setConfirmPassword(value);
     };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      // validate email and passwords
+      
+      // Validate email and passwords
       if (!email || !password || !confirmPassword) {
-          setError('Please fill in all fields.');
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          setError('Please enter a valid email address.');
-      } else if (password !== confirmPassword) {
-          setError('Passwords do not match.');
-      } else {
-          // clear error message
-          setError('');
-          // post data to the /register api
-          fetch('https://intexii-team2-12-b9b2h9ead7cwd9ax.eastus-01.azurewebsites.net/auth/register', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              email: email,
-              password: password,
-          }),
-          })
-          //.then((response) => response.json())
-          .then((data) => {
-              // handle success or error from the server
-              console.log(data);
-              if (data.ok) setError('Successful registration. Please log in.');
-              else setError('Error registering.');
-          })
-          .catch((error) => {
-              // handle network error
-              console.error(error);
-              setError('Error registering.');
-          });
+        setError('Please fill in all fields.');
+        return;
       }
+    
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+    
+      if (password !== confirmPassword) {
+        setError('Passwords do not match.');
+        return;
+      }
+    
+      // Clear the error message
+      setError('');
+    
+      // Prepare the data to send in the request
+      const data = {
+        email: email,
+        password: password,
       };
+    
+      try {
+        // Call the API to register the user
+        const response = await postData('/auth/register', data);
+    
+        if (response.status === 200) {
+          // Successful registration
+          console.log("[Registration Success] User successfully registered.");
+          setError('Successful registration. Please log in.');
+          navigate('/login'); // Optionally navigate to login page after successful registration
+        } else {
+          // If not successful, show error
+          setError('Error registering.');
+        }
+      } catch (error) {
+        // Handle network error
+        console.error("[Network Error] Error registering:", error);
+        setError('Error registering.');
+      }
+    };
 
   // fix the commit
   // const handleSubmit = async (e: React.FormEvent) => {

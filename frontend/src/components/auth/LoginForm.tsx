@@ -12,8 +12,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import GoogleLoginButton from "./GoogleLoginButton";
+import { postData } from "../../apiService";  // Adjust path if needed
+
 
 const LoginForm: React.FC = () => {
+
   console.log("[Component Render] LoginForm component is rendering.");
 
   const [email, setEmail] = useState("");
@@ -43,66 +46,40 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("[Form Submit] Login form submitted.");
-
     setError(""); // Clear any previous errors
-    console.log("[State Update] Error state cleared.");
-
+  
     // Validate inputs
     if (!email || !password) {
-      console.log("[Validation Error] Missing email or password.");
       setError("Please fill in all fields.");
       return;
     }
-    console.log("[Validation Success] Email and password provided.");
-
+  
     // Determine login URL based on rememberMe flag
-    const loginUrl = rememberMe
-      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useCookies=true'
-      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useSessionCookies=true';
-    console.log(`[Login Request] URL: ${loginUrl}`);
-    console.log(`[Login Request] Attempting login with email: ${email}`);
-
+    const loginEndpoint = rememberMe
+      ? `/auth/login?useCookies=true`
+      : `/auth/login?useSessionCookies=true`;
+  
     try {
       setLoading(true);
-      console.log("[State Update] Loading state set to true.");
-
-      const response = await fetch(loginUrl, {
-        method: "POST",
-        credentials: "include", // Ensures cookies are sent & received
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      console.log(`[Login Response] HTTP status: ${response.status}`);
-
-      // Only parse JSON if there is content
-      let data = null;
-      const contentLength = response.headers.get("content-length");
-      console.log(`[Login Response] Content-Length header: ${contentLength}`);
-      if (contentLength && parseInt(contentLength, 10) > 0) {
-        data = await response.json();
-        console.log(`[Login Response] Parsed JSON data:`, data);
+  
+      // Call the `postData` function from apiService.js
+      const response = await postData(loginEndpoint, { email, password });
+  
+      if (response.status === 200) {
+        // If status is 200, login is successful
+        console.log("[Login Success] Login successful. Navigating to /movies...");
+        navigate("/movies");
       } else {
-        console.log("[Login Response] No JSON content to parse.");
+        setError("Invalid login details.");
       }
-
-      if (!response.ok) {
-        console.error(`[Login Error] Response error: ${data?.message || "Invalid email or password."}`);
-        throw new Error(data?.message || "Invalid email or password.");
-      }
-
-      console.log("[Login Success] Login successful. Navigating to /movies...");
-      navigate("/movies");
     } catch (error: any) {
-      console.error("[Fetch Error] Login attempt failed:", error);
       setError(error.message || "Error logging in.");
-      console.log("[State Update] Error state updated with error message.");
     } finally {
       setLoading(false);
-      console.log("[State Update] Loading state set to false.");
     }
   };
-
+  
+  
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
