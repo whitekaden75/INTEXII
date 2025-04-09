@@ -17,59 +17,48 @@ public class AuthController : ControllerBase
         _userManager = userManager;
     }
 
-
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest model)
     {
-        Console.WriteLine("Login attempt started.");
-        Console.WriteLine($"Email provided: {model.Email}");
-
+        Console.WriteLine($"[AuthController:Login] Received login request for email: {model.Email}");
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null)
         {
-            Console.WriteLine("User not found.");
+            Console.WriteLine("[AuthController:Login] User not found.");
             return BadRequest(new { message = "User not found." });
         }
 
-        Console.WriteLine("User found. Attempting password sign-in.");
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: true, lockoutOnFailure: false);
 
         if (!result.Succeeded)
         {
-            Console.WriteLine("Password sign-in failed.");
+            Console.WriteLine("[AuthController:Login] Invalid password.");
             return BadRequest(new { message = "Invalid password." });
         }
 
-        Console.WriteLine("Password sign-in succeeded. Login successful.");
+        Console.WriteLine("[AuthController:Login] Login successful.");
         return Ok(new { message = "Login successful." });
     }
-
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest model)
     {
-        Console.WriteLine("Registration attempt started.");
-        Console.WriteLine($"Email provided: {model.Email}");
-
+        Console.WriteLine($"[AuthController:Register] Received registration for email: {model.Email}");
         var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-        Console.WriteLine("Creating user...");
-
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
         {
-            Console.WriteLine("User creation failed. Errors:");
-            foreach (var error in result.Errors)
+            Console.WriteLine("[AuthController:Register] Registration errors:");
+            foreach (var err in result.Errors)
             {
-                Console.WriteLine($"- {error.Description}");
+                Console.WriteLine($"   - {err.Description}");
             }
             return BadRequest(result.Errors);
         }
 
-        Console.WriteLine("User created successfully. Signing in...");
         await _signInManager.SignInAsync(user, isPersistent: true);
-
-        Console.WriteLine("Registration and sign-in successful.");
+        Console.WriteLine("[AuthController:Register] Registration successful.");
         return Ok(new { message = "Registration successful." });
     }
 
