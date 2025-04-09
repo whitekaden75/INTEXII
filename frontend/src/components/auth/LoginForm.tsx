@@ -80,8 +80,8 @@ const LoginForm: React.FC = () => {
         throw new Error(data?.message || 'Invalid email or password.');
       }
       
-      console.log(`[Login Success] Login successful. Navigating to /competition...`);
-      navigate('/competition');
+      console.log(`[Login Success] Login successful. Navigating to /movies...`);
+      navigate('/movies');
     } catch (error: any) {
       console.error(`[Fetch Error] Login attempt failed:`, error);
       setError(error.message || 'Error logging in.');
