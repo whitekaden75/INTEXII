@@ -50,7 +50,8 @@
               "RelativeToolTip": "backend\\Controllers\\UserController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T23:44:49.021Z"
+              "WhenOpened": "2025-04-08T23:44:49.021Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -60,9 +61,10 @@
               "RelativeDocumentMoniker": "backend\\Controllers\\AuthController.cs",
               "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Controllers\\AuthController.cs",
               "RelativeToolTip": "backend\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAABJAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBJwBQAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T20:23:09.714Z"
+              "WhenOpened": "2025-04-08T20:23:09.714Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -74,7 +76,8 @@
               "RelativeToolTip": "backend\\Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-08T17:37:45.111Z"
+              "WhenOpened": "2025-04-08T17:37:45.111Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -86,7 +89,8 @@
               "RelativeToolTip": "backend\\Services\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-08T17:35:37.352Z"
+              "WhenOpened": "2025-04-08T17:35:37.352Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -98,7 +102,8 @@
               "RelativeToolTip": "backend\\Program.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAUwBgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T17:21:23.444Z"
+              "WhenOpened": "2025-04-08T17:21:23.444Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -110,7 +115,8 @@
               "RelativeToolTip": "backend\\Data\\MovieDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T16:32:39.115Z"
+              "WhenOpened": "2025-04-08T16:32:39.115Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
