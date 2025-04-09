@@ -17,6 +17,14 @@ public class AuthController : ControllerBase
         _userManager = userManager;
     }
 
+    [HttpGet("login")]
+    public IActionResult GetLoginPage()
+    {
+        Console.WriteLine("GET request received for login page.");
+        return Ok(new { message = "Login page endpoint reached." });
+    }
+
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest model)
     {
@@ -41,6 +49,13 @@ public class AuthController : ControllerBase
 
         Console.WriteLine("Password sign-in succeeded. Login successful.");
         return Ok(new { message = "Login successful." });
+    }
+
+    [HttpGet("register")]
+    public IActionResult GetRegisterPage()
+    {
+        Console.WriteLine("GET request received for login page.");
+        return Ok(new { message = "Login page endpoint reached." });
     }
 
 
