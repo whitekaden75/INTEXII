@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Film, Search, Menu, X, User, LogOut } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,13 +15,14 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import { useMovies } from "@/contexts/MovieContext";
+import Logout from '../../contexts/LogoutContext';
+import AuthorizeView, { AuthorizedUser } from "../auth/AuthorizeView";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
-  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,10 +32,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     setFilters({ ...filters, searchQuery: query });
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate("/");
+  // };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -55,13 +55,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Movies
               </Link>
-              {isAdmin && (
+             
                 <Link
                   to="/admin"
                   className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                   Admin
                 </Link>
-              )}
+          
               <Link
                 to="/privacy"
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
@@ -96,15 +96,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   <User className="mr-2 h-4 w-4" />
                   <span>{user.username}</span>
                 </DropdownMenuItem>
-                {isAdmin && (
+              
                   <DropdownMenuItem onClick={() => navigate("/admin")}>
                     Admin Dashboard
                   </DropdownMenuItem>
-                )}
+                
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                <DropdownMenuItem>
+                  <Logout>
+                    <span>Log out</span>
+                  </Logout>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -164,14 +165,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   onClick={() => setIsMenuOpen(false)}>
                   Movies
                 </Link>
-                {isAdmin && (
+               
                   <Link
                     to="/admin"
                     className="block p-2 text-sm hover:bg-secondary rounded-md"
                     onClick={() => setIsMenuOpen(false)}>
                     Admin Dashboard
                   </Link>
-                )}
+             
                 <Link
                   to="/privacy"
                   className="block p-2 text-sm hover:bg-secondary rounded-md"
@@ -181,12 +182,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <Button
                   variant="ghost"
                   className="w-full justify-start p-2 text-sm hover:bg-secondary rounded-md"
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                  >
+                  <Logout> 
+                    Log out
+                  </Logout>
                 </Button>
               </>
             ) : (

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,28 +17,95 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      await login(email, password);
-      navigate("/movies");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("Failed to log in");
-      }
-    } finally {
-      setLoading(false);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, type, checked, value } = e.target;
+    if (type === 'checkbox') {
+      console.log(`[Input Change] Checkbox "${name}" changed to: ${checked}`);
+      setRememberMe(checked);
+    } else if (name === 'email') {
+      console.log(`[Input Change] Email input changed to: ${value}`);
+      setEmail(value);
+    } else if (name === 'password') {
+      console.log(`[Input Change] Password input changed.`);
+      setPassword(value);
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(`[Form Submit] Login form submitted.`);
+    setError(''); // clear any previous errors
+
+    // Validate inputs
+    if (!email || !password) {
+      console.log(`[Validation Error] Missing email or password.`);
+      setError('Please fill in all fields.');
+      return;
+    }
+    
+    // Determine login URL based on rememberme flag
+    const loginUrl = rememberMe
+      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useCookies=true'
+      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useSessionCookies=true';
+    console.log(`[Login Request] URL: ${loginUrl}`);
+    console.log(`[Login Request] Attempting login with email: ${email}`);
+
+    try {
+      const response = await fetch(loginUrl, {
+        method: 'POST',
+        credentials: 'include', // ensures cookies are sent & received
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      console.log(`[Login Response] HTTP status: ${response.status}`);
+      console.log(`[Login Response] Full response:`, response);
+
+      // Only parse JSON if there is content
+      let data = null;
+      const contentLength = response.headers.get('content-length');
+      console.log(`[Login Response] Content-Length header: ${contentLength}`);
+      if (contentLength && parseInt(contentLength, 10) > 0) {
+        data = await response.json();
+        console.log(`[Login Response] Parsed JSON data:`, data);
+      } else {
+        console.log(`[Login Response] No JSON content to parse.`);
+      }
+      
+      if (!response.ok) {
+        console.error(`[Login Error] Response error: ${data?.message || 'Invalid email or password.'}`);
+        throw new Error(data?.message || 'Invalid email or password.');
+      }
+      
+      console.log(`[Login Success] Login successful. Navigating to /competition...`);
+      navigate('/competition');
+    } catch (error: any) {
+      console.error(`[Fetch Error] Login attempt failed:`, error);
+      setError(error.message || 'Error logging in.');
+    }
+  };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
+  //   setLoading(true);
+
+  //   try {
+  //     await login(email, password);
+  //     navigate("/movies");
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       setError(error.message);
+  //     } else {
+  //       setError("Failed to log in");
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -57,7 +123,7 @@ const LoginForm: React.FC = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               placeholder="yourname@example.com"
               required
               autoComplete="email"
@@ -77,12 +143,27 @@ const LoginForm: React.FC = () => {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               placeholder="••••••••"
               required
               autoComplete="current-password"
             />
           </div>
+
+          <div className="form-check mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rememberme"
+                  name="rememberme"
+                  checked={rememberMe}
+                  onChange={handleChange}
+                />
+                <label className="form-check-label" htmlFor="rememberme">
+                  Remember password
+                </label>
+            </div>
 
           {error && <div className="text-destructive text-sm">{error}</div>}
 
