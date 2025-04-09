@@ -59,7 +59,7 @@ const MovieDetail = () => {
   // Handle dialog close
   const handleClose = () => {
     setDialogOpen(false);
-    navigate(-1);
+    navigate("/movies");
   };
 
   // No longer redirect unauthenticated users, instead show a login prompt
