@@ -65,6 +65,7 @@ const RegisterForm: React.FC = () => {
       }
       };
 
+  // fix the commit
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
   //   setError("");
@@ -133,6 +134,7 @@ const RegisterForm: React.FC = () => {
             <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input
               id="confirm-password"
+              name="confirm-Password"
               type="password"
               value={confirmPassword}
               onChange={handleChange}
