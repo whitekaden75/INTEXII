@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("[controller]")]
+[Route("auth/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly SignInManager<IdentityUser> _signInManager;
@@ -15,13 +15,6 @@ public class AuthController : ControllerBase
     {
         _signInManager = signInManager;
         _userManager = userManager;
-    }
-
-    [HttpGet("login")]
-    public IActionResult GetLoginPage()
-    {
-        Console.WriteLine("GET request received for login page.");
-        return Ok(new { message = "Login page endpoint reached." });
     }
 
 
@@ -49,13 +42,6 @@ public class AuthController : ControllerBase
 
         Console.WriteLine("Password sign-in succeeded. Login successful.");
         return Ok(new { message = "Login successful." });
-    }
-
-    [HttpGet("register")]
-    public IActionResult GetRegisterPage()
-    {
-        Console.WriteLine("GET request received for login page.");
-        return Ok(new { message = "Login page endpoint reached." });
     }
 
 
