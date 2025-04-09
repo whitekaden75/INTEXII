@@ -40,7 +40,7 @@ const RegisterForm: React.FC = () => {
           // clear error message
           setError('');
           // post data to the /register api
-          fetch('https://intexii-team2-12-b9b2h9ead7cwd9ax.eastus-01.azurewebsites.net/register', {
+          fetch('https://intexii-team2-12-b9b2h9ead7cwd9ax.eastus-01.azurewebsites.net/auth/register', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
