@@ -403,10 +403,13 @@ C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.backend.props
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.backend.props
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\backend.csproj.Up2Date
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\backend.dll
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\refint\backend.dll
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\obj\Debug\net8.0\ref\backend.dll
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\MovieRecommendByShowID.sqlite
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\Movies.db
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\ShowRecommendByUserID.sqlite
+C:\Users\dalle\OneDrive\Desktop\Dallen\BYU\Winter 2025\Intex2\Repository\INTEXII\backend\bin\Debug\net8.0\TVRecommendByShowID.sqlite
