@@ -56,8 +56,8 @@ const LoginForm: React.FC = () => {
     
     // Determine login URL based on rememberme flag
     const loginUrl = rememberme
-      ? 'http://localhost:5000/login?useCookies=true'
-      : 'http://localhost:5000/login?useSessionCookies=true';
+      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useCookies=true'
+      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useSessionCookies=true';
     console.log(`[Login Request] URL: ${loginUrl}`);
     console.log(`[Login Request] Attempting login with email: ${email}`);
 
