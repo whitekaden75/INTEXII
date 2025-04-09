@@ -49,6 +49,7 @@ builder.Services.AddCors (options =>
                              "http://127.0.0.1:4005",  // Also allow localhost as IP
                             "http://127.0.0.1:5173",
                             "https://nice-ground-00910891e.6.azurestaticapps.net")
+                .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         }));
