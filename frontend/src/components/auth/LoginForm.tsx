@@ -178,8 +178,8 @@ const LoginForm: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  setEmail("test@test.com");
-                  setPassword("Testing1234!");
+                  setEmail("demo@cineniche.com");
+                  setPassword("password");
                 }}>
                 User
               </Button>
