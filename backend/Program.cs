@@ -26,7 +26,8 @@ builder.Services.AddCors (options =>
             policy.WithOrigins("http://localhost:4005", // Your frontend port
                              "http://localhost:5173",   // Alternative Vite default port
                              "http://127.0.0.1:4005",  // Also allow localhost as IP
-                            "http://127.0.0.1:5173")
+                            "http://127.0.0.1:5173",
+                            "https://lively-pond-02080fc1e.6.azurestaticapps.net"))
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         }));
