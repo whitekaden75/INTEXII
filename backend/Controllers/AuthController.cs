@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route([controller])]
+[Route("/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly SignInManager<IdentityUser> _signInManager;
