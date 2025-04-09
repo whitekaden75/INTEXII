@@ -15,7 +15,6 @@ import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 // Context Providers
-import { AuthProvider } from "./contexts/AuthContext";
 import { MovieProvider } from "./contexts/MovieContext";
 
 const queryClient = new QueryClient();
@@ -23,7 +22,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
+      
         <MovieProvider>
           <Toaster />
           <BrowserRouter>
@@ -39,7 +38,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </MovieProvider>
-      </AuthProvider>
+      
     </TooltipProvider>
   </QueryClientProvider>
 );

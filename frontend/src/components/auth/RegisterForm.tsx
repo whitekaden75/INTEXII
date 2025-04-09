@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,39 +13,82 @@ import {
 } from "@/components/ui/card";
 
 const RegisterForm: React.FC = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === 'email') setEmail(value);
+    if (name === 'password') setPassword(value);
+    if (name === 'confirmPassword') setConfirmPassword(value);
+    };
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await register(username, email, password);
-      navigate("/movies");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      // validate email and passwords
+      if (!email || !password || !confirmPassword) {
+          setError('Please fill in all fields.');
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          setError('Please enter a valid email address.');
+      } else if (password !== confirmPassword) {
+          setError('Passwords do not match.');
       } else {
-        setError("Failed to create account");
+          // clear error message
+          setError('');
+          // post data to the /register api
+          fetch('https://intexii-team2-12-b9b2h9ead7cwd9ax.eastus-01.azurewebsites.net/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              email: email,
+              password: password,
+          }),
+          })
+          //.then((response) => response.json())
+          .then((data) => {
+              // handle success or error from the server
+              console.log(data);
+              if (data.ok) setError('Successful registration. Please log in.');
+              else setError('Error registering.');
+          })
+          .catch((error) => {
+              // handle network error
+              console.error(error);
+              setError('Error registering.');
+          });
       }
-    } finally {
-      setLoading(false);
-    }
-  };
+      };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   if (password !== confirmPassword) {
+  //     setError("Passwords do not match");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   try {
+  //     await register(email, password);
+  //     navigate("/movies");
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       setError(error.message);
+  //     } else {
+  //       setError("Failed to create account");
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -58,17 +100,6 @@ const RegisterForm: React.FC = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="johndoe"
-              required
-              autoComplete="username"
-            />
-          </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -76,7 +107,7 @@ const RegisterForm: React.FC = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               placeholder="yourname@example.com"
               required
               autoComplete="email"
@@ -89,7 +120,7 @@ const RegisterForm: React.FC = () => {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               placeholder="••••••••"
               required
               autoComplete="new-password"
@@ -102,7 +133,7 @@ const RegisterForm: React.FC = () => {
               id="confirm-password"
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleChange}
               placeholder="••••••••"
               required
               autoComplete="new-password"
@@ -118,7 +149,7 @@ const RegisterForm: React.FC = () => {
       </CardContent>
       <CardFooter className="flex justify-center">
         <div className="text-sm text-muted-foreground">
-          Already have an account?{" "}
+          Go to Login Page{" "}
           <a
             onClick={() => navigate("/login")}
             className="text-cineniche-purple hover:underline cursor-pointer">

@@ -4,9 +4,9 @@ interface FetchMovieResponse {
   movies: Movie[];
 }
 
-const API_BASE_URL = "http://localhost:5000/api/Movies";
-const RECOMMENDATION_API_URL = "http://localhost:5000/api/MovieRecommendations";
-const USER_API_URL = "http://localhost:5000/api/UserRecommendations";
+const API_BASE_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/Movies";
+const RECOMMENDATION_API_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/MovieRecommendations";
+const USER_API_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/UserRecommendations";
 
 
 // Function to fetch all movies
