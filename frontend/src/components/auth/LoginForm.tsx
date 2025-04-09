@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import GoogleLoginButton from "./GoogleLoginButton";
+import api from "@/api/api";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -25,13 +26,13 @@ const LoginForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, checked, value } = e.target;
-    if (type === 'checkbox') {
+    if (type === "checkbox") {
       console.log(`[Input Change] Checkbox "${name}" changed to: ${checked}`);
       setRememberme(checked);
-    } else if (name === 'email') {
+    } else if (name === "email") {
       console.log(`[Input Change] Email input changed to: ${value}`);
       setEmail(value);
-    } else if (name === 'password') {
+    } else if (name === "password") {
       console.log(`[Input Change] Password input changed.`);
       setPassword(value);
     }
@@ -39,60 +40,29 @@ const LoginForm: React.FC = () => {
 
   const handleRegisterClick = () => {
     console.log(`[Navigation] Navigating to the register page.`);
-    navigate('/register');
+    navigate("/register");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(`[Form Submit] Login form submitted.`);
-    setError(''); // clear any previous errors
+    setError("");
+    setLoading(true);
 
-    // Validate inputs
     if (!email || !password) {
-      console.log(`[Validation Error] Missing email or password.`);
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
+      setLoading(false);
       return;
     }
-    
-    // Determine login URL based on rememberme flag
-    const loginUrl = rememberme
-      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useCookies=true'
-      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/login?useSessionCookies=true';
-    console.log(`[Login Request] URL: ${loginUrl}`);
-    console.log(`[Login Request] Attempting login with email: ${email}`);
 
     try {
-      const response = await fetch(loginUrl, {
-        method: 'POST',
-        credentials: 'include', // ensures cookies are sent & received
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      console.log(`[Login Response] HTTP status: ${response.status}`);
-      console.log(`[Login Response] Full response:`, response);
-
-      // Only parse JSON if there is content
-      let data = null;
-      const contentLength = response.headers.get('content-length');
-      console.log(`[Login Response] Content-Length header: ${contentLength}`);
-      if (contentLength && parseInt(contentLength, 10) > 0) {
-        data = await response.json();
-        console.log(`[Login Response] Parsed JSON data:`, data);
-      } else {
-        console.log(`[Login Response] No JSON content to parse.`);
-      }
-      
-      if (!response.ok) {
-        console.error(`[Login Error] Response error: ${data?.message || 'Invalid email or password.'}`);
-        throw new Error(data?.message || 'Invalid email or password.');
-      }
-      
-      console.log(`[Login Success] Login successful. Navigating to /movies...`);
+      await login(email, password);
+      sessionStorage.removeItem("isAuthRedirecting");
       navigate("/movies");
-      console.log('navigating to movies');
     } catch (error: any) {
-      console.error(`[Fetch Error] Login attempt failed:`, error);
-      setError(error.message || 'Error logging in.');
+      console.error("Login failed:", error);
+      setError(error.message || "Error logging in.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,7 +89,7 @@ const LoginForm: React.FC = () => {
               autoComplete="email"
             />
           </div>
-  
+
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -133,7 +103,7 @@ const LoginForm: React.FC = () => {
               autoComplete="current-password"
             />
           </div>
-  
+
           <div className="flex items-center space-x-2">
             <input
               id="rememberme"
@@ -147,11 +117,11 @@ const LoginForm: React.FC = () => {
               Remember password
             </Label>
           </div>
-  
+
           <Button type="submit" className="w-full">
             Sign In
           </Button>
-  
+
           <Button
             type="button"
             variant="outline"
@@ -160,27 +130,29 @@ const LoginForm: React.FC = () => {
           >
             Register
           </Button>
-  
+
           <hr className="my-4" />
-  
+
           <Button
             type="button"
             className="w-full bg-google text-white hover:bg-google-dark"
           >
             <i className="fa-brands fa-google mr-2"></i> Sign in with Google
           </Button>
-  
+
           <Button
             type="button"
             className="w-full bg-facebook text-white hover:bg-facebook-dark"
           >
-            <i className="fa-brands fa-facebook-f mr-2"></i> Sign in with Facebook
+            <i className="fa-brands fa-facebook-f mr-2"></i> Sign in with
+            Facebook
           </Button>
         </form>
-  
+
         {error && <p className="text-destructive text-sm mt-2">{error}</p>}
       </CardContent>
     </Card>
-  );}
+  );
+};
 
 export default LoginForm;

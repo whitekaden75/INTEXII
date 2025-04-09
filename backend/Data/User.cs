@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int UserId { get; set; }
 
         [Column("show_id")]
-        public string ShowId { get; set; }
+        public string ShowId { get; set; } = string.Empty;
 
         [Column("recommendation_1")]
         public string? Recommendation1 { get; set; }

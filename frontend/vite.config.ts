@@ -9,19 +9,25 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 4005,
     proxy: {
-      '/api': {
-        target: 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net',
+      // Handle all /api requests to backend
+      "/api": {
+        target: process.env.VITE_BACKEND_BASE_URL,
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path
-      }
-    }
+        rewrite: (path) => path,
+      },
+      // Also proxy /Auth requests to backend
+      "/Auth": {
+        target: process.env.VITE_BACKEND_BASE_URL,
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path,
+      },
+    },
   },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
+  plugins: [react(), mode === "development" && componentTagger()].filter(
+    Boolean
+  ),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 import { Star, Film, User } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { useMovies } from "@/contexts/MovieContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Movie } from "@/data/MovieType";
@@ -21,33 +22,37 @@ import AuthorizeView from "@/components/auth/AuthorizeView";
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, getMovieRecommendations, rateMovie, loading } =
-    useMovies();
+  const { getMovieById, getMovieRecommendations, loading } = useMovies();
+  const { user } = useAuth();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(true);
-  const [recommendations, setRecommendations] = useState<Movie[]>([]);
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
-  useEffect(() => {
-    async function fetchRecommendations() {
-      if (id) {
-        setLoadingRecommendations(true);
-        try {
-          const recommendedMovies = await getMovieRecommendations(id);
-          console.log("Recommendations loaded:", recommendedMovies);
-          setRecommendations(recommendedMovies);
-        } catch (error) {
-          console.error("Error fetching recommendations:", error);
-        } finally {
-          setLoadingRecommendations(false);
-        }
+  const {
+    data: recommendations = [],
+    isLoading: loadingRecommendations,
+    error: recommendationsError,
+  } = useQuery<Movie[]>({
+    queryKey: ["recommendations", id],
+    queryFn: async () => {
+      if (!id) return [];
+      return await getMovieRecommendations(id);
+    },
+    enabled: !!id,
+  });
+
+  React.useEffect(() => {
+    if (recommendationsError) {
+      const errObj = recommendationsError as any;
+      if (errObj.response?.status === 401) {
+        window.location.href = "/login";
+      } else {
+        console.error("Failed to fetch recommendations", errObj);
       }
     }
-  
-    fetchRecommendations();
-  }, [id, getMovieRecommendations]);
+  }, [recommendationsError]);
+
 
   const movie = id ? getMovieById(id) : undefined;
 
@@ -62,7 +67,8 @@ const MovieDetail = () => {
   // Handle rating submission
   const handleRateMovie = () => {
     if (id && userRating !== null) {
-      rateMovie(id, userRating);
+      // TODO: Implement rateMovie API call
+      console.log("Submit rating", userRating);
     }
   };
 

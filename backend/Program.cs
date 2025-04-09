@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using backend.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +11,29 @@ using RootkitAuth.API.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddAuthentication(options =>
+{
+   options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+   options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var jwtSecret = builder.Configuration["Jwt:SecretKey"];
+    if (string.IsNullOrEmpty(jwtSecret))
+        throw new InvalidOperationException("JWT SecretKey is missing in configuration.");
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+    };
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,7 +49,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("UserConnection")));
 
-builder.Services.AddDbContext<UserDbContext>(options =>
+builder.Services.AddDbContext<MovieRecommendationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("MovieRecommendationConnection")));
 
 builder.Services.AddAuthorization();
@@ -32,8 +58,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
+    options.SignIn.RequireConfirmedEmail = true;
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email; // Ensure email is stored in claims
 });
@@ -53,15 +81,45 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.ConfigureApplicationCookie(options => {
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/login";
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.HttpOnly = true;
+
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = 403;
+        return Task.CompletedTask;
+    };
 });
 
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
+builder.Services.AddScoped<JwtTokenService>();
 
 var app = builder.Build();
+
+Console.WriteLine("========== DEBUG START ==========");
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var connection = context.Database.GetDbConnection();
+        Console.WriteLine($"[DEBUG] Identity DB Path: {connection.DataSource}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DEBUG] Error retrieving Identity DB path: {ex.Message}");
+    }
+}
+Console.WriteLine("========== DEBUG END ==========");
 
 
 // Configure the HTTP request pipeline.
@@ -94,18 +152,15 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
 
 app.MapGet("/pingauth", (ClaimsPrincipal user, ILogger<Program> logger) =>
 {
-    logger.LogInformation("User identity is: {Identity}", user.Identity?.Name);
+    var isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+    var email = isAuthenticated ? user.FindFirstValue(ClaimTypes.Email) : null;
 
-    if (!user.Identity?.IsAuthenticated ?? false)
+    return Results.Json(new
     {
-        Console.WriteLine("User is not authenticated.");
-        return Results.Unauthorized();
-    }
-
-    var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
-    Console.WriteLine($"User email is: {email}");
-    return Results.Json(new { email = email });
-}).RequireAuthorization();
+        authenticated = isAuthenticated,
+        email = email
+    });
+});
 
 
 app.Run();
