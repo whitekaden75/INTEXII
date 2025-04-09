@@ -15,7 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MovieDbContext>(options =>
-    options.UseSqlite("Data Source=movies.db"));
+    options.UseMySql(builder.Configuration.GetConnectionString("MovieConnection"),
+                     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MovieConnection"))));
 
 builder.Services.AddDbContext<MovieRecommendationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("MovieRecommendationConnection")));
