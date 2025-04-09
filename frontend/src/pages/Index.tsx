@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { useMovies } from "@/contexts/MovieContext";
 import Layout from "@/components/layout/Layout";
 import Hero from "@/components/movies/Hero";
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Film, Play } from "lucide-react";
 
 const Index = () => {
-  const { isAuthenticated } = useAuth();
   const { movies, loading } = useMovies();
   const navigate = useNavigate();
 
@@ -51,7 +49,7 @@ const Index = () => {
               indie gems, and niche documentaries you won't find anywhere else.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
-              {!isAuthenticated && (
+             
                 <>
                   <Button
                     className="gap-2"
@@ -67,8 +65,8 @@ const Index = () => {
                     Already a Member? Log In
                   </Button>
                 </>
-              )}
-              {isAuthenticated && (
+          
+            
                 <Button
                   className="gap-2"
                   size="lg"
@@ -76,7 +74,7 @@ const Index = () => {
                   <Play className="h-4 w-4" />
                   Browse All Movies
                 </Button>
-              )}
+        
             </div>
           </div>
         </div>
@@ -169,7 +167,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      {!isAuthenticated && (
+
         <section className="py-20 bg-cineniche-dark-purple">
           <div className="container text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -195,7 +193,7 @@ const Index = () => {
             </div>
           </div>
         </section>
-      )}
+ 
     </Layout>
   );
 };

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Star, Film, User } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { useMovies } from "@/contexts/MovieContext";
-import { useAuth } from "@/contexts/AuthContext";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Movie } from "@/data/MovieType";
@@ -28,7 +28,7 @@ import {
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { getMovieById, getMovieRecommendations, loading } = useMovies();
-  const { isAuthenticated } = useAuth();
+
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(true);
@@ -106,7 +106,7 @@ const MovieDetail = () => {
         <DialogContent
           className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
           onInteractOutside={(e) => e.preventDefault()}>
-          {!isAuthenticated ? (
+      
             <>
               <DialogHeader>
                 <DialogTitle className="text-2xl">Login Required</DialogTitle>
@@ -148,7 +148,7 @@ const MovieDetail = () => {
                 </Button>
               </DialogFooter>
             </>
-          ) : (
+           : (
             <>
               <DialogHeader>
                 <DialogTitle className="text-2xl">{movie.title}</DialogTitle>
@@ -286,7 +286,7 @@ const MovieDetail = () => {
                 </Button>
               </div>
             </>
-          )}
+          )
         </DialogContent>
       </Dialog>
     </Layout>
