@@ -105,6 +105,7 @@ const RegisterForm: React.FC = () => {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               value={email}
               onChange={handleChange}
@@ -118,6 +119,7 @@ const RegisterForm: React.FC = () => {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={handleChange}

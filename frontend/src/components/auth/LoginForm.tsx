@@ -121,6 +121,7 @@ const LoginForm: React.FC = () => {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               value={email}
               onChange={handleChange}
@@ -141,6 +142,7 @@ const LoginForm: React.FC = () => {
             </div>
             <Input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={handleChange}
