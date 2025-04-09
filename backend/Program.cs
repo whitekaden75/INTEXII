@@ -2,6 +2,8 @@ using System.Security.Claims;
 using backend.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RootkitAuth.API.Data;
+using RootkitAuth.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

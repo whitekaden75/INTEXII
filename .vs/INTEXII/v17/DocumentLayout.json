@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\services\\customeruserclaimsprincipalfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\services\\customeruserclaimsprincipalfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\data\\noopemailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,10 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|c:\\users\\dalle\\onedrive\\desktop\\dallen\\byu\\winter 2025\\intex2\\repository\\intexii\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44F77B9-9ADF-4CB8-B94A-A51C2E2C2B77}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -43,14 +39,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CustomerUserClaimsPrincipalFactory.cs",
-              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Services\\CustomerUserClaimsPrincipalFactory.cs",
-              "RelativeDocumentMoniker": "backend\\Services\\CustomerUserClaimsPrincipalFactory.cs",
-              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Services\\CustomerUserClaimsPrincipalFactory.cs",
-              "RelativeToolTip": "backend\\Services\\CustomerUserClaimsPrincipalFactory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
+              "RelativeDocumentMoniker": "backend\\Program.cs",
+              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
+              "RelativeToolTip": "backend\\Program.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAB4AAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-09T18:28:00.882Z",
+              "WhenOpened": "2025-04-09T18:20:56.62Z",
               "EditorCaption": ""
             },
             {
@@ -76,8 +72,7 @@
               "RelativeToolTip": "backend\\Controllers\\RoleController.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAQwEcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-09T18:26:11.947Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T18:26:11.947Z"
             },
             {
               "$type": "Document",
@@ -89,21 +84,7 @@
               "RelativeToolTip": "backend\\Controllers\\AuthController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-09T18:25:25.889Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
-              "RelativeDocumentMoniker": "backend\\Program.cs",
-              "ToolTip": "C:\\Users\\dalle\\OneDrive\\Desktop\\Dallen\\BYU\\Winter 2025\\Intex2\\Repository\\INTEXII\\backend\\Program.cs",
-              "RelativeToolTip": "backend\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-09T18:20:56.62Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T18:25:25.889Z"
             },
             {
               "$type": "Document",
@@ -115,8 +96,7 @@
               "RelativeToolTip": "backend\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-09T18:20:48.867Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T18:20:48.867Z"
             },
             {
               "$type": "Document",
@@ -128,8 +108,7 @@
               "RelativeToolTip": "backend\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-09T18:20:59.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T18:20:59.086Z"
             }
           ]
         }
