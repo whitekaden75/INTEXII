@@ -47,11 +47,14 @@ const RecommendedMovies: React.FC<RecommendedMoviesProps> = ({
                   onClick={() => navigate(`/movies/${movie.showId}`)}
                 >
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md">
-                    {/* <img 
-                      src={`https://picsum.photos/seed/${movie.showId}/300/450`}
+                    <img 
+                      src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
+                    /[:'&]/g,
+                    ""
+                  )}.jpg`}
                       alt={movie.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    /> */}
+                    />
                   </div>
                   <h3 className="mt-2 text-sm font-medium line-clamp-1">{movie.title}</h3>
                   <div className="text-xs text-muted-foreground mt-1">
