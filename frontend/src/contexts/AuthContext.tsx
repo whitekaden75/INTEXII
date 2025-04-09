@@ -1,124 +1,228 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import api from "../api/api";
+import axios from "axios";
 import { toast } from "sonner";
 
-// Define user types
-export type UserRole = 'customer' | 'admin';
-
+// User and context types
 export interface User {
   id: string;
   username: string;
   email: string;
-  role: UserRole;
+  role: string;
   avatar?: string;
+  emailConfirmed?: boolean;
+  mfaEnabled?: boolean;
 }
 
-// Define context type
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  register: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  refreshToken: () => Promise<void>;
+  csrfToken: string | null;
 }
-
-// Mock users for demo
-const MOCK_USERS = [
-  {
-    id: '1',
-    username: 'demo',
-    email: 'demo@cineniche.com',
-    password: 'password',
-    role: 'customer' as UserRole,
-    avatar: 'https://i.pravatar.cc/150?u=demo',
-  },
-  {
-    id: '2',
-    username: 'admin',
-    email: 'admin@cineniche.com',
-    password: 'admin',
-    role: 'admin' as UserRole,
-    avatar: 'https://i.pravatar.cc/150?u=admin',
-  },
-];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// In-memory storage for JWT and CSRF token
+let accessToken: string | null = null;
+let csrfTokenMemory: string | null = null;
+
+// Helpers to manage tokens in localStorage (fallback)
+const saveTokens = () => {
+  if (accessToken) localStorage.setItem("jwtToken", accessToken);
+  if (csrfTokenMemory) localStorage.setItem("csrfToken", csrfTokenMemory);
+};
+
+const loadTokens = () => {
+  accessToken = localStorage.getItem("jwtToken");
+  csrfTokenMemory = localStorage.getItem("csrfToken");
+};
+
+const clearTokens = () => {
+  accessToken = null;
+  csrfTokenMemory = null;
+  localStorage.removeItem("jwtToken");
+  localStorage.removeItem("csrfToken");
+};
+
+// Axios request interceptor to attach JWT
+api.interceptors.request.use(
+  (config) => {
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    // Attach CSRF token only for refresh endpoint
+    if (config.url?.includes("/refresh-token") && csrfTokenMemory) {
+      config.headers["X-CSRF-TOKEN"] = csrfTokenMemory;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Axios response interceptor to handle 401 and refresh
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      clearTokens();
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth service object to avoid circular deps
+const authService: any = {};
+
+// AuthProvider component
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
-  
-  // Check for stored user on initial load
+  const [csrfTokenState, setCsrfTokenState] = useState<string | null>(null);
+  const [tokenExpiry, setTokenExpiry] = useState<number | null>(null);
+  const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem('cinenicheUser');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('cinenicheUser');
-      }
+    loadTokens();
+    setCsrfTokenState(csrfTokenMemory);
+    if (accessToken) {
+      const userData = parseJwt(accessToken);
+      setUser(userData);
     }
   }, []);
 
-  // Login logic
   const login = async (email: string, password: string) => {
-    // Simulating API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const matchedUser = MOCK_USERS.find(u => u.email === email && u.password === password);
-    
-    if (matchedUser) {
-      const { password, ...userWithoutPassword } = matchedUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('cinenicheUser', JSON.stringify(userWithoutPassword));
-      toast.success(`Welcome back, ${userWithoutPassword.username}!`);
-    } else {
-      toast.error('Invalid email or password');
-      throw new Error('Invalid email or password');
+    try {
+      const response = await api.post("/login", { email, password });
+      const { token } = response.data as { token: string };
+      accessToken = token;
+      csrfTokenMemory = generateCsrfToken();
+      saveTokens();
+      setCsrfTokenState(csrfTokenMemory);
+      const userData = parseJwt(token);
+      setUser(userData);
+
+      // Decode expiry and set proactive refresh
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const expiry = payload.exp * 1000;
+      setTokenExpiry(expiry);
+
+      if (refreshTimer) clearTimeout(refreshTimer);
+      const refreshTime = expiry - Date.now() - 60 * 1000;
+      if (refreshTime > 0) {
+        const timer = setTimeout(refreshToken, refreshTime);
+        setRefreshTimer(timer);
+      }
+
+      toast.success("Login successful");
+    } catch (error: any) {
+      toast.error("Login failed");
+      throw error;
     }
   };
 
-  // Register logic
-  const register = async (username: string, email: string, password: string) => {
-    // Simulating API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check if user already exists
-    if (MOCK_USERS.some(u => u.email === email)) {
-      toast.error('Email already in use');
-      throw new Error('Email already in use');
+  const register = async (email: string, password: string) => {
+    try {
+      // The backend only expects email and password
+      const response = await api.post("/Auth/register", { email, password });
+      const { token } = response.data as { token: string };
+      accessToken = token;
+      csrfTokenMemory = generateCsrfToken();
+      saveTokens();
+      setCsrfTokenState(csrfTokenMemory);
+      const userData = parseJwt(token);
+      setUser(userData);
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const expiry = payload.exp * 1000;
+      setTokenExpiry(expiry);
+
+      if (refreshTimer) clearTimeout(refreshTimer);
+      const refreshTime = expiry - Date.now() - 60 * 1000;
+      if (refreshTime > 0) {
+        const timer = setTimeout(refreshToken, refreshTime);
+        setRefreshTimer(timer);
+      }
+      toast.success("Registration successful. Please confirm your email.");
+    } catch (error: any) {
+      toast.error("Registration failed");
+      throw error;
     }
-    
-    // Create new user (in a real app, this would be API call)
-    const newUser = {
-      id: Date.now().toString(),
-      username,
-      email,
-      role: 'customer' as UserRole,
-      avatar: `https://i.pravatar.cc/150?u=${username}`,
-    };
-    
-    setUser(newUser);
-    localStorage.setItem('cinenicheUser', JSON.stringify(newUser));
-    toast.success('Account created successfully!');
   };
 
-  // Logout
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post("/logout");
+    } catch {
+      // ignore errors
+    }
+    clearTokens();
     setUser(null);
-    localStorage.removeItem('cinenicheUser');
-    toast.info('You have been logged out');
+    setCsrfTokenState(null);
+    setTokenExpiry(null);
+    if (refreshTimer) clearTimeout(refreshTimer);
+    setRefreshTimer(null);
+    toast.info("Logged out");
+    window.location.href = "/login";
   };
+
+  const refreshToken = async () => {
+    try {
+      const response = await api.post(
+        "/auth/refresh-token",
+        {},
+        {
+          headers: {
+            "X-CSRF-TOKEN": csrfTokenMemory || "",
+          },
+        }
+      );
+      const { token } = response.data as { token: string };
+      accessToken = token;
+      saveTokens();
+      const userData = parseJwt(token);
+      setUser(userData);
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const expiry = payload.exp * 1000;
+      setTokenExpiry(expiry);
+
+      if (refreshTimer) clearTimeout(refreshTimer);
+      const refreshTime = expiry - Date.now() - 60 * 1000;
+      if (refreshTime > 0) {
+        const timer = setTimeout(refreshToken, refreshTime);
+        setRefreshTimer(timer);
+      }
+    } catch (error) {
+      clearTokens();
+      setUser(null);
+      setTokenExpiry(null);
+      if (refreshTimer) clearTimeout(refreshTimer);
+      setRefreshTimer(null);
+      throw error;
+    }
+  };
+
+  // Expose refreshToken for interceptor
+  authService.refreshToken = refreshToken;
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
+        isAdmin: user?.role === "admin",
         login,
         register,
-        logout
+        logout,
+        refreshToken,
+        csrfToken: csrfTokenState,
       }}
     >
       {children}
@@ -126,11 +230,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// Custom hook to use the auth context
+// JWT parsing helper
+function parseJwt(token: string): User {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    const payload = JSON.parse(jsonPayload);
+    return {
+      id: payload.sub,
+      username: payload.username,
+      email: payload.email,
+      role: payload.role,
+      avatar: payload.avatar,
+      emailConfirmed: payload.emailConfirmed,
+      mfaEnabled: payload.mfaEnabled,
+    };
+  } catch {
+    return {
+      id: "",
+      username: "",
+      email: "",
+      role: "",
+    };
+  }
+}
+
+// CSRF token generator
+function generateCsrfToken(): string {
+  return crypto.randomUUID();
+}
+
+// Hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

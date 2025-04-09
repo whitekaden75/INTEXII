@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import { Movie } from "../data/MovieType";
 import {
   getAllMovies,
@@ -10,6 +11,7 @@ import {
   getMovieRecommendationsAPI,
 } from "../api/MovieAPI";
 import { getUserRecommendations } from "../api/MovieAPI";
+import { useAuth } from "../contexts/AuthContext";
 
 export interface MovieFilter {
   genre?: string;
@@ -36,8 +38,7 @@ const MovieContext = createContext<MovieContextType | undefined>(undefined);
 export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
   const [filters, setFiltersState] = useState<MovieFilter>({});
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [featuredMovies, setFeaturedMovies] = useState<Movie[]>([]);
@@ -48,26 +49,34 @@ export const MovieProvider: React.FC<{ children: React.ReactNode }> = ({
     setFiltersState(newFilters);
   };
 
-  // Load movies from API
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllMovies();
-        setMovies(data);
-      } catch (error) {
-        toast.error("Failed to fetch movies");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Load movies from API with React Query
+  const { data: moviesData = [], isLoading, error } = useQuery<Movie[]>({
+    queryKey: ["movies"],
+    queryFn: async () => getAllMovies(),
+    retry: false,
+  });
 
-    fetchMovies();
-  }, []);
+  const movies = useMemo(() => moviesData as Movie[], [moviesData]);
+  const loading = isLoading;
+
+  React.useEffect(() => {
+    if (error) {
+      const errObj = error as any;
+      if (errObj.response?.status === 401) {
+        toast.error("Unauthorized. Please login again.");
+      } else {
+        toast.error("Failed to fetch movies");
+      }
+    }
+  }, [error]);
 
   // Add this useEffect after the movies data loading useEffect
 useEffect(() => {
+  if (!isAuthenticated) return;
+
+  console.log("Fetching featured movies");
   const fetchFeaturedMovies = async () => {
+    console.log("Calling getUserRecommendations");
     if (movies.length === 0) return;
     
     try {
@@ -81,14 +90,24 @@ useEffect(() => {
           .map(id => movies.find(movie => movie.showId === id))
           .filter((movie): movie is Movie => movie !== undefined);
         
-        setFeaturedMovies(userRecommendedMovies);
+        // Only update if recommendations actually changed
+        const isDifferent = userRecommendedMovies.length !== featuredMovies.length ||
+          userRecommendedMovies.some((m, idx) => m.showId !== featuredMovies[idx]?.showId);
+        if (isDifferent) {
+          setFeaturedMovies(userRecommendedMovies);
+        }
       } else {
         // Fallback: use some popular movies if no recommendations
         const fallbackFeatured = movies
           .sort((a, b) => b.releaseYear - a.releaseYear)
           .slice(0, 5);
         
-        setFeaturedMovies(fallbackFeatured);
+        // Only update if fallback actually changed
+        const isDifferent = fallbackFeatured.length !== featuredMovies.length ||
+          fallbackFeatured.some((m, idx) => m.showId !== featuredMovies[idx]?.showId);
+        if (isDifferent) {
+          setFeaturedMovies(fallbackFeatured);
+        }
       }
     } catch (error) {
       console.error('Error loading featured movies:', error);
@@ -102,26 +121,27 @@ useEffect(() => {
   };
 
   fetchFeaturedMovies();
-}, [movies]);
+}, [movies, isAuthenticated]);
 
   useEffect(() => {
+    console.log("Filtering movies");
     let result = [...movies];
-  
+    
     if (filters.genre) {
       result = result.filter((movie) =>
         movie.genre.toLowerCase().includes(filters.genre!.toLowerCase())
       );
     }
-  
+    
     if (filters.searchQuery) {
-
+  
       const query = filters.searchQuery.toLowerCase();
-
+  
       result = result.filter((movie) => {
         const title = movie.title?.toLowerCase() || "";
         const director = movie.director?.toLowerCase() || "";
         const cast = movie.cast?.toLowerCase() || "";
-
+  
         return (
           title.includes(query) ||
           director.includes(query) ||
@@ -129,16 +149,20 @@ useEffect(() => {
         );
       });
     }
-  
-    setFilteredMovies(result);
+    
+    // Only update if filteredMovies actually changed
+    const isDifferent = result.length !== filteredMovies.length ||
+      result.some((m, idx) => m.showId !== filteredMovies[idx]?.showId);
+    if (isDifferent) {
+      setFilteredMovies(result);
+    }
   }, [movies, filters]);
   
 
   // Add a new movie
   const addMovie = async (movieData: Omit<Movie, "showId">) => {
     try {
-      const newMovie = await createMovie(movieData);
-      setMovies((prevMovies) => [...prevMovies, newMovie]);
+      await createMovie(movieData);
       toast.success("Movie added successfully");
     } catch (error) {
       toast.error("Failed to add movie");
@@ -149,10 +173,7 @@ useEffect(() => {
   // Update a movie
   const updateMovie = async (id: string, movieData: Partial<Movie>) => {
     try {
-      const updatedMovie = await updateMovieAPI(id, movieData);
-      setMovies((prevMovies) =>
-        prevMovies.map((movie) => (movie.showId === id ? updatedMovie : movie))
-      );
+      await updateMovieAPI(id, movieData);
       toast.success("Movie updated successfully");
     } catch (error) {
       toast.error("Failed to update movie");
@@ -164,9 +185,6 @@ useEffect(() => {
   const deleteMovie = async (id: string) => {
     try {
       await deleteMovieAPI(id);
-      setMovies((prevMovies) =>
-        prevMovies.filter((movie) => movie.showId !== id)
-      );
       toast.success("Movie deleted successfully");
     } catch (error) {
       toast.error("Failed to delete movie");

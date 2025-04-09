@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 
 const RegisterForm: React.FC = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,7 +34,7 @@ const RegisterForm: React.FC = () => {
     setLoading(true);
 
     try {
-      await register(username, email, password);
+      await register(email, password);
       navigate("/movies");
     } catch (error) {
       if (error instanceof Error) {
@@ -58,18 +57,6 @@ const RegisterForm: React.FC = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="johndoe"
-              required
-              autoComplete="username"
-            />
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -121,7 +108,8 @@ const RegisterForm: React.FC = () => {
           Already have an account?{" "}
           <a
             onClick={() => navigate("/login")}
-            className="text-cineniche-purple hover:underline cursor-pointer">
+            className="text-cineniche-purple hover:underline cursor-pointer"
+          >
             Log in
           </a>
         </div>

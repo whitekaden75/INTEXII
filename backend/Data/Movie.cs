@@ -6,7 +6,7 @@ public class Movie
 {
     [Key]
     [Column("show_id")]
-    public string ShowId { get; set; }
+    public string ShowId { get; set; } = string.Empty;
 
     [Column("type")]
     public string? Type { get; set; }

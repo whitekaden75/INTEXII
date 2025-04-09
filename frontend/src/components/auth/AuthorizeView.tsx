@@ -1,5 +1,6 @@
-import React, { useState, useEffect, createContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState, useEffect, createContext } from "react";
+import { Navigate } from "react-router-dom";
+import api from "@/api/api";
 
 const UserContext = createContext<User | null>(null);
 
@@ -10,43 +11,53 @@ interface User {
 function AuthorizeView(props: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true); // add a loading state
-  //const navigate = useNavigate();
-  let emptyuser: User = { email: '' };
-
+  let emptyuser: User = { email: "" };
   const [user, setUser] = useState(emptyuser);
 
+  // Create a ref to track whether we've already started checking auth
+  const authCheckAttempted = React.useRef(false);
+
   useEffect(() => {
-    async function fetchWithRetry(url: string, options: any) {
+    // Prevent multiple auth checks
+    if (authCheckAttempted.current) return;
+    authCheckAttempted.current = true;
+
+    // We need to disable the redirect for this specific check
+    // Since our api instance already has redirect handling, we need to
+    // avoid double redirects by using a modified version just for this check
+    const checkAuth = async () => {
       try {
-        const response = await fetch(url, options);
-        //console.log('AuthorizeView: Raw Response:', response);
+        console.log("AuthorizeView: Checking authentication status");
+        const response = await api.get(import.meta.env.VITE_AUTH_PING_URL, {
+          // Temporarily bypass the redirect interceptor
+          headers: { "X-Skip-Auth-Redirect": "true" },
+        });
 
-        const contentType = response.headers.get('content-type');
+        // Add type assertion for response.data
+        const data = response.data as { authenticated: boolean; email?: string };
 
-        // Ensure response is JSON before parsing
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Invalid response format from server');
-        }
-
-        const data = await response.json();
-
-        if (data.email) {
-          setUser({ email: data.email });
+        if (data && data.authenticated) {
+          console.log(
+            "AuthorizeView: User authenticated with email:",
+            data.email
+          );
+          setUser({ email: data.email ?? "" });
           setAuthorized(true);
         } else {
-          throw new Error('Invalid user session');
+          console.log("AuthorizeView: User is not authenticated, redirecting");
+          setAuthorized(false);
         }
       } catch (error) {
+        console.log(
+          "AuthorizeView: Authentication failed, redirecting to login"
+        );
         setAuthorized(false);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    fetchWithRetry('https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/pingauth', {
-      method: 'GET',
-      credentials: 'include',
-    });
+    checkAuth();
   }, []);
 
   if (loading) {
@@ -59,6 +70,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
     );
   }
 
+  console.log("AuthorizeView: Redirecting to login page");
   return <Navigate to="/login" />;
 }
 
@@ -67,7 +79,7 @@ export function AuthorizedUser(props: { value: string }) {
 
   if (!user) return null; // Prevents errors if context is null
 
-  return props.value === 'email' ? <>{user.email}</> : null;
+  return props.value === "email" ? <>{user.email}</> : null;
 }
 
 export default AuthorizeView;
