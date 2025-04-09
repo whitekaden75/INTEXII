@@ -65,6 +65,7 @@ const RegisterForm: React.FC = () => {
       }
       };
 
+  // fix the commit
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
   //   setError("");
