@@ -27,8 +27,7 @@ import {
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getMovieById, getMovieRecommendations, rateMovie, loading } =
-    useMovies();
+  const { getMovieById, getMovieRecommendations, loading } = useMovies();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userRating, setUserRating] = useState<number | null>(null);
@@ -66,11 +65,11 @@ const MovieDetail = () => {
   // No longer redirect unauthenticated users, instead show a login prompt
 
   // Handle rating submission
-  const handleRateMovie = () => {
-    if (id && userRating !== null) {
-      rateMovie(id, userRating);
-    }
-  };
+  // const handleRateMovie = () => {
+  //   if (id && userRating !== null) {
+  //     rateMovie(id, userRating);
+  //   }
+  // };
 
   // Get recommended movies based on genre
   //const recommendedMovies = id ? getRecommendedMoviesById(id) : [];
@@ -248,7 +247,7 @@ const MovieDetail = () => {
                           </button>
                         ))}
                         <Button
-                          onClick={handleRateMovie}
+                          // onClick={handleRateMovie}
                           disabled={userRating === null}
                           className="ml-4"
                           size="sm">
@@ -268,7 +267,6 @@ const MovieDetail = () => {
                   <RecommendedMovies
                     title="Movies Like This"
                     movies={recommendations}
-                    sourceMovieId={id}
                   />
                 </div>
               )}

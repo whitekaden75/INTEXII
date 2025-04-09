@@ -15,12 +15,19 @@ const Movies = () => {
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
   const { isAuthenticated } = useAuth();
-  const { movies, filteredMovies, loading, filters, setFilters, featuredMovies } = useMovies();
+  const {
+    movies,
+    filteredMovies,
+    loading,
+    filters,
+    setFilters,
+    featuredMovies,
+  } = useMovies();
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
-   // Auto-rotate featured movies every 10 seconds
-    useEffect(() => {
+  // Auto-rotate featured movies every 10 seconds
+  useEffect(() => {
     if (featuredMovies.length <= 1) return;
 
     const intervalId = setInterval(() => {
@@ -122,15 +129,15 @@ const Movies = () => {
     <Layout onSearch={handleSearch}>
       {/* Auto-Rotating Featured Movie */}
       {featuredMovies.length > 0 && !filters.searchQuery && !filters.genre && (
-  <div className="bg-cineniche-dark-blue py-6">
-    <div className="container">
-      <FeaturedMovies 
-        title="Recommended For You" 
-        movies={featuredMovies}
-      />
-    </div>
-  </div>
-)}
+        <div className="bg-cineniche-dark-blue py-6">
+          <div className="container">
+            <FeaturedMovies
+              title="Recommended For You"
+              movies={featuredMovies}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="container py-8 min-h-[80vh]">
         {/* Genre Filter */}
