@@ -134,7 +134,7 @@ const RegisterForm: React.FC = () => {
             <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input
               id="confirm-password"
-              name="confirm-password"
+              name="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={handleChange}
