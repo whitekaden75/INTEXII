@@ -87,7 +87,7 @@ const FeaturedMovies: React.FC<FeaturedMoviesProps> = ({ title, movies }) => {
               >
                 {/* Movie Poster Image */}
                 <img
-                  src={`/Movie_Posters/${movie.title.replace(
+                  src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
                     /[:'&]/g,
                     ""
                   )}.jpg`}

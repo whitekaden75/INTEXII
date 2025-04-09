@@ -11,7 +11,8 @@ interface MovieListItemProps {
 
 const MovieListItem: React.FC<MovieListItemProps> = ({ movie, onEdit, onDelete }) => {
   // Define posterUrl dynamically based on the title
-  const posterUrl = `${movie.title}.jpg`;
+  const safeTitle = movie.title.replace(/[:'&]/g, "");
+  const posterUrl = `https://intex212.blob.core.windows.net/movie-posters/${safeTitle}.jpg`;
 
   return (
     <div className="flex items-center justify-between p-4 border-b last:border-0">

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMovies } from "@/contexts/MovieContext";
 import Layout from "@/components/layout/Layout";
-import Hero from "@/components/movies/Hero";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
 import { Button } from "@/components/ui/button";
 import { Film, Play } from "lucide-react";

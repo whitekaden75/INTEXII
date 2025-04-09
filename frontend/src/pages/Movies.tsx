@@ -7,7 +7,6 @@ import { useMovies } from "@/contexts/MovieContext";
 
 import { useInView } from "@/hooks/useInView";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
-import Hero from "@/components/movies/Hero";
 
 const Movies = () => {
   const [displayCount, setDisplayCount] = useState(12); // start with 12
