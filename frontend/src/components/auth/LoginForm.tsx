@@ -25,10 +25,10 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { cookieConsent } = useCookieConsent();
 
-  console.log("[State Initialization] States initialized with default values.");
+  console.log("[State Initialization] States initialized: email={Email}, loading={Loading}, rememberMe={RememberMe}, error={Error}", 
+    email, loading, rememberMe, error);
   console.log(`[Cookie Consent] Current consent status: ${cookieConsent}`);
 
-  // If consent is denied, ensure rememberMe is set to false
   useEffect(() => {
     if (cookieConsent === 'denied' && rememberMe) {
       setRememberMe(false);
@@ -48,48 +48,43 @@ const LoginForm: React.FC = () => {
       console.log(`[State Update] email set to: ${value}`);
     } else if (name === "password") {
       setPassword(value);
-      console.log(`[State Update] password updated.`);
+      console.log(`[State Update] password updated (hidden)`);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("[Form Submit] Login form submitted.");
+    console.log("[Form Submit] Login form submitted with email={Email}, rememberMe={RememberMe}", email, rememberMe);
 
-    setError(""); // Clear any previous errors
-    console.log("[State Update] Error state cleared.");
+    setError("");
+    console.log("[State Update] Error state cleared");
 
-    // Validate inputs
     if (!email || !password) {
-      console.log("[Validation Error] Missing email or password.");
+      console.log("[Validation Error] Missing email or password");
       setError("Please fill in all fields.");
+      console.log("[State Update] Error set to: Please fill in all fields");
       return;
     }
-    console.log("[Validation Success] Email and password provided.");
+    console.log("[Validation Success] Email and password provided");
 
     console.log("VITE_API_BASE_URL:", import.meta.env.VITE_API_BASE_URL);
-    // Determine login URL based on rememberMe flag
     const loginUrl = rememberMe
       ? `${import.meta.env.VITE_API_BASE_URL}/auth/login?useCookies=true`
       : `${import.meta.env.VITE_API_BASE_URL}/auth/login?useSessionCookies=true`;
     console.log(`[Login Request] URL: ${loginUrl}`);
-    console.log(`[Login Request] Attempting login with email: ${email}`);
 
     try {
-
-      
       setLoading(true);
-      console.log("[State Update] Loading state set to true.");
+      console.log("[State Update] Loading state set to true");
 
       const response = await fetch(loginUrl, {
         method: "POST",
-        credentials: "include", // Ensures cookies are sent & received
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      console.log(`[Login Response] HTTP status: ${response.status}`);
+      console.log(`[Login Response] HTTP status: ${response.status}, OK: ${response.ok}`);
 
-      // Only parse JSON if there is content
       let data = null;
       const contentLength = response.headers.get("content-length");
       console.log(`[Login Response] Content-Length header: ${contentLength}`);
@@ -97,26 +92,27 @@ const LoginForm: React.FC = () => {
         data = await response.json();
         console.log(`[Login Response] Parsed JSON data:`, data);
       } else {
-        console.log("[Login Response] No JSON content to parse.");
+        console.log("[Login Response] No JSON content to parse");
       }
 
       if (!response.ok) {
-        console.error(`[Login Error] Response error: ${data?.message || "Invalid email or password."}`);
-        throw new Error(data?.message || "Invalid email or password.");
+        console.error(`[Login Error] Response error: ${data?.message || "Invalid email or password"}`);
+        throw new Error(data?.message || "Invalid email or password");
       }
 
-      console.log("[Login Success] Login successful. Navigating to /movies...");
+      console.log("[Login Success] Login successful, navigating to /movies");
       navigate("/movies");
     } catch (error: any) {
-      console.error("[Fetch Error] Login attempt failed:", error);
+      console.error("[Fetch Error] Login attempt failed:", error.message);
       setError(error.message || "Error logging in.");
-      console.log("[State Update] Error state updated with error message.");
+      console.log("[State Update] Error set to:", error.message || "Error logging in");
     } finally {
       setLoading(false);
-      console.log("[State Update] Loading state set to false.");
+      console.log("[State Update] Loading state set to false");
     }
   };
 
+  console.log("[Render] Rendering LoginForm with state: email={Email}, loading={Loading}, error={Error}", email, loading, error);
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -162,7 +158,6 @@ const LoginForm: React.FC = () => {
             />
           </div>
 
-          {/* Only show Remember Me checkbox if cookies are accepted */}
           {cookieConsent !== 'denied' && (
             <div className="form-check mb-3">
               <input
@@ -195,7 +190,7 @@ const LoginForm: React.FC = () => {
                 onClick={() => {
                   setEmail("test@test.com");
                   setPassword("Testing1234!");
-                  console.log("[Demo Account] User demo account selected.");
+                  console.log("[Demo Account] User demo account selected");
                 }}>
                 User
               </Button>
@@ -205,7 +200,7 @@ const LoginForm: React.FC = () => {
                 onClick={() => {
                   setEmail("admin@test.com");
                   setPassword("Testing1234!");
-                  console.log("[Demo Account] Admin demo account selected.");
+                  console.log("[Demo Account] Admin demo account selected");
                 }}>
                 Admin
               </Button>
@@ -220,7 +215,7 @@ const LoginForm: React.FC = () => {
           <a
             onClick={() => {
               navigate("/register");
-              console.log("[Navigation] Navigating to /register.");
+              console.log("[Navigation] Navigating to /register");
             }}
             className="text-cineniche-purple hover:underline cursor-pointer">
             Sign up
