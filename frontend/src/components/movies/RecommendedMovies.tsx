@@ -49,7 +49,7 @@ const RecommendedMovies: React.FC<RecommendedMoviesProps> = ({
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md">
                     <img
                       src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
-                    /[^a-zA-Z0-9]/g,
+                    /[^a-zA-Z0-9\s]/g,
                     ""
                   )}.jpg`}
                       alt={movie.title}
