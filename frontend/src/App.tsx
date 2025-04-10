@@ -35,7 +35,7 @@ const App = () => (
 
             {/* Protected Routes */}
             <Route element={<AuthorizeViewWrapper />}>
-            <Route path="/src/pages/Movies" element={<Movies />} />
+            <Route path="/movies" element={<Movies />} />
             <Route path="/movies/:id" element={<MovieDetail />} />
               {/* Nested Admin Routes */}
               <Route element={<AdminRoute />}>
@@ -43,7 +43,7 @@ const App = () => (
               </Route>
             </Route>
 
-            <Route path="*" element={<Movies />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
