@@ -5,3 +5,6 @@ backend/bin
 .github/
 .vs/
 backend/publish/
+config.js
+secrets.json
+.env
