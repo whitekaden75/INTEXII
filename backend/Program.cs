@@ -89,10 +89,10 @@ builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<Identi
 
 var app = builder.Build();
 
-builder.Services.ConfigureApplicationCookie(options =>
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                       Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
 });
 
 // Configure the HTTP request pipeline.
