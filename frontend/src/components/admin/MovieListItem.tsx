@@ -29,7 +29,7 @@ const MovieListItem: React.FC<MovieListItemProps> = ({
       <div className="flex items-center space-x-4">
         <img
           src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
-                    /[:'&]/g,
+                    /[:'&-]/g,
                     ""
                   )}.jpg`}
           alt={movie.title}
