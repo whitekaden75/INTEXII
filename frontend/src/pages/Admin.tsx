@@ -5,7 +5,6 @@ import Layout from "@/components/layout/Layout";
 import MovieListItem from "@/components/admin/MovieListItem";
 import MovieForm from "@/components/admin/MovieForm";
 import { useMovies, Movie } from "@/contexts/MovieContext";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -45,39 +44,31 @@ import {
 } from "@/components/ui/select";
 
 const Admin = () => {
-
-  const { adminMovies, adminPage, adminPageSize, adminTotalPages, setAdminPage, setAdminPageSize, filters, setFilters, addMovie, updateMovie, deleteMovie } = useMovies();
-
+  const {
+    adminMovies,
+    adminPage,
+    adminPageSize,
+    setAdminPage,
+    setAdminPageSize,
+    filters,
+    setFilters,
+    addMovie,
+    updateMovie,
+    deleteMovie,
+  } = useMovies();
   const navigate = useNavigate();
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
-
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  // Local state for pagination
   const [totalPages, setTotalPages] = useState(1);
   const [paginatedMovies, setPaginatedMovies] = useState<Movie[]>([]);
 
-//
-  //const [searchQuery, setSearchQuery] = useState('');
-  
-  
-// newBranchKaden
-  // Redirect if not authenticated or not admin
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     navigate("/login");
-  //   } else if (!isAdmin) {
-  //     navigate("/movies");
-  //   }
-  // }, [isAuthenticated, isAdmin, navigate]);
-
-  // Handle search
+  // Handle search input changes
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setFilters({ ...filters, searchQuery });
@@ -91,26 +82,24 @@ const Admin = () => {
     setAdminPage(1);
   };
 
-
-  // Calculate pagination
+  // Calculate paginated movies whenever adminMovies, searchQuery, adminPage, or adminPageSize changes.
   useEffect(() => {
-    // Filter movies based on search query
+    // First, filter the movies based on the search query.
     const filteredMovies = adminMovies.filter((movie) =>
       movie.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Calculate total pages
-    const total = Math.ceil(filteredMovies.length / itemsPerPage);
+    // Calculate total pages based on the filtered list.
+    const total = Math.ceil(filteredMovies.length / adminPageSize);
     setTotalPages(total);
 
-    // Get current items
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    // Calculate the start and end indexes for the current page
+    const startIndex = (adminPage - 1) * adminPageSize;
+    const endIndex = startIndex + adminPageSize;
     setPaginatedMovies(filteredMovies.slice(startIndex, endIndex));
-  }, [adminMovies, searchQuery, currentPage, itemsPerPage]);
+  }, [adminMovies, searchQuery, adminPage, adminPageSize]);
 
-
-  // Handle pagination changes
+  // Handle page change from the pagination component.
   const handlePageChange = (page: number) => {
     setAdminPage(page);
   };
@@ -126,10 +115,12 @@ const Admin = () => {
     setCurrentMovie(movie);
     setShowEditForm(true);
   };
-  const [localMovies, setLocalMovies] = useState<Movie[]>([]);
+
   // Handle delete movie
   const handleMovieDeleted = (deletedId: string) => {
-    setLocalMovies((prev) => prev.filter((m) => m.showId !== deletedId));
+    // Update local movies list if needed.
+    // Alternatively, your context should update adminMovies upon deletion.
+    // For simplicity, we'll reload the page.
     window.location.reload();
   };
 
@@ -148,22 +139,21 @@ const Admin = () => {
     }
   };
 
-  // Generate pagination links
+  // Render pagination links
   const renderPaginationLinks = () => {
     const links = [];
 
     // Previous button
     links.push(
       <PaginationItem key="prev">
-        <PaginationPrevious 
+        <PaginationPrevious
           onClick={() => adminPage > 1 && handlePageChange(adminPage - 1)}
-          className={adminPage === 1 ? 'pointer-events-none opacity-50' : ''}
-
+          className={adminPage === 1 ? "pointer-events-none opacity-50" : ""}
         />
       </PaginationItem>
     );
 
-    // First page
+    // If current page is beyond the first two pages, show first page link.
     if (adminPage > 2) {
       links.push(
         <PaginationItem key={1}>
@@ -172,7 +162,7 @@ const Admin = () => {
       );
     }
 
-    // Ellipsis if needed
+    // Ellipsis when current page is far from first page
     if (adminPage > 3) {
       links.push(
         <PaginationItem key="ellipsis1">
@@ -181,24 +171,26 @@ const Admin = () => {
       );
     }
 
-    // Pages around current
-
-    for (let i = Math.max(1, adminPage - 1); i <= Math.min(adminTotalPages, adminPage + 1); i++) {
+    // Render one page before, current, and one page after
+    for (
+      let i = Math.max(1, adminPage - 1);
+      i <= Math.min(totalPages, adminPage + 1);
+      i++
+    ) {
       links.push(
         <PaginationItem key={i}>
-          <PaginationLink 
+          <PaginationLink
             isActive={adminPage === i}
             onClick={() => handlePageChange(i)}
           >
-
             {i}
           </PaginationLink>
         </PaginationItem>
       );
     }
 
-    // Ellipsis if needed
-    if (adminPage < adminTotalPages - 2) {
+    // Ellipsis when current page is far from last page
+    if (adminPage < totalPages - 2) {
       links.push(
         <PaginationItem key="ellipsis2">
           <PaginationEllipsis />
@@ -206,12 +198,12 @@ const Admin = () => {
       );
     }
 
-    // Last page
-    if (adminPage < adminTotalPages - 1 && adminTotalPages > 1) {
+    // Render last page if necessary
+    if (adminPage < totalPages - 1 && totalPages > 1) {
       links.push(
-        <PaginationItem key={adminTotalPages}>
-          <PaginationLink onClick={() => handlePageChange(adminTotalPages)}>
-            {adminTotalPages}
+        <PaginationItem key={totalPages}>
+          <PaginationLink onClick={() => handlePageChange(totalPages)}>
+            {totalPages}
           </PaginationLink>
         </PaginationItem>
       );
@@ -220,21 +212,19 @@ const Admin = () => {
     // Next button
     links.push(
       <PaginationItem key="next">
-
-        <PaginationNext 
-          onClick={() => adminPage < adminTotalPages && handlePageChange(adminPage + 1)}
-          className={adminPage === adminTotalPages ? 'pointer-events-none opacity-50' : ''}
+        <PaginationNext
+          onClick={() =>
+            adminPage < totalPages && handlePageChange(adminPage + 1)
+          }
+          className={
+            adminPage === totalPages ? "pointer-events-none opacity-50" : ""
+          }
         />
       </PaginationItem>
     );
 
     return links;
   };
-
-  // If not authenticated or not admin, don't render anything
-  // if (!isAuthenticated || !isAdmin) {
-  //   return null;
-  // }
 
   return (
     <Layout>
@@ -259,7 +249,6 @@ const Admin = () => {
                   value={String(adminPageSize)}
                   onValueChange={handleItemsPerPageChange}
                 >
-
                   <SelectTrigger className="w-20">
                     <SelectValue placeholder="5" />
                   </SelectTrigger>
@@ -272,16 +261,26 @@ const Admin = () => {
                 </Select>
                 <span className="text-sm text-muted-foreground">per page</span>
               </div>
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
+                <Input
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  placeholder="Search movies"
+                />
+                <Button type="submit">
+                  <Search className="h-4 w-4" />
+                </Button>
+              </form>
             </div>
 
-            {/* Movies List */}
+            {/* Movies List - Render the paginated movies */}
             <div className="border rounded-lg">
-              {adminMovies.length === 0 ? (
+              {paginatedMovies.length === 0 ? (
                 <div className="p-8 text-center">
                   <p className="text-muted-foreground">No movies found</p>
                 </div>
               ) : (
-                adminMovies.map((movie) => (
+                paginatedMovies.map((movie) => (
                   <MovieListItem
                     key={movie.showId}
                     movie={movie}
@@ -293,7 +292,7 @@ const Admin = () => {
             </div>
 
             {/* Pagination */}
-            {adminTotalPages > 1 && (
+            {totalPages > 1 && (
               <Pagination>
                 <PaginationContent>{renderPaginationLinks()}</PaginationContent>
               </Pagination>
@@ -301,7 +300,7 @@ const Admin = () => {
 
             {/* Results summary */}
             <div className="text-sm text-muted-foreground">
-              Page {adminPage} of {adminTotalPages}
+              Page {adminPage} of {totalPages}
             </div>
           </TabsContent>
         </Tabs>
@@ -316,7 +315,6 @@ const Admin = () => {
               Fill in the details to add a new movie to the catalog
             </DialogDescription>
           </DialogHeader>
-
           <div className="pt-4">
             <MovieForm
               onSubmit={handleAddMovie}
@@ -333,7 +331,6 @@ const Admin = () => {
             <DialogTitle>Edit Movie</DialogTitle>
             <DialogDescription>Update the movie details</DialogDescription>
           </DialogHeader>
-
           <div className="pt-4">
             {currentMovie && (
               <MovieForm
