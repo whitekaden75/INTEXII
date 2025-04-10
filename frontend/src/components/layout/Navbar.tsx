@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Film, Search, Menu, X, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,29 +16,29 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import { useMovies } from "@/contexts/MovieContext";
-import Logout from '../../contexts/LogoutContext';
-import AuthorizeView, { AuthorizedUser, UserContext } from "../auth/AuthorizeView";
-import AdminFeature from "../auth/AdminFeature";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { filters, setFilters } = useMovies(); // or from props/context
-  const user = useContext(UserContext);
 
   const handleSearch = (query: string) => {
     setFilters({ ...filters, searchQuery: query });
   };
+  const handleSearchBarClose = () => {
+    setFilters({ ...filters, searchQuery: "" });
+  };
 
-  // const handleLogout = () => {
-  //   logout();
-  //   navigate("/");
-  // };
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -57,13 +58,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Movies
               </Link>
-                <AdminFeature>
+              {isAdmin && (
                 <Link
                   to="/admin"
                   className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                   Admin
                 </Link>
-              </AdminFeature>
+              )}
               <Link
                 to="/privacy"
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
@@ -75,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
         {/* Search and Auth (Desktop) */}
         <div className="hidden md:flex items-center gap-4">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
 
           {user ? (
             <DropdownMenu>
@@ -84,9 +85,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   variant="ghost"
                   className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://i.pravatar.cc/150?u=demo" alt='user image' />
+                    <AvatarImage src={user.avatar} alt={user.username} />
                     <AvatarFallback>
-                      <AuthorizedUser value="email" />
+                      {user.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -96,20 +97,17 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <User className="mr-2 h-4 w-4" />
-                  <AuthorizedUser value="email" />
+                  <span>{user.username}</span>
                 </DropdownMenuItem>
-              
-                  <AdminFeature>
+                {isAdmin && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>
                     Admin Dashboard
                   </DropdownMenuItem>
-                </AdminFeature>
-                
+                )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Logout>
-                    <span>Log out</span>
-                  </Logout>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -144,21 +142,22 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           isMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}>
         <div className="container py-4 space-y-4">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
 
           <nav className="space-y-2">
             {user ? (
               <>
                 <div className="flex items-center gap-2 p-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src='https://i.pravatar.cc/150?u=demo' alt='user image' />
+                    <AvatarImage src={user.avatar} alt={user.username} />
                     <AvatarFallback>
-                      <AuthorizedUser value="email" />
+                      {user.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
+                    <p className="text-sm font-medium">{user.username}</p>
                     <p className="text-xs text-muted-foreground">
-                      <AuthorizedUser value="email" />
+                      {user.email}
                     </p>
                   </div>
                 </div>
@@ -168,14 +167,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                   onClick={() => setIsMenuOpen(false)}>
                   Movies
                 </Link>
-                    <AdminFeature>
-                    <Link
-                      to="/admin"
-                      className="block p-2 text-sm hover:bg-secondary rounded-md"
-                      onClick={() => setIsMenuOpen(false)}>
-                      Admin Dashboard
-                    </Link>
-                  </AdminFeature>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="block p-2 text-sm hover:bg-secondary rounded-md"
+                    onClick={() => setIsMenuOpen(false)}>
+                    Admin Dashboard
+                  </Link>
+                )}
                 <Link
                   to="/privacy"
                   className="block p-2 text-sm hover:bg-secondary rounded-md"
@@ -185,10 +184,12 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <Button
                   variant="ghost"
                   className="w-full justify-start p-2 text-sm hover:bg-secondary rounded-md"
-                  >
-                  <Logout> 
-                    Log out
-                  </Logout>
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
                 </Button>
               </>
             ) : (

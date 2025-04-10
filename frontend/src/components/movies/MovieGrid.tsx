@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
-import { Movie } from '@/data/MovieType';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useInView } from '../hooks/useInView';
+import React, { useState, useEffect } from "react";
+import MovieCard from "./MovieCard";
+import { Movie } from "@/data/MovieType";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useInView } from "../hooks/useInView";
 
 interface MovieGridProps {
   movies: Movie[];
@@ -33,30 +32,30 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     }
   }, [inView, loading, movies, page, displayedMovies.length]);
 
-  if (loading) {
-    return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div key={index} className="space-y-2">
-            <Skeleton className="aspect-[2/3] rounded-lg" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3 w-1/2" />
-          </div>
-        ))}
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+  //       {Array.from({ length: 8 }).map((_, index) => (
+  //         <div key={index} className="space-y-2">
+  //           <Skeleton className="aspect-[2/3] rounded-lg" />
+  //           <Skeleton className="h-4 w-3/4" />
+  //           <Skeleton className="h-3 w-1/2" />
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // }
 
-  if (movies.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <h3 className="text-xl font-semibold mb-2">No movies found</h3>
-        <p className="text-muted-foreground">
-          Try adjusting your filters or search query.
-        </p>
-      </div>
-    );
-  }
+  // if (movies.length === 0) {
+  //   return (
+  //     <div className="text-center py-12">
+  //       <h3 className="text-xl font-semibold mb-2">No movies found</h3>
+  //       <p className="text-muted-foreground">
+  //         Try adjusting your filters or search query.
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
