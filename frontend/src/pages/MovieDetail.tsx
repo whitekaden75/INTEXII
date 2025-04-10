@@ -110,7 +110,10 @@ const MovieDetail = () => {
 
   return (
     <Layout>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
+        if (!isOpen) handleClose();
+      }}>
         <DialogContent
           className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
           onInteractOutside={(e) => e.preventDefault()}>
