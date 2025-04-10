@@ -51,49 +51,31 @@ public class MoviesController : ControllerBase
 
 // POST: api/movies
     [HttpPost]
-    public async Task<ActionResult<Movie>> PostMovie(Movie movie)
-    {
-        try {
-            // Explicitly check if the movie already exists by title to avoid duplicates
-            var existingMovie = await _context.Movies
-                .FirstOrDefaultAsync(m => m.Title == movie.Title);
-            
-            if (existingMovie != null)
-            {
-                return Conflict("A movie with this title already exists");
-            }
-            
-            // Get highest show ID number
-            var highestId = await _context.Movies
+        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        {
+            // Get the highest numeric part of existing ShowIds
+            var lastId = await _context.Movies
                 .Where(m => m.ShowId.StartsWith("s"))
-                .Select(m => m.ShowId.Substring(1))  // Remove the 's' prefix
-                .ToListAsync();
+                .OrderByDescending(m => m.ShowId.Length)  // First order by length
+                .ThenByDescending(m => m.ShowId)          // Then by value
+                .Select(m => m.ShowId)
+                .FirstOrDefaultAsync();
                 
             int nextNumber = 1;
-            
-            foreach (var idStr in highestId)
+            if (!string.IsNullOrEmpty(lastId))
             {
-                if (int.TryParse(idStr, out int idNum))
+                string numericPart = lastId.Substring(1);
+                if (int.TryParse(numericPart, out var currentNum))
                 {
-                    if (idNum >= nextNumber)
-                    {
-                        nextNumber = idNum + 1;
-                    }
+                    nextNumber = currentNum + 1;
                 }
             }
             
             movie.ShowId = $"s{nextNumber}";
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
-            
-            // Return the newly created movie with its ID
             return CreatedAtAction(nameof(GetMovie), new { id = movie.ShowId }, movie);
         }
-        catch (Exception ex) {
-            Console.WriteLine($"Error creating movie: {ex.Message}");
-            return StatusCode(500, "Failed to create movie");
-        }
-    }
 
     // PUT: api/movies/s1
     [HttpPut("{id}")]
@@ -127,23 +109,23 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteMovie(string id)
-    {
-        var movie = await _context.Movies.FindAsync(id);
-        if (movie == null)
+        public async Task<IActionResult> DeleteMovie(string id)
         {
-            return NotFound();
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            
+            // First delete related ratings
+            var relatedRatings = await _context.movies_ratings.Where(r => r.ShowId == id).ToListAsync();
+            _context.movies_ratings.RemoveRange(relatedRatings);
+            
+            // Then delete the movie
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
-        
-        // First delete related ratings
-        var relatedRatings = await _context.movies_ratings.Where(r => r.ShowId == id).ToListAsync();
-        _context.movies_ratings.RemoveRange(relatedRatings);
-        
-        // Then delete the movie
-        _context.Movies.Remove(movie);
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
 
     private bool MovieExists(string id)
     {
