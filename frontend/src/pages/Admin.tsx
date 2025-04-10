@@ -121,7 +121,6 @@ const Admin = () => {
     // Update local movies list if needed.
     // Alternatively, your context should update adminMovies upon deletion.
     // For simplicity, we'll reload the page.
-    window.location.reload();
   };
 
   // Handle add movie
