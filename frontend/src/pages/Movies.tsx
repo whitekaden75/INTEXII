@@ -129,6 +129,7 @@ const Movies = () => {
 
         {/* Search Results */}
         {filters.searchQuery && (
+          
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">
               Search Results for "{filters.searchQuery}"
@@ -136,7 +137,9 @@ const Movies = () => {
             <p className="text-muted-foreground">
               Found {filteredMovies.length}{" "}
               {filteredMovies.length === 1 ? "movie" : "movies"}
+              
             </p>
+            
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
               ref={ref}
@@ -178,7 +181,7 @@ const Movies = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Recent Releases</h2>
               <MovieGrid
-                movies={categories.recentReleases.slice(0, 8)}
+                movies={categories.recentReleases.slice(0, 10)}
                 loading={loading}
               />
             </div>
@@ -191,7 +194,7 @@ const Movies = () => {
                 movies.length > 0 ? (
                   <div key={genre} className="mb-8">
                     <h2 className="text-2xl font-bold mb-4">{genre}</h2>
-                    <MovieGrid movies={movies.slice(0, 8)} loading={loading} />
+                    <MovieGrid movies={movies.slice(0, 10)} loading={loading} />
                   </div>
                 ) : null
               )}
