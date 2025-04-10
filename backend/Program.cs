@@ -9,9 +9,7 @@ using RootkitAuth.API.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -41,57 +39,33 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
-    options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email; // Ensure email is stored in claims
-
-    // Enforce strong password policies
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true; // special character
-    options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequiredUniqueChars = 1;
+    options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 12;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
 });
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
 
-
-builder.Services.AddCors (options => 
+builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactAppBlah",
         policy => {
-            policy.WithOrigins("http://localhost:4005", // Your frontend port
-                             "http://localhost:5173",   // Alternative Vite default port
-                             "http://127.0.0.1:4005",  // Also allow localhost as IP
-                            "http://127.0.0.1:5173",
-                            "https://nice-ground-00910891e.6.azurestaticapps.net")
+            policy.WithOrigins("http://localhost:4005",
+                             "http://localhost:5173",
+                             "http://127.0.0.1:4005",
+                             "http://127.0.0.1:5173",
+                             "https://nice-ground-00910891e.6.azurestaticapps.net")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         }));
 
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseCors("AllowReactAppBlah");
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None; // change after adding https for production
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.LoginPath = "/login";
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -114,58 +88,78 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
-// Add security headers middleware
+// Add security headers middleware with logging
 app.Use(async (context, next) =>
 {
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Processing request for {Path}", context.Request.Path);
     context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';");
     context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
     context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
     context.Response.Headers.Add("X-Frame-Options", "DENY");
     context.Response.Headers.Add("Referrer-Policy", "no-referrer");
     await next();
+    logger.LogInformation("Security headers added to response for {Path}", context.Request.Path);
 });
 
-// Add security headers middleware
 app.UseCors("AllowReactAppBlah");
 
-app.UseAuthentication(); // Ensure this is before UseAuthorization
+app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Authentication middleware - User authenticated: {IsAuthenticated}, Identity: {Identity}",
+        context.User.Identity?.IsAuthenticated ?? false,
+        context.User.Identity?.Name ?? "None");
+    await next();
+});
+
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Authorization middleware - Path: {Path}, Claims: {Claims}",
+        context.Request.Path,
+        context.User.Claims.Any() ? string.Join(", ", context.User.Claims.Select(c => $"{c.Type}={c.Value}")) : "None");
+    await next();
+});
 
 app.MapControllers();
 app.MapIdentityApi<IdentityUser>();
 
 app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> signInManager) =>
 {
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Logout endpoint called for user: {Identity}", context.User.Identity?.Name ?? "None");
     await signInManager.SignOutAsync();
-
-    // Ensure authentication cookie is removed
+    logger.LogInformation("SignOutAsync completed for user: {Identity}", context.User.Identity?.Name ?? "None");
     context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-
+    logger.LogInformation("Cookie '.AspNetCore.Identity.Application' deleted");
     return Results.Ok(new { message = "Logout successful" });
 }).RequireAuthorization();
 
-
 app.MapGet("/pingauth", (ClaimsPrincipal user, ILogger<Program> logger) =>
 {
-    logger.LogInformation("User identity is: {Identity}", user.Identity?.Name);
+    logger.LogInformation("Ping endpoint - User authenticated: {IsAuthenticated}, Identity: {Identity}",
+        user.Identity?.IsAuthenticated ?? false,
+        user.Identity?.Name ?? "None");
+    logger.LogInformation("Pingauth claims: {Claims}",
+        user.Claims.Any() ? string.Join(", ", user.Claims.Select(c => $"{c.Type}={c.Value}")) : "None");
 
     if (!user.Identity?.IsAuthenticated ?? false)
     {
-        Console.WriteLine("User is not authenticated.");
+        logger.LogWarning("Pingauth: User not authenticated, returning 401");
         return Results.Unauthorized();
     }
 
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
-    // Extract roles from the user claims
-    var roles = user.FindAll(ClaimTypes.Role)
-                    .Select(claim => claim.Value)
-                    .ToList();
-
+    var roles = user.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToList();
+    logger.LogInformation("Pingauth returning user data - Email: {Email}, Roles: {Roles}",
+        email,
+        string.Join(", ", roles));
     return Results.Json(new { email = email, roles = roles });
 }).RequireAuthorization();
-
 
 app.Run();

@@ -33,11 +33,11 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/privacy" element={<Privacy />} />
 
+
             {/* Protected Routes */}
             <Route element={<AuthorizeViewWrapper />}>
-              <Route path="/movies" element={<Movies />} />
-              <Route path="/movies/:id" element={<MovieDetail />} />
-
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/movies/:id" element={<MovieDetail />} />
               {/* Nested Admin Routes */}
               <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<Admin />} />

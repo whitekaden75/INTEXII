@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   Carousel,
@@ -10,6 +11,7 @@ import MovieCard from './MovieCard';
 import { Movie } from '@/data/MovieType';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInView } from '../hooks/useInView';
+
 
 interface MovieGridProps {
   movies: Movie[];
@@ -39,6 +41,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     }
   }, [inView, loading, movies, page, displayedMovies.length]);
 
+
   if (loading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
@@ -53,6 +56,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
     );
   }
 
+
   if (movies.length === 0) {
     return (
       <div className="text-center py-12">
@@ -66,26 +70,19 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
 
   return (
     <>
-      <Carousel opts={{ loop: true, align: "start" }}>
-        <CarouselPrevious />
-        <CarouselContent>
-          {displayedMovies.map((movie) => (
-            <CarouselItem
-              key={movie.showId}
-              className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
-            >
-              <MovieCard movie={movie} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselNext />
-      </Carousel>
-      {displayedMovies.length < movies.length && (
-        <div ref={ref} className="h-24 flex items-center justify-center mt-8">
-          <div className="h-10 w-10 rounded-full border-4 border-cineniche-purple border-t-transparent animate-spin"></div>
-        </div>
-      )}
-    </>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {displayedMovies.map((movie) => (
+        <MovieCard key={movie.showId} movie={movie} />
+      ))}
+    </div>
+  
+    {displayedMovies.length < movies.length && (
+      <div ref={ref} className="h-24 flex items-center justify-center mt-8">
+        <div className="h-10 w-10 rounded-full border-4 border-cineniche-purple border-t-transparent animate-spin"></div>
+      </div>
+    )}
+  </>
+  
   );
 };
 

@@ -10,7 +10,7 @@ const user = useContext(UserContext);
         return <Navigate to="/login" />;
     }
 
-    if (!user.roles || !user.roles.includes('Admin')) {
+    if (!user.roles || !user.roles.includes('Administrator')) {
         // Logged in but not an admin—redirect to an unauthorized access page
         return <Navigate to="/unauthorized" />;
     }

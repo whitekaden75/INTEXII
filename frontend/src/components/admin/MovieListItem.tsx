@@ -1,24 +1,37 @@
-import React from 'react';
-import { Movie } from '@/contexts/MovieContext';
-import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Star } from 'lucide-react';
+import React from "react";
+import { Movie } from "@/contexts/MovieContext";
+import { Button } from "@/components/ui/button";
+import { Edit, Trash2, Star } from "lucide-react";
+import { deleteMovie } from "@/api/MovieAPI"; // 👈 import your API call
 
 interface MovieListItemProps {
   movie: Movie;
   onEdit: (movie: Movie) => void;
-  onDelete: (id: string) => void;
+  onMovieDeleted: (id: string) => void; // 👈 callback to update local state
 }
 
-const MovieListItem: React.FC<MovieListItemProps> = ({ movie, onEdit, onDelete }) => {
-  // Define posterUrl dynamically based on the title
-  const safeTitle = movie.title.replace(/[:'&]/g, "");
-  const posterUrl = `https://intex212.blob.core.windows.net/movie-posters/${safeTitle}.jpg`;
+const MovieListItem: React.FC<MovieListItemProps> = ({
+  movie,
+  onEdit,
+  onMovieDeleted,
+}) => {
+  const handleDelete = async () => {
+    try {
+      await deleteMovie(movie.showId);
+      onMovieDeleted(movie.showId); // let parent remove it from UI
+    } catch (err) {
+      console.error("Failed to delete movie:", err);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between p-4 border-b last:border-0">
       <div className="flex items-center space-x-4">
-        <img 
-          src={posterUrl}  // Use the dynamically generated posterUrl
+        <img
+          src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
+                    /[:'&]/g,
+                    ""
+                  )}.jpg`}
           alt={movie.title}
           className="h-16 w-12 object-cover rounded"
         />
@@ -36,20 +49,19 @@ const MovieListItem: React.FC<MovieListItemProps> = ({ movie, onEdit, onDelete }
         </div>
       </div>
       <div className="flex space-x-2">
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={() => onEdit(movie)}
-        >
+        <Button variant="outline" size="icon" onClick={() => onEdit(movie)}>
           <Edit className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
-        <Button 
-          variant="outline" 
-          size="icon" 
+        <Button
+          variant="outline"
+          size="icon"
           className="text-destructive hover:text-destructive"
-          onClick={() => onDelete(movie.showId)}
-        >
+          onClick={() => {
+            if (window.confirm("Are you sure you want to delete this?")) {
+              handleDelete();
+            }
+          }}>
           <Trash2 className="h-4 w-4" />
           <span className="sr-only">Delete</span>
         </Button>
