@@ -22,7 +22,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
   const [displayedMovies, setDisplayedMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
   const { ref, inView } = useInView();
-  const moviesPerPage = 8;
+  const moviesPerPage = 10;
 
   // Initialize with first batch
   useEffect(() => {
