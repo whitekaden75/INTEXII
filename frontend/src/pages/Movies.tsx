@@ -4,13 +4,17 @@ import Layout from "@/components/layout/Layout";
 import MovieGrid from "@/components/movies/MovieGrid";
 import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
+
 import { useInView } from "@/hooks/useInView";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
+
 
 const Movies = () => {
   const [displayCount, setDisplayCount] = useState(12); // start with 12
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
+
+  
   const {
     movies,
     filteredMovies,
@@ -22,10 +26,11 @@ const Movies = () => {
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
+
   // Extract all unique genres from movies
   const allGenres = movies
     .reduce<string[]>((genres, movie) => {
-      const movieGenres = (movie.genre ?? "").split(",").map((g) => g.trim());
+      const movieGenres = movie.genre.split(",").map((g) => g.trim());
       movieGenres.forEach((genre) => {
         if (!genres.includes(genre)) {
           genres.push(genre);
@@ -56,7 +61,7 @@ const Movies = () => {
 
     // Group movies by genre
     const moviesByGenre = movies.reduce((acc, movie) => {
-      const genres = (movie.genre ?? "").split(",").map((g) => g.trim());
+      const genres = movie.genre.split(",").map((g) => g.trim());
       genres.forEach((genre) => {
         if (!acc[genre]) {
           acc[genre] = [];
@@ -74,6 +79,8 @@ const Movies = () => {
 
   // Get all category movies
   const categories = getMoviesByCategory();
+
+
 
   useEffect(() => {
     if (!inView) return;
