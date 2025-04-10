@@ -35,45 +35,52 @@ const Movies = () => {
 
   // Extract all unique genres from movies
   const allGenres = movies
-    .reduce<string[]>((genres, movie) => {
+  .reduce<string[]>((genres, movie) => {
+    if (movie.genre) {
       const movieGenres = movie.genre.split(",").map((g) => g.trim());
       movieGenres.forEach((genre) => {
-        if (!genres.includes(genre)) {
+        if (genre && !genres.includes(genre)) { // Add check for empty genre
           genres.push(genre);
         }
       });
-      return genres;
-    }, [])
-    .sort();
+    }
+    return genres;
+  }, [])
+  .sort();
 
-  // Handle search from navbar
-  const handleSearch = (query: string) => {
-    setFilters({ ...filters, searchQuery: query });
-    setDisplayCount(12);
-  };
+// Handle search from navbar
+const handleSearch = (query: string) => {
+  setFilters({ ...filters, searchQuery: query || "" });
+  setDisplayCount(12);
+};
 
-  // Handle genre filter
-  const handleGenreFilter = (genre: string | undefined) => {
-    setFilters({ ...filters, genre });
-    setDisplayCount(12);
-  };
+// Handle genre filter
+const handleGenreFilter = (genre: string | undefined) => {
+  setFilters({ ...filters, genre: genre || undefined });
+  setDisplayCount(12);
+};
 
   // Generate movie categories
   const getMoviesByCategory = () => {
     // Recent releases (sort by release year)
+    // Recent releases (sort by release year)
     const recentReleases = [...movies]
-      .sort((a, b) => b.releaseYear - a.releaseYear)
-      .slice(0, 10);
-
+        .filter(movie => movie && typeof movie.releaseYear === 'number') // Add this filter
+        .sort((a, b) => b.releaseYear - a.releaseYear)
+        .slice(0, 10);
     // Group movies by genre
     const moviesByGenre = movies.reduce((acc, movie) => {
-      const genres = movie.genre.split(",").map((g) => g.trim());
-      genres.forEach((genre) => {
-        if (!acc[genre]) {
-          acc[genre] = [];
-        }
-        acc[genre].push(movie);
-      });
+      if (movie.genre) {
+        const genres = movie.genre.split(",").map((g) => g.trim());
+        genres.forEach((genre) => {
+          if (genre) { // Add check for empty genre
+            if (!acc[genre]) {
+              acc[genre] = [];
+            }
+            acc[genre].push(movie);
+          }
+        });
+      }
       return acc;
     }, {} as Record<string, typeof movies>);
 
@@ -187,7 +194,7 @@ const Movies = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Recent Releases</h2>
               <MovieGrid
-                movies={categories.recentReleases.slice(0, 8)}
+                movies={categories.recentReleases.slice(0, 10)}
                 loading={loading}
               />
             </div>
@@ -200,7 +207,7 @@ const Movies = () => {
                 movies.length > 0 ? (
                   <div key={genre} className="mb-8">
                     <h2 className="text-2xl font-bold mb-4">{genre}</h2>
-                    <MovieGrid movies={movies.slice(0, 8)} loading={loading} />
+                    <MovieGrid movies={movies.slice(0, 10)} loading={loading} />
                   </div>
                 ) : null
               )}

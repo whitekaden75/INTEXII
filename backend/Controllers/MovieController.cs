@@ -18,10 +18,23 @@ public class MoviesController : ControllerBase
     }
 
     // GET: api/movies
+    // GET: api/movies
+    // GET: api/movies
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
     {
-        return await _context.Movies.ToListAsync();
+        var movies = await _context.Movies.ToListAsync();
+        
+        // Ensure all movies have at least an empty string for genre
+        foreach (var movie in movies)
+        {
+            if (movie.Genre == null)
+            {
+                movie.Genre = "";
+            }
+        }
+        
+        return movies;
     }
 
     // GET: api/movies/s1

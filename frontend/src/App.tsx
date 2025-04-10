@@ -33,7 +33,6 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/privacy" element={<Privacy />} />
 
-
             {/* Protected Routes */}
             <Route element={<AuthorizeViewWrapper />}>
             <Route path="/movies" element={<Movies />} />
