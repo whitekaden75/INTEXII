@@ -41,6 +41,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
 
+builder.Services.AddSingleton<PythonScriptService>();
+
+builder.Services.AddHostedService<PythonScriptHostedService>();
 
 builder.Services.AddCors (options => 
     options.AddPolicy("AllowReactAppBlah",
