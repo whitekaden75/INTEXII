@@ -16,6 +16,8 @@ import NotFound from "./pages/NotFound";
 
 // Context Providers
 import { MovieProvider } from "./contexts/MovieContext";
+import AdminRoute from "./components/auth/AdminRoute";
+import AuthorizeView from "./components/auth/AuthorizeView";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,7 @@ const App = () => (
       
         <MovieProvider>
           <Toaster />
+          <AuthorizeView >
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -32,11 +35,14 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/movies" element={<Movies />} />
               <Route path="/movies/:id" element={<MovieDetail />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route element={<AdminRoute/>}>
+                <Route path="/admin" element={<Admin />} />
+              </Route>
               <Route path="/privacy" element={<Privacy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          </AuthorizeView>
         </MovieProvider>
       
     </TooltipProvider>
