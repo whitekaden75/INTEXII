@@ -39,6 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
   const handleLogout = async () => {
     try {
+      console.log("Logout initiated");
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/logout`, {
         method: 'POST',
         credentials: 'include',
@@ -47,16 +48,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
       });
       
-      if (response.ok) {
-        // Only navigate after successful logout
-        navigate("/");
-        // Optionally force reload to clear any client-side state
-        window.location.reload();
-      } else {
-        console.error('Logout failed:', await response.text());
-      }
+      console.log("Logout response status:", response.status);
+      const responseData = await response.json();
+      console.log("Logout response:", responseData);
+      
+      // Clear any client-side state
+      // If you're using localStorage or sessionStorage for any auth data
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
+      
+      // Force a hard reload to ensure all state is cleared
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
+      // Even if there's an error, try to navigate away
+      window.location.href = '/';
     }
   };
 
