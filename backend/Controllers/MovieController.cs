@@ -18,12 +18,31 @@ public class MoviesController : ControllerBase
     }
 
     // GET: api/movies
+    // GET: api/movies
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+    public async Task<ActionResult<IEnumerable<Movie>>> GetMovies(
+        [FromQuery] string search = null,
+        [FromQuery] string genre = null)
     {
-        return await _context.Movies.ToListAsync();
-    }
+        var query = _context.Movies.AsQueryable();
 
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(m => m.Title.Contains(search));
+        }
+
+        if (!string.IsNullOrEmpty(genre))
+        {
+            query = query.Where(m => m.Genre.Contains(genre));
+        }
+
+        var totalCount = await query.CountAsync();
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        var movies = await query.ToListAsync();
+        return movies;
+    }
+    
     // GET: api/movies/s1
     [HttpGet("{id}")]
     public async Task<ActionResult<Movie>> GetMovie(string id)
