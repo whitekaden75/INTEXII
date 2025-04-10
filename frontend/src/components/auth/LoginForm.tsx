@@ -159,17 +159,16 @@ const LoginForm: React.FC = () => {
           </div>
 
           {cookieConsent !== 'denied' && (
-            <div className="form-check mb-3">
+            <div className="flex items-center mb-3">
               <input
-                className="form-check-input"
                 type="checkbox"
-                value=""
                 id="rememberme"
                 name="rememberme"
                 checked={rememberMe}
                 onChange={handleChange}
+                className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
               />
-              <label className="form-check-label" htmlFor="rememberme">
+              <label htmlFor="rememberme" className="ml-2 text-sm text-gray-700">
                 Remember password
               </label>
             </div>
