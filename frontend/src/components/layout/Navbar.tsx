@@ -31,6 +31,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
   const handleSearch = (query: string) => {
     setFilters({ ...filters, searchQuery: query });
   };
+  const handleSearchBarClose = () => {
+    setFilters({ ...filters, searchQuery: "" });
+  };
 
   const handleLogout = () => {
     logout();
@@ -73,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
         {/* Search and Auth (Desktop) */}
         <div className="hidden md:flex items-center gap-4">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
 
           {user ? (
             <DropdownMenu>
@@ -139,7 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           isMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}>
         <div className="container py-4 space-y-4">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
 
           <nav className="space-y-2">
             {user ? (

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Movie } from "@/data/MovieType"; // Update the import to use the correct Movie type
 import { cn } from "@/lib/utils";
 
+
 interface MovieCardProps {
   movie: Movie;
   className?: string;

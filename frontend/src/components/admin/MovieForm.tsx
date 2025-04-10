@@ -1,71 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import { Movie } from '@/data/MovieType';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import React, { useState, useEffect } from "react";
+import { Movie } from "@/data/MovieType";
+import { createMovie, updateMovie } from "@/api/MovieAPI";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface MovieFormProps {
   movie?: Movie;
-  onSubmit: (movieData: Movie) => void;
+  onSubmit: (movie: Movie) => void;
   onCancel: () => void;
   isEditing?: boolean;
 }
 
-const MovieForm: React.FC<MovieFormProps> = ({ 
-  movie, 
-  onSubmit, 
-  onCancel, 
-  isEditing = false 
+const MovieForm: React.FC<MovieFormProps> = ({
+  movie,
+  onSubmit,
+  onCancel,
+  isEditing = false,
 }) => {
-  const [formData, setFormData] = useState<Movie>({
-    showId: '',
-    type: '',
-    title: '',
-    director: '',
-    cast: '',
-    country: '',
+  const [formData, setFormData] = useState<Omit<Movie, "showId">>({
+    type: "",
+    title: "",
+    director: "",
+    cast: "",
+    country: "",
     releaseYear: new Date().getFullYear(),
-    rating: '',
-    duration: '',
-    description: '',
-    genre: '',
+    rating: "",
+    duration: "",
+    description: "",
+    genre: "",
   });
 
-  // Initialize form with movie data if editing
   useEffect(() => {
     if (movie && isEditing) {
-      setFormData({ ...movie });
+      const { showId, ...rest } = movie;
+      setFormData(rest);
     }
   }, [movie, isEditing]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      let response: Movie;
+      if (isEditing && movie?.showId) {
+        response = await updateMovie(movie.showId, {
+          ...formData,
+          showId: movie.showId,
+        });
+      } else {
+        response = await createMovie(formData);
+      }
+      onSubmit(response);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
   };
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Movie' : 'Add New Movie'}</CardTitle>
+        <CardTitle>{isEditing ? "Edit Movie" : "Add New Movie"}</CardTitle>
         <CardDescription>
-          {isEditing 
-            ? 'Update the movie details below' 
-            : 'Fill in the details to add a new movie to the catalog'
-          }
+          {isEditing
+            ? "Update the movie details below"
+            : "Fill in the details to add a new movie to the catalog"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -82,7 +96,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="releaseYear">Release Year</Label>
               <Input
@@ -95,7 +109,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="rating">Rating</Label>
@@ -108,7 +122,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="duration">Duration</Label>
               <Input
@@ -134,7 +148,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="genre">Genre</Label>
             <Input
@@ -181,7 +195,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               required
             />
           </div>
-          
         </form>
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
@@ -189,7 +202,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
           Cancel
         </Button>
         <Button onClick={handleSubmit}>
-          {isEditing ? 'Update Movie' : 'Add Movie'}
+          {isEditing ? "Update Movie" : "Add Movie"}
         </Button>
       </CardFooter>
     </Card>
