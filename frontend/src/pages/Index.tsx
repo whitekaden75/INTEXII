@@ -54,12 +54,12 @@ const Index = () => {
               indie gems, and niche documentaries you won't find anywhere else.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
-              
+
                 <>
                   <Button
                     className="gap-2"
                     size="lg"
-                    onClick={() => navigate("/register")}>
+                    onClick={() => navigate("/movies")}>
                     <Play className="h-4 w-4" />
                     Start Watching
                   </Button>
@@ -77,9 +77,9 @@ const Index = () => {
                 <Button
                   className="gap-2"
                   size="lg"
-                  onClick={() => navigate("/movies")}>
+                  onClick={() => navigate("/register")}>
                   <Play className="h-4 w-4" />
-                  Browse All Movies
+                  Create an Account
                 </Button>
         
             </div>
