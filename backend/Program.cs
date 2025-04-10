@@ -1,3 +1,4 @@
+using System.Data;
 using System.Security.Claims;
 using backend.Data;
 using Microsoft.AspNetCore.Identity;
@@ -81,13 +82,18 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None; // change after adding https for production
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.LoginPath = "/login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
 
 var app = builder.Build();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -128,8 +134,12 @@ app.MapGet("/pingauth", (ClaimsPrincipal user, ILogger<Program> logger) =>
     }
 
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
-    Console.WriteLine($"User email is: {email}");
-    return Results.Json(new { email = email });
+    // Extract roles from the user claims
+    var roles = user.FindAll(ClaimTypes.Role)
+                    .Select(claim => claim.Value)
+                    .ToList();
+
+    return Results.Json(new { email = email, roles = roles });
 }).RequireAuthorization();
 
 
