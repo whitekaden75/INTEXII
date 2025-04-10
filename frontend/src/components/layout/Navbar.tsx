@@ -91,11 +91,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 Admin
               </Link>
               </AdminFeature>
-              <Link
-                to="/privacy"
-                className="text-sm font-medium hover:text-cineniche-blue transition-colors">
-                Privacy
-              </Link>
             </>
           )}
         </nav>
