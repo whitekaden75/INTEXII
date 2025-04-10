@@ -75,31 +75,28 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           <span>CineNiche</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Search and Auth */}
+        <div className="hidden md:flex items-center gap-4">
           {user && (
             <>
-              <Link
-                to="/movies"
-                className="text-sm font-medium hover:text-cineniche-blue transition-colors">
-                Movies
-              </Link>
-              <AdminFeature>
-              <Link
-                to="/admin"
-                className="text-sm font-medium hover:text-cineniche-blue transition-colors">
-                Admin
-              </Link>
-              </AdminFeature>
+              {/* Movies and Admin buttons placed just left of the search bar */}
+              <div className="flex items-center gap-6">
+                <Link
+                  to="/movies"
+                  className="text-sm font-medium hover:text-cineniche-blue transition-colors">
+                  Movies
+                </Link>
+                <AdminFeature>
+                  <Link
+                    to="/admin"
+                    className="text-sm font-medium hover:text-cineniche-blue transition-colors">
+                    Admin
+                  </Link>
+                </AdminFeature>
+              </div>
+              <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
             </>
           )}
-        </nav>
-
-        {/* Search and Auth (Desktop) */}
-        <div className="hidden md:flex items-center gap-4">
-        {user && (
-          <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
-        )}
 
           {user ? (
             <DropdownMenu>
@@ -136,8 +133,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="outline"
-              className="hover:bg-[#0C4A6E] hover:text-white border-[#0C4A6E] transition-colors"
-              onClick={() => navigate("/login")}>
+                className="hover:bg-[#0C4A6E] hover:text-white border-[#0C4A6E] transition-colors"
+                onClick={() => navigate("/login")}>
                 Log in
               </Button>
               <Button onClick={() => navigate("/register")}>Sign up</Button>
