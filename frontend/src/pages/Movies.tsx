@@ -14,7 +14,7 @@ const Movies = () => {
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
-  
+
   const {
     movies,
     filteredMovies,
@@ -25,6 +25,7 @@ const Movies = () => {
   } = useMovies();
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+
 
 
   // Extract all unique genres from movies
@@ -43,13 +44,11 @@ const Movies = () => {
   // Handle search from navbar
   const handleSearch = (query: string) => {
     setFilters({ ...filters, searchQuery: query });
-    setDisplayCount(12);
   };
 
   // Handle genre filter
   const handleGenreFilter = (genre: string | undefined) => {
     setFilters({ ...filters, genre });
-    setDisplayCount(12);
   };
 
   // Generate movie categories
@@ -102,9 +101,9 @@ const Movies = () => {
       setVisibleGenreCount((prev) => prev + 2);
     }
   }, [inView, filters, filteredMovies.length, displayCount]);
-  // useEffect(() => {
-  //   setDisplayCount(12);
-  // }, [filters.genre, filters.searchQuery]);
+  useEffect(() => {
+    setDisplayCount(12);
+  }, [filters.genre, filters.searchQuery]);
 
   return (
     <Layout onSearch={handleSearch}>
@@ -140,7 +139,7 @@ const Movies = () => {
             </p>
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              // ref={ref}
+              ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount
@@ -161,7 +160,7 @@ const Movies = () => {
             </p>
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              // ref={ref}
+              ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount
