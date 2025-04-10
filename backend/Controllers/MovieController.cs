@@ -21,6 +21,7 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetMovies(
         [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
         [FromQuery] string search = null,
         [FromQuery] string genre = null)
     {
