@@ -11,7 +11,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
   // Temporary default poster URL until you have real poster URLs
-  const safeTitle = movie.title.replace(/[:'&-()!?./]/g, "");
+  const safeTitle = movie.title.replace(/[^a-zA-Z0-9]/g, "");
   const defaultPosterUrl = `https://intex212.blob.core.windows.net/movie-posters/${safeTitle}.jpg`;
 
   return (
