@@ -37,9 +37,27 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     setFilters({ ...filters, searchQuery: "" });
   };
 
-  const handleLogout = () => {
-    // logout();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        // Only navigate after successful logout
+        navigate("/");
+        // Optionally force reload to clear any client-side state
+        window.location.reload();
+      } else {
+        console.error('Logout failed:', await response.text());
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
