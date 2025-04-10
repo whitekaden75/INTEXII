@@ -1,4 +1,3 @@
-import React from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,8 +15,8 @@ import NotFound from "./pages/NotFound";
 
 // Context Providers
 import { MovieProvider } from "./contexts/MovieContext";
-import UserLoader from "./components/auth/AuthorizeView"; // This is the global user loader (replaces AuthorizeViewWrapper)
-import ProtectedRoute from "./components/auth/ProtectedRoute"; // This route guard only allows access for authenticated users
+import AdminRoute from "./components/auth/AdminRoute";
+import AuthorizeViewWrapper from "./components/auth/AuthorizeView";
 
 const queryClient = new QueryClient();
 
@@ -27,26 +26,25 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
-          {/* The UserLoader provides the user context for every route */}
-          <UserLoader>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/privacy" element={<Privacy />} />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/movies" element={<Movies />} />
-                <Route path="/movies/:id" element={<MovieDetail />} />
+            {/* Protected Routes */}
+            <Route element={<AuthorizeViewWrapper />}>
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/movies/:id" element={<MovieDetail />} />
+              {/* Nested Admin Routes */}
+              <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<Admin />} />
               </Route>
+            </Route>
 
-              {/* Not Found */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </UserLoader>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </MovieProvider>
