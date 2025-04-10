@@ -25,6 +25,7 @@ const AuthorizeViewWrapper = () => {
         const data = await response.json();
         if (data.email && data.roles) {
           setUser({ email: data.email, roles: data.roles });
+          console.log("[AuthorizeView] Logged in user:", data);
           setAuthorized(true);
         } else {
           throw new Error('Invalid user session');
