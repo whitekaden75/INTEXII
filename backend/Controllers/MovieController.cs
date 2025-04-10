@@ -19,12 +19,6 @@ public class MoviesController : ControllerBase
 
     // GET: api/movies
     // GET: api/movies
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
-    {
-        return await _context.Movies.ToListAsync();
-    }
-
     // GET: api/movies
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
@@ -41,6 +35,20 @@ public class MoviesController : ControllerBase
         }
         
         return movies;
+    }
+
+    // GET: api/movies/s1
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Movie>> GetMovie(string id)
+    {
+        var movie = await _context.Movies.FindAsync(id);
+
+        if (movie == null)
+        {
+            return NotFound();
+        }
+
+        return movie;
     }
 
     // POST: api/movies
