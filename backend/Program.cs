@@ -134,8 +134,18 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     logger.LogInformation("Logout endpoint called for user: {Identity}", context.User.Identity?.Name ?? "None");
     await signInManager.SignOutAsync();
-    logger.LogInformation("SignOutAsync completed for user: {Identity}", context.User.Identity?.Name ?? "None");
-    context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+
+    // More aggressively delete the cookie
+    context.Response.Cookies.Delete(".AspNetCore.Identity.Application", new CookieOptions
+    {
+        Secure = true,
+        HttpOnly = true,
+        SameSite = SameSiteMode.None,
+        Path = "/",
+        Domain = null, // Use the same domain as the cookie
+        Expires = DateTimeOffset.UtcNow.AddDays(-1) // Expired cookie
+    });
+
     logger.LogInformation("Cookie '.AspNetCore.Identity.Application' deleted");
     return Results.Ok(new { message = "Logout successful" });
 }).RequireAuthorization();
