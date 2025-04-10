@@ -1,3 +1,4 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,8 +16,8 @@ import NotFound from "./pages/NotFound";
 
 // Context Providers
 import { MovieProvider } from "./contexts/MovieContext";
-import AdminRoute from "./components/auth/AdminRoute";
-import AuthorizeViewWrapper from "./components/auth/AuthorizeView";
+import UserLoader from "./components/auth/AuthorizeView"; // This is the global user loader (replaces AuthorizeViewWrapper)
+import ProtectedRoute from "./components/auth/ProtectedRoute"; // This route guard only allows access for authenticated users
 
 const queryClient = new QueryClient();
 
@@ -26,25 +27,26 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/privacy" element={<Privacy />} />
+          {/* The UserLoader provides the user context for every route */}
+          <UserLoader>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/privacy" element={<Privacy />} />
 
-            {/* Protected Routes */}
-            <Route element={<AuthorizeViewWrapper />}>
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/movies/:id" element={<MovieDetail />} />
-              {/* Nested Admin Routes */}
-              <Route element={<AdminRoute />}>
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/movies" element={<Movies />} />
+                <Route path="/movies/:id" element={<MovieDetail />} />
                 <Route path="/admin" element={<Admin />} />
               </Route>
-            </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Not Found */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </UserLoader>
         </BrowserRouter>
       </TooltipProvider>
     </MovieProvider>
