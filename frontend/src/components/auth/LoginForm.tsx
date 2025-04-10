@@ -64,6 +64,8 @@ const LoginForm: React.FC = () => {
     console.log(`[Login Request] Attempting login with email: ${email}`);
 
     try {
+
+      
       setLoading(true);
       console.log("[State Update] Loading state set to true.");
 

@@ -5,7 +5,7 @@ import Layout from "@/components/layout/Layout";
 import MovieListItem from "@/components/admin/MovieListItem";
 import MovieForm from "@/components/admin/MovieForm";
 import { useMovies, Movie } from "@/contexts/MovieContext";
-import { useAuth } from "@/contexts/AuthContext";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/select";
 
 const Admin = () => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  // const { isAuthenticated, isAdmin } = useAuth();
   const {
     movies,
     filteredMovies,
@@ -70,13 +70,13 @@ const Admin = () => {
   const [paginatedMovies, setPaginatedMovies] = useState<Movie[]>([]);
 
   // Redirect if not authenticated or not admin
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    } else if (!isAdmin) {
-      navigate("/movies");
-    }
-  }, [isAuthenticated, isAdmin, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   } else if (!isAdmin) {
+  //     navigate("/movies");
+  //   }
+  // }, [isAuthenticated, isAdmin, navigate]);
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
@@ -229,9 +229,9 @@ const Admin = () => {
   };
 
   // If not authenticated or not admin, don't render anything
-  if (!isAuthenticated || !isAdmin) {
-    return null;
-  }
+  // if (!isAuthenticated || !isAdmin) {
+  //   return null;
+  // }
 
   return (
     <Layout>
