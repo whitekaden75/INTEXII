@@ -37,7 +37,7 @@ const AuthorizeViewWrapper = () => {
       }
     }
 
-    fetchWithRetry('https://intexii-team2-12-b9b2h9ead7cwd9ax.eastus-01.azurewebsites.net/pingauth', {
+    fetchWithRetry('https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/pingauth', {
       method: 'GET',
       credentials: 'include',
     });
