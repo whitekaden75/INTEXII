@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
                              "http://localhost:5173",
                              "http://127.0.0.1:4005",
                              "http://127.0.0.1:5173",
-                             "https://nice-ground-00910891e.6.azurestaticapps.net")
+                             "https://purple-wave-0396f251e.6.azurestaticapps.net")
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();

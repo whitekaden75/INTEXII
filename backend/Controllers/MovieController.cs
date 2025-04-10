@@ -18,8 +18,6 @@ public class MoviesController : ControllerBase
     }
 
     // GET: api/movies
-    // GET: api/movies
-    // GET: api/movies
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
     {
@@ -53,7 +51,7 @@ public class MoviesController : ControllerBase
 
     // POST: api/movies
     [HttpPost]
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<Movie>> PostMovie(Movie movie)
     {
         // Get the highest numeric part of existing ShowIds
@@ -79,7 +77,7 @@ public class MoviesController : ControllerBase
 
     // PUT: api/movies/s1
     [HttpPut("{id}")]
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> PutMovie(string id, Movie movie)
     {
         if (id != movie.ShowId)
@@ -110,7 +108,7 @@ public class MoviesController : ControllerBase
 
     // DELETE: api/movies/s1
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteMovie(string id)
     {
         var movie = await _context.Movies.FindAsync(id);

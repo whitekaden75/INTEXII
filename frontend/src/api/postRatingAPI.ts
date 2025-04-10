@@ -4,7 +4,7 @@ export interface SubmitRatingPayload {
   rating: number;
 }
 
-const API_BASE_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/Movies";
+const API_BASE_URL = "https://pleaseintexistomrrow-dtcrgtdccsbfhdam.eastus-01.azurewebsites.net/api/Movies";
 
 export const postRatingAPI = async (
   payload: SubmitRatingPayload
