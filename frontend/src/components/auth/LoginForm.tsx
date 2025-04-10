@@ -181,32 +181,6 @@ const LoginForm: React.FC = () => {
             {loading ? "Logging in..." : "Log In"}
           </Button>
 
-          <div className="text-sm text-center text-muted-foreground">
-            <span>Demo accounts:</span>
-            <div className="flex justify-center gap-2 mt-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail("test@test.com");
-                  setPassword("Testing1234!");
-                  console.log("[Demo Account] User demo account selected");
-                }}>
-                User
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail("admin@test.com");
-                  setPassword("Testing1234!");
-                  console.log("[Demo Account] Admin demo account selected");
-                }}>
-                Admin
-              </Button>
-              <GoogleLoginButton />
-            </div>
-          </div>
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
