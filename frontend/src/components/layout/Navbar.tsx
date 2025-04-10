@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import { useMovies } from "@/contexts/MovieContext";
-import { AuthorizedUser } from "../auth/AuthorizeView";
+import { AuthorizedUser, UserContext } from "../auth/AuthorizeView";
 import AdminFeature from "../auth/AdminFeature";
 
 interface NavbarProps {
@@ -23,7 +23,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
-  const user = true;
+  const user = React.useContext(UserContext);
   // const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +78,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
         {/* Search and Auth (Desktop) */}
         <div className="hidden md:flex items-center gap-4">
+        {user && (
           <SearchBar onSearch={handleSearch} onClose={handleSearchBarClose} />
+        )}
 
           {user ? (
             <DropdownMenu>
