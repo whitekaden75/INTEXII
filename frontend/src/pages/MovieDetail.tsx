@@ -120,7 +120,8 @@ const MovieDetail = () => {
         }}>
         <DialogContent
           className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
-          onInteractOutside={(e) => e.preventDefault()}>
+          onInteractOutside={(e) => e.preventDefault()}
+          onClose={handleClose}>
           {user ? (
             // Render movie details if user exists
             <>
