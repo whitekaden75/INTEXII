@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { useCookieConsent } from "../../contexts/CookieContext";
+import { UserContext } from "./AuthorizeView";
 
 const LoginForm: React.FC = () => {
   console.log("[Component Render] LoginForm component is rendering.");
@@ -24,6 +25,8 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { cookieConsent } = useCookieConsent();
+  const { refetchUser } = useContext(UserContext);
+
 
   console.log("[State Initialization] States initialized: email={Email}, loading={Loading}, rememberMe={RememberMe}, error={Error}", 
     email, loading, rememberMe, error);
@@ -101,6 +104,7 @@ const LoginForm: React.FC = () => {
       }
 
       console.log("[Login Success] Login successful, navigating to /movies");
+      refetchUser();
       navigate("/movies");
     } catch (error: any) {
       console.error("[Fetch Error] Login attempt failed:", error.message);
