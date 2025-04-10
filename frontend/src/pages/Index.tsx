@@ -120,16 +120,16 @@ const Index = () => {
 */}
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-background to-secondary/20">
-        <div className="container">
-          <h2 className="text-3xl font-bold text-center mb-12">
+      <section className="py-20 bg-cineniche-blue/10">
+  <div className="container">
+    <h2 className="text-3xl font-bold text-center mb-12">
             Why Choose CineNiche?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-4 p-6 rounded-lg bg-secondary/50">
-              <div className="w-12 h-12 rounded-full bg-cineniche-purple/20 flex items-center justify-center">
-                <Film className="h-6 w-6 text-cineniche-purple" />
+          <div className="space-y-4 p-6 rounded-lg bg-cineniche-blue/10">
+          <div className="w-12 h-12 rounded-full bg-cineniche-blue/20 flex items-center justify-center">
+            <Film className="h-6 w-6 text-cineniche-purple" />
               </div>
               <h3 className="text-xl font-semibold">Curated Selection</h3>
               <p className="text-muted-foreground">
@@ -138,9 +138,9 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="space-y-4 p-6 rounded-lg bg-secondary/50">
-              <div className="w-12 h-12 rounded-full bg-cineniche-purple/20 flex items-center justify-center">
-                <Film className="h-6 w-6 text-cineniche-purple" />
+            <div className="space-y-4 p-6 rounded-lg bg-cineniche-blue/10">
+              <div className="w-12 h-12 rounded-full bg-cineniche-blue/20 flex items-center justify-center">
+              <Film className="h-6 w-6 text-cineniche-purple" />
               </div>
               <h3 className="text-xl font-semibold">Global Perspective</h3>
               <p className="text-muted-foreground">
@@ -149,9 +149,9 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="space-y-4 p-6 rounded-lg bg-secondary/50">
-              <div className="w-12 h-12 rounded-full bg-cineniche-purple/20 flex items-center justify-center">
-                <Film className="h-6 w-6 text-cineniche-purple" />
+            <div className="space-y-4 p-6 rounded-lg bg-cineniche-blue/10">
+            <div className="w-12 h-12 rounded-full bg-cineniche-blue/20 flex items-center justify-center">
+            <Film className="h-6 w-6 text-cineniche-purple" />
               </div>
               <h3 className="text-xl font-semibold">
                 Personal Recommendations
@@ -169,17 +169,18 @@ const Index = () => {
 
         <section className="py-20 bg-cineniche-dark-purple">
           <div className="container text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl font-bold text-center mb-12">
               Ready to Start Your Journey?
             </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto mb-8">
-              Join CineNiche today and start exploring our unique collection of
-              films that you won't find on mainstream platforms.
+            <p className="text-muted-foreground">
+              Discover films beyond the mainstream. <br />
+              Join CineNiche and explore the unexpected.
             </p>
+            <br />
             <div className="flex flex-wrap gap-4 justify-center">
               <Button
+                className="gap-2"
                 size="lg"
-                className="bg-cineniche-purple hover:bg-cineniche-purple/90"
                 onClick={() => navigate("/register")}>
                 Create an Account
               </Button>
