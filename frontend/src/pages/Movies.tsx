@@ -43,7 +43,8 @@ const Movies = () => {
   // Extract all unique genres from movies
   const allGenres = movies
     .reduce<string[]>((genres, movie) => {
-      const movieGenres = movie.genre.split(",").map((g) => g.trim());
+      console.log('Processing movie:', movie.title, 'Genre:', movie.genre);
+      const movieGenres = (movie.genre ?? "").split(",").map((g) => g.trim());
       movieGenres.forEach((genre) => {
         if (!genres.includes(genre)) {
           genres.push(genre);
@@ -72,7 +73,7 @@ const Movies = () => {
 
     // Group movies by genre
     const moviesByGenre = movies.reduce((acc, movie) => {
-      const genres = movie.genre.split(",").map((g) => g.trim());
+      const genres = (movie.genre ?? "").split(",").map((g) => g.trim());
       genres.forEach((genre) => {
         if (!acc[genre]) {
           acc[genre] = [];

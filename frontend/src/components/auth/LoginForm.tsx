@@ -67,10 +67,11 @@ const LoginForm: React.FC = () => {
     }
     console.log("[Validation Success] Email and password provided.");
 
+    console.log("VITE_API_BASE_URL:", import.meta.env.VITE_API_BASE_URL);
     // Determine login URL based on rememberMe flag
     const loginUrl = rememberMe
-      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useCookies=true'
-      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useSessionCookies=true';
+      ? `${import.meta.env.VITE_API_BASE_URL}/auth/login?useCookies=true`
+      : `${import.meta.env.VITE_API_BASE_URL}/auth/login?useSessionCookies=true`;
     console.log(`[Login Request] URL: ${loginUrl}`);
     console.log(`[Login Request] Attempting login with email: ${email}`);
 

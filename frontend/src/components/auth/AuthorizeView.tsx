@@ -37,7 +37,7 @@ const AuthorizeViewWrapper = () => {
       }
     }
 
-    fetchWithRetry('https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/pingauth', {
+    fetchWithRetry(`${import.meta.env.VITE_API_BASE_URL}/pingauth`, {
       method: 'GET',
       credentials: 'include',
     });

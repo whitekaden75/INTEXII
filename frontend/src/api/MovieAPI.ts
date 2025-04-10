@@ -4,9 +4,9 @@ interface FetchMovieResponse {
   movies: Movie[];
 }
 
-const API_BASE_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/Movies";
-const RECOMMENDATION_API_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/MovieRecommendations";
-const USER_API_URL = "https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/api/UserRecommendations";
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/Movies`;
+const RECOMMENDATION_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/MovieRecommendations`;
+const USER_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/UserRecommendations`;
 
 
 // Function to fetch all movies
