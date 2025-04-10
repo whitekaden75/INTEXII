@@ -49,9 +49,8 @@ public class MoviesController : ControllerBase
         return movie;
     }
 
-    // POST: api/movies
+// POST: api/movies
     [HttpPost]
-    // [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<Movie>> PostMovie(Movie movie)
     {
         // Get the highest numeric part of existing ShowIds
@@ -60,18 +59,14 @@ public class MoviesController : ControllerBase
             .OrderByDescending(m => m.ShowId)
             .Select(m => m.ShowId)
             .FirstOrDefaultAsync();
-
         int nextNumber = 1;
         if (!string.IsNullOrEmpty(lastId) && int.TryParse(lastId.Substring(1), out var currentNum))
         {
             nextNumber = currentNum + 1;
         }
-
         movie.ShowId = $"s{nextNumber}";
-
         _context.Movies.Add(movie);
         await _context.SaveChangesAsync();
-
         return CreatedAtAction(nameof(GetMovie), new { id = movie.ShowId }, movie);
     }
 
@@ -106,9 +101,7 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/movies/s1
     [HttpDelete("{id}")]
-    // [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteMovie(string id)
     {
         var movie = await _context.Movies.FindAsync(id);
@@ -116,12 +109,16 @@ public class MoviesController : ControllerBase
         {
             return NotFound();
         }
-
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
-
         return NoContent();
     }
+    private bool MovieExists(string id)
+    {
+        return _context.Movies.Any(e => e.ShowId == id);
+    }
+
+
     private bool MovieExists(string id)
     {
         return _context.Movies.Any(e => e.ShowId == id);

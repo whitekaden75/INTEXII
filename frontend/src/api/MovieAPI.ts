@@ -8,12 +8,9 @@ interface FetchMovieResponse {
   movies: Movie[];
 }
 
-
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/Movies`;
 const RECOMMENDATION_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/MovieRecommendations`;
 const USER_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/UserRecommendations`;
-
-
 
 // Function to fetch all movies
 export const getAllMovies = async (
@@ -44,7 +41,7 @@ export const getAllMovies = async (
       throw new Error("Failed to fetch movies");
     }
     const data = await response.json();
-    console.log('API Response:', data);
+    console.log("API Response:", data);
 
     return data;
   } catch (error) {
@@ -103,18 +100,15 @@ export const updateMovie = async (id: string, movie: Movie): Promise<Movie> => {
       },
       body: JSON.stringify(movie),
     });
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Update failed response:", errorText);
       throw new Error("Failed to update movie");
     }
-
     if (response.status === 204) {
       // No content returned, but success
       return movie;
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error updating movie:", error);
@@ -179,6 +173,7 @@ export const getUserRecommendations = async (
   }
 };
 
+// Function to fetch average rating for a show
 export const getAverageRatingForShow = async (
   showId: string
 ): Promise<number | null> => {

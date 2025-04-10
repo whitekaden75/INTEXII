@@ -96,7 +96,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="releaseYear">Release Year</Label>
               <Input
@@ -109,7 +108,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               />
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="rating">Rating</Label>
@@ -122,7 +120,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="duration">Duration</Label>
               <Input
@@ -135,7 +132,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               />
             </div>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -148,7 +144,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="genre">Genre</Label>
             <Input
@@ -160,7 +155,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="director">Director</Label>
             <Input
@@ -172,7 +166,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="cast">Cast</Label>
             <Input
@@ -183,7 +176,6 @@ const MovieForm: React.FC<MovieFormProps> = ({
               placeholder="Comma-separated cast (e.g., Actor 1, Actor 2)"
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
             <Input
