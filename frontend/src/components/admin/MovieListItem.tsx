@@ -28,7 +28,10 @@ const MovieListItem: React.FC<MovieListItemProps> = ({
     <div className="flex items-center justify-between p-4 border-b last:border-0">
       <div className="flex items-center space-x-4">
         <img
-          src={`/Movie_Posters/${movie.title.replace(/[:'&]/g, "")}.jpg`}
+          src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
+                    /[:'&]/g,
+                    ""
+                  )}.jpg`}
           alt={movie.title}
           className="h-16 w-12 object-cover rounded"
         />

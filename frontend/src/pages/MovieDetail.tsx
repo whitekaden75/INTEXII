@@ -106,7 +106,7 @@ const MovieDetail = () => {
     );
   }
   const safeTitle = movie.title.replace(/[:'&]/g, "");
-  const defaultPosterUrl = `/Movie_Posters/${safeTitle}.jpg`;
+  const defaultPosterUrl = `https://intex212.blob.core.windows.net/movie-posters/${safeTitle}.jpg`;
 
   return (
     <Layout>

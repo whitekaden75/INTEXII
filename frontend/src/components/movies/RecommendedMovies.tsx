@@ -48,10 +48,10 @@ const RecommendedMovies: React.FC<RecommendedMoviesProps> = ({
                   onClick={() => navigate(`/movies/${movie.showId}`)}>
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md">
                     <img
-                      src={`/Movie_Posters/${movie.title.replace(
-                        /[:'&]/g,
-                        ""
-                      )}.jpg`}
+                      src={`https://intex212.blob.core.windows.net/movie-posters/${movie.title.replace(
+                    /[:'&]/g,
+                    ""
+                  )}.jpg`}
                       alt={movie.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />
