@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     port: 4005,
     proxy: {
       '/api': {
-        target: 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net',
+        target: 'https://intex212-backend-hch9hfcfcddmhcd2.eastus-01.azurewebsites.net',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path
