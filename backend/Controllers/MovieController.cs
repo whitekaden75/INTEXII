@@ -53,28 +53,46 @@ public class MoviesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Movie>> PostMovie(Movie movie)
     {
-        // Get the highest numeric part of existing ShowIds
-        var lastId = await _context.Movies
-            .Where(m => m.ShowId.StartsWith("s"))
-            .OrderByDescending(m => m.ShowId.Length)  // First order by length
-            .ThenByDescending(m => m.ShowId)          // Then by value
-            .Select(m => m.ShowId)
-            .FirstOrDefaultAsync();
+        try {
+            // Explicitly check if the movie already exists by title to avoid duplicates
+            var existingMovie = await _context.Movies
+                .FirstOrDefaultAsync(m => m.Title == movie.Title);
             
-        int nextNumber = 1;
-        if (!string.IsNullOrEmpty(lastId))
-        {
-            string numericPart = lastId.Substring(1);
-            if (int.TryParse(numericPart, out var currentNum))
+            if (existingMovie != null)
             {
-                nextNumber = currentNum + 1;
+                return Conflict("A movie with this title already exists");
             }
+            
+            // Get highest show ID number
+            var highestId = await _context.Movies
+                .Where(m => m.ShowId.StartsWith("s"))
+                .Select(m => m.ShowId.Substring(1))  // Remove the 's' prefix
+                .ToListAsync();
+                
+            int nextNumber = 1;
+            
+            foreach (var idStr in highestId)
+            {
+                if (int.TryParse(idStr, out int idNum))
+                {
+                    if (idNum >= nextNumber)
+                    {
+                        nextNumber = idNum + 1;
+                    }
+                }
+            }
+            
+            movie.ShowId = $"s{nextNumber}";
+            _context.Movies.Add(movie);
+            await _context.SaveChangesAsync();
+            
+            // Return the newly created movie with its ID
+            return CreatedAtAction(nameof(GetMovie), new { id = movie.ShowId }, movie);
         }
-        
-        movie.ShowId = $"s{nextNumber}";
-        _context.Movies.Add(movie);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetMovie), new { id = movie.ShowId }, movie);
+        catch (Exception ex) {
+            Console.WriteLine($"Error creating movie: {ex.Message}");
+            return StatusCode(500, "Failed to create movie");
+        }
     }
 
     // PUT: api/movies/s1

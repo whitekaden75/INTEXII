@@ -57,7 +57,9 @@ const MovieListItem: React.FC<MovieListItemProps> = ({
           variant="outline"
           size="icon"
           className="text-destructive hover:text-destructive"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault(); // Stop event propagation
+            e.stopPropagation(); // Prevent bubbling up to parent elements
             if (window.confirm("Are you sure you want to delete this?")) {
               handleDelete();
             }
