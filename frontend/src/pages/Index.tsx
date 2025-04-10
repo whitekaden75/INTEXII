@@ -78,7 +78,6 @@ const Index = () => {
                   className="gap-2"
                   size="lg"
                   onClick={() => navigate("/register")}>
-                  <Play className="h-4 w-4" />
                   Create an Account
                 </Button>
         
