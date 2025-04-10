@@ -232,6 +232,11 @@ namespace backend.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+            // Insert specific user-role mapping
+            migrationBuilder.Sql(@"
+                INSERT INTO AspNetUserRoles (UserId, RoleId)
+                VALUES ('239ee338-b4e3-404f-b777-6ea0ee652de9', '1');
+            ");
         }
 
         /// <inheritdoc />

@@ -4,7 +4,7 @@ import Layout from "@/components/layout/Layout";
 import MovieGrid from "@/components/movies/MovieGrid";
 import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
-
+// import { useAuth } from "@/contexts/AuthContext";
 import { useInView } from "@/hooks/useInView";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
 
@@ -14,7 +14,7 @@ const Movies = () => {
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
 
-
+  // const { isAuthenticated } = useAuth();
   const {
     movies,
     filteredMovies,
@@ -26,7 +26,12 @@ const Movies = () => {
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
-
+  // Redirect if not authenticated
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   // Extract all unique genres from movies
   const allGenres = movies
@@ -44,11 +49,13 @@ const Movies = () => {
   // Handle search from navbar
   const handleSearch = (query: string) => {
     setFilters({ ...filters, searchQuery: query });
+    setDisplayCount(12);
   };
 
   // Handle genre filter
   const handleGenreFilter = (genre: string | undefined) => {
     setFilters({ ...filters, genre });
+    setDisplayCount(12);
   };
 
   // Generate movie categories
@@ -79,7 +86,9 @@ const Movies = () => {
   // Get all category movies
   const categories = getMoviesByCategory();
 
-
+  // if (!isAuthenticated) {
+  //   return null; // Don't render anything while redirecting
+  // }
 
   useEffect(() => {
     if (!inView) return;
@@ -101,9 +110,9 @@ const Movies = () => {
       setVisibleGenreCount((prev) => prev + 2);
     }
   }, [inView, filters, filteredMovies.length, displayCount]);
-  useEffect(() => {
-    setDisplayCount(12);
-  }, [filters.genre, filters.searchQuery]);
+  // useEffect(() => {
+  //   setDisplayCount(12);
+  // }, [filters.genre, filters.searchQuery]);
 
   return (
     <Layout onSearch={handleSearch}>
@@ -129,7 +138,6 @@ const Movies = () => {
 
         {/* Search Results */}
         {filters.searchQuery && (
-          
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">
               Search Results for "{filters.searchQuery}"
@@ -137,12 +145,10 @@ const Movies = () => {
             <p className="text-muted-foreground">
               Found {filteredMovies.length}{" "}
               {filteredMovies.length === 1 ? "movie" : "movies"}
-              
             </p>
-            
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              ref={ref}
+              // ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount
@@ -163,7 +169,7 @@ const Movies = () => {
             </p>
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              ref={ref}
+              // ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount
@@ -181,7 +187,7 @@ const Movies = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Recent Releases</h2>
               <MovieGrid
-                movies={categories.recentReleases.slice(0, 10)}
+                movies={categories.recentReleases.slice(0, 8)}
                 loading={loading}
               />
             </div>
@@ -194,7 +200,7 @@ const Movies = () => {
                 movies.length > 0 ? (
                   <div key={genre} className="mb-8">
                     <h2 className="text-2xl font-bold mb-4">{genre}</h2>
-                    <MovieGrid movies={movies.slice(0, 10)} loading={loading} />
+                    <MovieGrid movies={movies.slice(0, 8)} loading={loading} />
                   </div>
                 ) : null
               )}
