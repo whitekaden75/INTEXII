@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useCookieConsent } from '../../contexts/CookieContext';
 
 const CookieBanner: React.FC = () => {
     const [visible, setVisible] = useState<boolean>(false);
+    const { setCookieConsent } = useCookieConsent();
 
     useEffect(() => {
         // Check if the user has already made a choice
         const choice = localStorage.getItem('cookieConsent');
         if (!choice) {
-        setVisible(true);
+            setVisible(true);
         }
     }, []);
 
     const handleAccept = () => {
         localStorage.setItem('cookieConsent', 'accepted');
+        setCookieConsent('accepted');
         setVisible(false);
     };
 
     const handleDeny = () => {
         localStorage.setItem('cookieConsent', 'denied');
+        setCookieConsent('denied');
         setVisible(false);
     };
 
@@ -25,23 +29,23 @@ const CookieBanner: React.FC = () => {
 
     return (
         <div style={styles.banner}>
-        <p style={styles.message}>
-            This website uses cookies to ensure you get the best experience.{' '}
-            <a href="/privacy" style={styles.link}>Learn more</a>
-        </p>
-        <div style={styles.buttonContainer}>
-            <button onClick={handleAccept} style={{ ...styles.button, ...styles.acceptButton }}>
-            Accept
-            </button>
-            <button onClick={handleDeny} style={{ ...styles.button, ...styles.denyButton }}>
-            Deny
-            </button>
-        </div>
+            <p style={styles.message}>
+                This website uses cookies to ensure you get the best experience.{' '}
+                <a href="/privacy" style={styles.link}>Learn more</a>
+            </p>
+            <div style={styles.buttonContainer}>
+                <button onClick={handleAccept} style={{ ...styles.button, ...styles.acceptButton }}>
+                    Accept
+                </button>
+                <button onClick={handleDeny} style={{ ...styles.button, ...styles.denyButton }}>
+                    Deny
+                </button>
+            </div>
         </div>
     );
-    };
+};
 
-    const styles: { [key: string]: React.CSSProperties } = {
+const styles: { [key: string]: React.CSSProperties } = {
     banner: {
         position: 'fixed',
         bottom: 0,
