@@ -114,47 +114,6 @@ const MovieDetail = () => {
         <DialogContent
           className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
           onInteractOutside={(e) => e.preventDefault()}>
-          <>
-            <DialogHeader>
-              <DialogTitle className="text-2xl">Login Required</DialogTitle>
-              <DialogDescription>
-                Please sign in or create an account to view movie details and
-                rate movies.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="mt-6 flex flex-col items-center space-y-4">
-              <img
-                src={defaultPosterUrl}
-                alt={movie.title}
-                className="w-1/2 max-w-[200px] aspect-[2/3] rounded-lg object-cover mb-4 opacity-80"
-              />
-              <h2 className="text-xl font-semibold">{movie.title}</h2>
-              <p className="text-center text-muted-foreground">
-                Create an account to access our full library of movies and
-                personalized recommendations.
-              </p>
-            </div>
-
-            <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                className="w-full sm:w-auto">
-                Back to Movies
-              </Button>
-              <Button
-                onClick={() => navigate("/login")}
-                className="w-full sm:w-auto">
-                Login
-              </Button>
-              <Button
-                onClick={() => navigate("/register")}
-                className="w-full sm:w-auto">
-                Create Account
-              </Button>
-            </DialogFooter>
-          </>
 
           <>
             <DialogHeader>
