@@ -116,7 +116,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate("/login")}>
+              <Button variant="outline"
+              className="hover:bg-[#0C4A6E] hover:text-white border-[#0C4A6E] transition-colors"
+              onClick={() => navigate("/login")}>
                 Log in
               </Button>
               <Button onClick={() => navigate("/register")}>Sign up</Button>

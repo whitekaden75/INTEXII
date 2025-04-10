@@ -58,11 +58,13 @@ const Index = () => {
                     Start Watching
                   </Button>
                   <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => navigate("/login")}>
-                    Already a Member? Log In
-                  </Button>
+  variant="outline"
+  size="lg"
+  onClick={() => navigate("/login")}
+  className="hover:bg-[#0C4A6E] hover:text-white border-[#0C4A6E] transition-colors"
+>
+  Already a Member? Log In
+</Button>
                 </>
           
             
@@ -187,6 +189,8 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
+                className="hover:bg-[#0C4A6E] hover:text-white border-[#0C4A6E] transition-colors"
+
                 onClick={() => navigate("/login")}>
                 Log In
               </Button>
