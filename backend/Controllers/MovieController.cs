@@ -71,6 +71,21 @@ public class MoviesController : ControllerBase
     [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<Movie>> PostMovie(Movie movie)
     {
+        // Get the highest numeric part of existing ShowIds
+        var lastId = await _context.Movies
+            .Where(m => m.ShowId.StartsWith("s"))
+            .OrderByDescending(m => m.ShowId)
+            .Select(m => m.ShowId)
+            .FirstOrDefaultAsync();
+
+        int nextNumber = 1;
+        if (!string.IsNullOrEmpty(lastId) && int.TryParse(lastId.Substring(1), out var currentNum))
+        {
+            nextNumber = currentNum + 1;
+        }
+
+        movie.ShowId = $"s{nextNumber}";
+
         _context.Movies.Add(movie);
         await _context.SaveChangesAsync();
 
@@ -124,9 +139,54 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
-
     private bool MovieExists(string id)
     {
         return _context.Movies.Any(e => e.ShowId == id);
     }
+    [HttpGet("rating/average/{showId}")]
+    public IActionResult GetAverageRating(string showId)
+    {
+        var ratings = _context.movies_ratings
+            .Where(r => r.ShowId == showId)
+            .Select(r => r.Rating)
+            .ToList();
+
+        if (ratings == null || ratings.Count == 0)
+        {
+            return Ok(new { showId, average = 0 });
+        }
+
+        var average = ratings.Average();
+        return Ok(new { showId, average });
+    }
+    [HttpPost("rating")]
+    public async Task<IActionResult> SubmitRating([FromBody] UserRating rating)
+    {
+        try
+        {
+            if (rating == null || string.IsNullOrWhiteSpace(rating.ShowId))
+                return BadRequest("Invalid rating");
+
+            var existing = await _context.movies_ratings
+                .FirstOrDefaultAsync(r => r.UserId == rating.UserId && r.ShowId == rating.ShowId);
+
+            if (existing != null)
+            {
+                existing.Rating = rating.Rating;
+            }
+            else
+            {
+                await _context.movies_ratings.AddAsync(rating);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Rating submitted successfully." });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("🔥 SubmitRating Error: " + ex.Message);
+            return StatusCode(500, "Internal Server Error");
+        }
+    }
+
 }

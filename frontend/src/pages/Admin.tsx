@@ -1,14 +1,13 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { PlusCircle, Search, Settings } from "lucide-react";
+import Layout from "@/components/layout/Layout";
+import MovieListItem from "@/components/admin/MovieListItem";
+import MovieForm from "@/components/admin/MovieForm";
+import { useMovies, Movie } from "@/contexts/MovieContext";
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Search, Settings } from 'lucide-react';
-import Layout from '@/components/layout/Layout';
-import MovieListItem from '@/components/admin/MovieListItem';
-import MovieForm from '@/components/admin/MovieForm';
-import { useMovies, Movie } from '@/contexts/MovieContext';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,8 +25,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -36,30 +35,48 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 const Admin = () => {
 
   const { adminMovies, adminPage, adminPageSize, adminTotalPages, setAdminPage, setAdminPageSize, filters, setFilters, addMovie, updateMovie, deleteMovie } = useMovies();
+
   const navigate = useNavigate();
-  
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [paginatedMovies, setPaginatedMovies] = useState<Movie[]>([]);
+
+//
+  //const [searchQuery, setSearchQuery] = useState('');
   
   
+// newBranchKaden
   // Redirect if not authenticated or not admin
- 
-  
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   } else if (!isAdmin) {
+  //     navigate("/movies");
+  //   }
+  // }, [isAuthenticated, isAdmin, navigate]);
+
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,46 +90,50 @@ const Admin = () => {
     setFilters({ ...filters, searchQuery: value });
     setAdminPage(1);
   };
-  
-  
+
+
+  // Calculate pagination
+  useEffect(() => {
+    // Calculate total pages
+    const total = Math.ceil(filteredMovies.length / itemsPerPage);
+    setTotalPages(total);
+
+    // Get current items
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setPaginatedMovies(filteredMovies.slice(startIndex, endIndex));
+  }, [filteredMovies, currentPage, itemsPerPage]);
+
+
   // Handle pagination changes
   const handlePageChange = (page: number) => {
     setAdminPage(page);
   };
-  
+
   // Handle items per page change
   const handleItemsPerPageChange = (value: string) => {
     setAdminPageSize(Number(value));
     setAdminPage(1); // Reset to first page when changing items per page
   };
-  
+
   // Handle edit movie
   const handleEditMovie = (movie: Movie) => {
     setCurrentMovie(movie);
     setShowEditForm(true);
   };
-  
+  const [localMovies, setLocalMovies] = useState<Movie[]>([]);
   // Handle delete movie
-  const handleDeleteClick = (movie: Movie) => {
-    setCurrentMovie(movie);
-    setShowDeleteDialog(true);
+  const handleMovieDeleted = (deletedId: string) => {
+    setLocalMovies((prev) => prev.filter((m) => m.showId !== deletedId));
+    window.location.reload();
   };
-  
-  // Confirm delete
-  const confirmDelete = () => {
-    if (currentMovie) {
-      deleteMovie(currentMovie.showId);
-      setShowDeleteDialog(false);
-      setCurrentMovie(null);
-    }
-  };
-  
+
   // Handle add movie
-  const handleAddMovie = (movieData: Omit<Movie, 'id'>) => {
+  const handleAddMovie = (movieData: Omit<Movie, "id">) => {
     addMovie(movieData);
     setShowAddForm(false);
   };
-  
+
   // Handle update movie
   const handleUpdateMovie = (movieData: Partial<Movie>) => {
     if (currentMovie) {
@@ -121,32 +142,31 @@ const Admin = () => {
       setCurrentMovie(null);
     }
   };
-  
+
   // Generate pagination links
   const renderPaginationLinks = () => {
     const links = [];
-    
+
     // Previous button
     links.push(
       <PaginationItem key="prev">
         <PaginationPrevious 
           onClick={() => adminPage > 1 && handlePageChange(adminPage - 1)}
           className={adminPage === 1 ? 'pointer-events-none opacity-50' : ''}
+
         />
       </PaginationItem>
     );
-    
+
     // First page
     if (adminPage > 2) {
       links.push(
         <PaginationItem key={1}>
-          <PaginationLink onClick={() => handlePageChange(1)}>
-            1
-          </PaginationLink>
+          <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
         </PaginationItem>
       );
     }
-    
+
     // Ellipsis if needed
     if (adminPage > 3) {
       links.push(
@@ -155,8 +175,9 @@ const Admin = () => {
         </PaginationItem>
       );
     }
-    
+
     // Pages around current
+
     for (let i = Math.max(1, adminPage - 1); i <= Math.min(adminTotalPages, adminPage + 1); i++) {
       links.push(
         <PaginationItem key={i}>
@@ -164,12 +185,13 @@ const Admin = () => {
             isActive={adminPage === i}
             onClick={() => handlePageChange(i)}
           >
+
             {i}
           </PaginationLink>
         </PaginationItem>
       );
     }
-    
+
     // Ellipsis if needed
     if (adminPage < adminTotalPages - 2) {
       links.push(
@@ -178,7 +200,7 @@ const Admin = () => {
         </PaginationItem>
       );
     }
-    
+
     // Last page
     if (adminPage < adminTotalPages - 1 && adminTotalPages > 1) {
       links.push(
@@ -189,23 +211,26 @@ const Admin = () => {
         </PaginationItem>
       );
     }
-    
+
     // Next button
     links.push(
       <PaginationItem key="next">
+
         <PaginationNext 
           onClick={() => adminPage < adminTotalPages && handlePageChange(adminPage + 1)}
           className={adminPage === adminTotalPages ? 'pointer-events-none opacity-50' : ''}
         />
       </PaginationItem>
     );
-    
+
     return links;
   };
-  
+
   // If not authenticated or not admin, don't render anything
- 
-  
+  // if (!isAuthenticated || !isAdmin) {
+  //   return null;
+  // }
+
   return (
     <Layout>
       <div className="container py-8">
@@ -214,50 +239,21 @@ const Admin = () => {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage your movie catalog</p>
           </div>
-          <Button 
-            onClick={() => setShowAddForm(true)}
-            className="gap-2"
-          >
+          <Button onClick={() => setShowAddForm(true)} className="gap-2">
             <PlusCircle className="h-4 w-4" />
             Add New Movie
           </Button>
         </div>
-        
+
         <Tabs defaultValue="movies" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="movies">Movies</TabsTrigger>
-            <TabsTrigger value="stats" disabled>Statistics</TabsTrigger>
-            <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
-          </TabsList>
-          
           <TabsContent value="movies" className="space-y-6">
-            {/* Search and filters row */}
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <form onSubmit={handleSearch} className="relative max-w-md">
-              <Input
-                type="search"
-                placeholder="Search movies..."
-                className="pl-10 pr-4"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                // Or use handleSearchInputChange for instant search
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Button 
-                type="submit" 
-                className="absolute right-1 top-1 h-8 px-3"
-                variant="ghost"
-              >
-                Search
-              </Button>
-            </form>
-              
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Show:</span>
                 <Select
                   value={String(adminPageSize)}
                   onValueChange={handleItemsPerPageChange}
-                >
+
                   <SelectTrigger className="w-20">
                     <SelectValue placeholder="5" />
                   </SelectTrigger>
@@ -271,7 +267,7 @@ const Admin = () => {
                 <span className="text-sm text-muted-foreground">per page</span>
               </div>
             </div>
-            
+
             {/* Movies List */}
             <div className="border rounded-lg">
               {adminMovies.length === 0 ? (
@@ -284,21 +280,19 @@ const Admin = () => {
                     key={movie.showId}
                     movie={movie}
                     onEdit={() => handleEditMovie(movie)}
-                    onDelete={() => handleDeleteClick(movie)}
+                    onMovieDeleted={handleMovieDeleted}
                   />
                 ))
               )}
             </div>
-            
+
             {/* Pagination */}
             {adminTotalPages > 1 && (
               <Pagination>
-                <PaginationContent>
-                  {renderPaginationLinks()}
-                </PaginationContent>
+                <PaginationContent>{renderPaginationLinks()}</PaginationContent>
               </Pagination>
             )}
-            
+
             {/* Results summary */}
             <div className="text-sm text-muted-foreground">
               Page {adminPage} of {adminTotalPages}
@@ -306,63 +300,46 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {/* Add Movie Form Dialog */}
       <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Movie</DialogTitle>
             <DialogDescription>
               Fill in the details to add a new movie to the catalog
             </DialogDescription>
           </DialogHeader>
-          <MovieForm
-            onSubmit={handleAddMovie}
-            onCancel={() => setShowAddForm(false)}
-          />
+
+          <div className="pt-4">
+            <MovieForm
+              onSubmit={handleAddMovie}
+              onCancel={() => setShowAddForm(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
-      
+
       {/* Edit Movie Form Dialog */}
       <Dialog open={showEditForm} onOpenChange={setShowEditForm}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Movie</DialogTitle>
-            <DialogDescription>
-              Update the movie details
-            </DialogDescription>
+            <DialogDescription>Update the movie details</DialogDescription>
           </DialogHeader>
-          {currentMovie && (
-            <MovieForm
-              movie={currentMovie}
-              onSubmit={handleUpdateMovie}
-              onCancel={() => setShowEditForm(false)}
-              isEditing
-            />
-          )}
+
+          <div className="pt-4">
+            {currentMovie && (
+              <MovieForm
+                movie={currentMovie}
+                onSubmit={handleUpdateMovie}
+                onCancel={() => setShowEditForm(false)}
+                isEditing
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
-      
-      {/* Delete Confirmation Dialog - Using AlertDialog instead of normal Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{currentMovie?.title}"? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={confirmDelete}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </Layout>
   );
 };

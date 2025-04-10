@@ -4,7 +4,6 @@ import Layout from "@/components/layout/Layout";
 import MovieGrid from "@/components/movies/MovieGrid";
 import GenreFilter from "@/components/movies/GenreFilter";
 import { useMovies } from "@/contexts/MovieContext";
-
 import { useInView } from "@/hooks/useInView";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
 
@@ -12,8 +11,6 @@ const Movies = () => {
   const [displayCount, setDisplayCount] = useState(12); // start with 12
   const { ref, inView } = useInView();
   const [visibleGenreCount, setVisibleGenreCount] = useState(2); // show 2 genres at a time
-
-
   const {
     movies,
     filteredMovies,
@@ -24,21 +21,6 @@ const Movies = () => {
   } = useMovies();
   const navigate = useNavigate();
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
-
-  // Auto-rotate featured movies every 10 seconds
-  useEffect(() => {
-    if (featuredMovies.length <= 1) return;
-
-    const intervalId = setInterval(() => {
-      setCurrentFeaturedIndex((prevIndex) =>
-        prevIndex === featuredMovies.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 10000);
-
-    return () => clearInterval(intervalId);
-  }, [featuredMovies.length]);
-
-
 
   // Extract all unique genres from movies
   const allGenres = movies
@@ -56,11 +38,13 @@ const Movies = () => {
   // Handle search from navbar
   const handleSearch = (query: string) => {
     setFilters({ ...filters, searchQuery: query });
+    setDisplayCount(12);
   };
 
   // Handle genre filter
   const handleGenreFilter = (genre: string | undefined) => {
     setFilters({ ...filters, genre });
+    setDisplayCount(12);
   };
 
   // Generate movie categories
@@ -91,8 +75,6 @@ const Movies = () => {
   // Get all category movies
   const categories = getMoviesByCategory();
 
-
-
   useEffect(() => {
     if (!inView) return;
 
@@ -113,9 +95,9 @@ const Movies = () => {
       setVisibleGenreCount((prev) => prev + 2);
     }
   }, [inView, filters, filteredMovies.length, displayCount]);
-  useEffect(() => {
-    setDisplayCount(12);
-  }, [filters.genre, filters.searchQuery]);
+  // useEffect(() => {
+  //   setDisplayCount(12);
+  // }, [filters.genre, filters.searchQuery]);
 
   return (
     <Layout onSearch={handleSearch}>
@@ -151,7 +133,7 @@ const Movies = () => {
             </p>
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              ref={ref}
+              // ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount
@@ -172,7 +154,7 @@ const Movies = () => {
             </p>
             <MovieGrid movies={filteredMovies.slice(0)} loading={loading} />
             <div
-              ref={ref}
+              // ref={ref}
               className="h-10 w-full flex justify-center items-center">
               <p className="text-sm text-muted-foreground">
                 {filteredMovies.length > displayCount

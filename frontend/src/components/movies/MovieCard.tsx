@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Movie } from "@/data/MovieType"; // Update the import to use the correct Movie type
 import { cn } from "@/lib/utils";
 
+
 interface MovieCardProps {
   movie: Movie;
   className?: string;
@@ -11,7 +12,7 @@ interface MovieCardProps {
 const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
   // Temporary default poster URL until you have real poster URLs
   const safeTitle = movie.title.replace(/[:'&]/g, "");
-  const defaultPosterUrl = `https://intex212.blob.core.windows.net/movie-posters/${safeTitle}.jpg`;
+  const defaultPosterUrl = `/Movie_Posters/${safeTitle}.jpg`;
 
   return (
     <Link
