@@ -94,6 +94,11 @@ const Admin = () => {
 
   // Calculate pagination
   useEffect(() => {
+    // Filter movies based on search query
+    const filteredMovies = adminMovies.filter((movie) =>
+      movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     // Calculate total pages
     const total = Math.ceil(filteredMovies.length / itemsPerPage);
     setTotalPages(total);
@@ -102,7 +107,7 @@ const Admin = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     setPaginatedMovies(filteredMovies.slice(startIndex, endIndex));
-  }, [filteredMovies, currentPage, itemsPerPage]);
+  }, [adminMovies, searchQuery, currentPage, itemsPerPage]);
 
 
   // Handle pagination changes
@@ -250,9 +255,10 @@ const Admin = () => {
             <div className="flex flex-col sm:flex-row justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Show:</span>
-                <Select>
+                <Select
                   value={String(adminPageSize)}
                   onValueChange={handleItemsPerPageChange}
+                >
 
                   <SelectTrigger className="w-20">
                     <SelectValue placeholder="5" />
