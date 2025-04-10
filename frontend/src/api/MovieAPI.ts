@@ -10,14 +10,35 @@ const USER_API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/UserRecommendatio
 
 
 // Function to fetch all movies
-export const getAllMovies = async (): Promise<Movie[]> => {
+export const getAllMovies = async (
+  params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    genre?: string;
+  }
+): Promise<Movie[]> => {
   try {
-    const response = await fetch(API_BASE_URL);
+    let url = API_BASE_URL;
+    const queryParams = new URLSearchParams();
+
+    if (params) {
+      if (params.page) queryParams.append("page", params.page.toString());
+      if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+      if (params.search) queryParams.append("search", params.search);
+      if (params.genre) queryParams.append("genre", params.genre);
+    }
+
+    if ([...queryParams].length > 0) {
+      url += `?${queryParams.toString()}`;
+    }
+
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch movies');
     }
     const data = await response.json();
-    console.log('API Response:', data); // Add this line for debugging
+    console.log('API Response:', data);
     return data;
   } catch (error) {
     console.error('Error fetching movies:', error);
