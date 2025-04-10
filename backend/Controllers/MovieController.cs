@@ -56,14 +56,21 @@ public class MoviesController : ControllerBase
         // Get the highest numeric part of existing ShowIds
         var lastId = await _context.Movies
             .Where(m => m.ShowId.StartsWith("s"))
-            .OrderByDescending(m => m.ShowId)
+            .OrderByDescending(m => m.ShowId.Length)  // First order by length
+            .ThenByDescending(m => m.ShowId)          // Then by value
             .Select(m => m.ShowId)
             .FirstOrDefaultAsync();
+            
         int nextNumber = 1;
-        if (!string.IsNullOrEmpty(lastId) && int.TryParse(lastId.Substring(1), out var currentNum))
+        if (!string.IsNullOrEmpty(lastId))
         {
-            nextNumber = currentNum + 1;
+            string numericPart = lastId.Substring(1);
+            if (int.TryParse(numericPart, out var currentNum))
+            {
+                nextNumber = currentNum + 1;
+            }
         }
+        
         movie.ShowId = $"s{nextNumber}";
         _context.Movies.Add(movie);
         await _context.SaveChangesAsync();
@@ -109,15 +116,16 @@ public class MoviesController : ControllerBase
         {
             return NotFound();
         }
+        
+        // First delete related ratings
+        var relatedRatings = await _context.movies_ratings.Where(r => r.ShowId == id).ToListAsync();
+        _context.movies_ratings.RemoveRange(relatedRatings);
+        
+        // Then delete the movie
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
         return NoContent();
     }
-    private bool MovieExists(string id)
-    {
-        return _context.Movies.Any(e => e.ShowId == id);
-    }
-
 
     private bool MovieExists(string id)
     {
