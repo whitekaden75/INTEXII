@@ -35,7 +35,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="space-y-2">
             <Skeleton className="aspect-[2/3] rounded-lg" />
@@ -60,7 +60,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({ movies, loading = false }) => {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
         {displayedMovies.map((movie) => (
           <MovieCard key={movie.showId} movie={movie} />
         ))}
