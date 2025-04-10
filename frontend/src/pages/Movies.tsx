@@ -35,16 +35,18 @@ const Movies = () => {
 
   // Extract all unique genres from movies
   const allGenres = movies
-    .reduce<string[]>((genres, movie) => {
+  .reduce<string[]>((genres, movie) => {
+    if (movie.genre) { // Add this null check
       const movieGenres = movie.genre.split(",").map((g) => g.trim());
       movieGenres.forEach((genre) => {
         if (!genres.includes(genre)) {
           genres.push(genre);
         }
       });
-      return genres;
-    }, [])
-    .sort();
+    }
+    return genres;
+  }, [])
+  .sort();
 
   // Handle search from navbar
   const handleSearch = (query: string) => {
@@ -67,13 +69,15 @@ const Movies = () => {
 
     // Group movies by genre
     const moviesByGenre = movies.reduce((acc, movie) => {
-      const genres = movie.genre.split(",").map((g) => g.trim());
-      genres.forEach((genre) => {
-        if (!acc[genre]) {
-          acc[genre] = [];
-        }
-        acc[genre].push(movie);
-      });
+      if (movie.genre) { // Add this null check
+        const genres = movie.genre.split(",").map((g) => g.trim());
+        genres.forEach((genre) => {
+          if (!acc[genre]) {
+            acc[genre] = [];
+          }
+          acc[genre].push(movie);
+        });
+      }
       return acc;
     }, {} as Record<string, typeof movies>);
 
