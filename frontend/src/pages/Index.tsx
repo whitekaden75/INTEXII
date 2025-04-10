@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useMovies } from "@/contexts/MovieContext";
 import Layout from "@/components/layout/Layout";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
 import { Button } from "@/components/ui/button";
 import { Film, Play } from "lucide-react";
+import { UserContext } from "@/components/auth/AuthorizeView";
 
 const Index = () => {
   const { movies, loading } = useMovies();
   const navigate = useNavigate();
+  const user = React.useContext(UserContext);
 
   // Now we don't automatically redirect users to the movies page
   // We want them to be able to see the movies but prompt login
@@ -22,6 +24,10 @@ const Index = () => {
         </div>
       </Layout>
     );
+  }
+
+  if (user) {
+    return <Navigate to="/movies" replace />;
   }
 
   // For unauthenticated users, we'll show a modified version of the Movies page
@@ -48,7 +54,7 @@ const Index = () => {
               indie gems, and niche documentaries you won't find anywhere else.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
-             
+              
                 <>
                   <Button
                     className="gap-2"

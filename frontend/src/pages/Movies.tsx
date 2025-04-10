@@ -7,6 +7,7 @@ import { useMovies } from "@/contexts/MovieContext";
 // import { useAuth } from "@/contexts/AuthContext";
 import { useInView } from "@/hooks/useInView";
 import FeaturedMovies from "@/components/movies/FeaturedMovies";
+import { UserContext } from "@/components/auth/AuthorizeView";
 
 
 const Movies = () => {
