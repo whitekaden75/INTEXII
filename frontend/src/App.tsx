@@ -17,7 +17,7 @@ import NotFound from "./pages/NotFound";
 // Context Providers
 import { MovieProvider } from "./contexts/MovieContext";
 import AdminRoute from "./components/auth/AdminRoute";
-import AuthorizeView from "./components/auth/AuthorizeView";
+import AuthorizeViewWrapper from "./components/auth/AuthorizeView";
 
 const queryClient = new QueryClient();
 
@@ -27,22 +27,29 @@ const App = () => (
       
         <MovieProvider>
           <Toaster />
-          <AuthorizeView >
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/privacy" element={<Privacy />} />
+            
+            {/* Protected Routes */}
+            <Route element={<AuthorizeViewWrapper />}>
               <Route path="/movies" element={<Movies />} />
               <Route path="/movies/:id" element={<MovieDetail />} />
-              <Route element={<AdminRoute/>}>
+              
+              {/* Nested Admin Routes */}
+              <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<Admin />} />
               </Route>
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+              
+            </Route>
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
           </BrowserRouter>
-          </AuthorizeView>
         </MovieProvider>
       
     </TooltipProvider>
