@@ -60,13 +60,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Movies
               </Link>
-              {/* {isAdmin && ( */}
+              <AdminFeature>
               <Link
                 to="/admin"
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
                 Admin
               </Link>
-              {/* )} */}
+              </AdminFeature>
               <Link
                 to="/privacy"
                 className="text-sm font-medium hover:text-cineniche-blue transition-colors">
