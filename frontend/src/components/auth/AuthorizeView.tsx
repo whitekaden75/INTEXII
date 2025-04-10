@@ -25,6 +25,7 @@ const AuthorizeViewWrapper = () => {
         const data = await response.json();
         if (data.email && data.roles) {
           setUser({ email: data.email, roles: data.roles });
+          console.log("[AuthorizeView] Logged in user:", data);
           setAuthorized(true);
         } else {
           throw new Error('Invalid user session');
@@ -37,7 +38,7 @@ const AuthorizeViewWrapper = () => {
       }
     }
 
-    fetchWithRetry('https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/pingauth', {
+    fetchWithRetry(`${import.meta.env.VITE_API_BASE_URL}/pingauth`, {
       method: 'GET',
       credentials: 'include',
     });

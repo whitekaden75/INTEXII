@@ -18,7 +18,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest model)
+    public async Task<IActionResult> Login([FromBody] AuthLoginRequest model)
     {
         Console.WriteLine($"[AuthController:Login] Received login request for email: {model.Email}");
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest model)
+    public async Task<IActionResult> Register([FromBody] AuthRegisterRequest model)
     {
         Console.WriteLine($"[AuthController:Register] Received registration for email: {model.Email}");
         var user = new IdentityUser { UserName = model.Email, Email = model.Email };
@@ -63,13 +63,13 @@ public class AuthController : ControllerBase
     }
 
 
-    public class LoginRequest
+    public class AuthLoginRequest
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
-    public class RegisterRequest
+    public class AuthRegisterRequest
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

@@ -12,3 +12,9 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </GoogleOAuthProvider>
 );
+
+// Dynamically load GPT Engineer script after app mounts
+const script = document.createElement("script");
+script.src = "https://cdn.gpteng.co/gptengineer.js";
+script.type = "module";
+document.body.appendChild(script);

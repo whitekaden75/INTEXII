@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import GoogleLoginButton from "./GoogleLoginButton";
+import { useCookieConsent } from "../../contexts/CookieContext";
 
 const LoginForm: React.FC = () => {
   console.log("[Component Render] LoginForm component is rendering.");
@@ -22,8 +23,18 @@ const LoginForm: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { cookieConsent } = useCookieConsent();
 
   console.log("[State Initialization] States initialized with default values.");
+  console.log(`[Cookie Consent] Current consent status: ${cookieConsent}`);
+
+  // If consent is denied, ensure rememberMe is set to false
+  useEffect(() => {
+    if (cookieConsent === 'denied' && rememberMe) {
+      setRememberMe(false);
+      console.log("[State Update] rememberMe forced to false due to cookie consent denial");
+    }
+  }, [cookieConsent, rememberMe]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, checked, value } = e.target;
@@ -56,10 +67,11 @@ const LoginForm: React.FC = () => {
     }
     console.log("[Validation Success] Email and password provided.");
 
+    console.log("VITE_API_BASE_URL:", import.meta.env.VITE_API_BASE_URL);
     // Determine login URL based on rememberMe flag
     const loginUrl = rememberMe
-      ? 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useCookies=true'
-      : 'https://intex212-dddke6d2evghbydw.eastus-01.azurewebsites.net/auth/login?useSessionCookies=true';
+      ? `${import.meta.env.VITE_API_BASE_URL}/auth/login?useCookies=true`
+      : `${import.meta.env.VITE_API_BASE_URL}/auth/login?useSessionCookies=true`;
     console.log(`[Login Request] URL: ${loginUrl}`);
     console.log(`[Login Request] Attempting login with email: ${email}`);
 
@@ -150,20 +162,23 @@ const LoginForm: React.FC = () => {
             />
           </div>
 
-          <div className="form-check mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              value=""
-              id="rememberme"
-              name="rememberme"
-              checked={rememberMe}
-              onChange={handleChange}
-            />
-            <label className="form-check-label" htmlFor="rememberme">
-              Remember password
-            </label>
-          </div>
+          {/* Only show Remember Me checkbox if cookies are accepted */}
+          {cookieConsent !== 'denied' && (
+            <div className="form-check mb-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value=""
+                id="rememberme"
+                name="rememberme"
+                checked={rememberMe}
+                onChange={handleChange}
+              />
+              <label className="form-check-label" htmlFor="rememberme">
+                Remember password
+              </label>
+            </div>
+          )}
 
           {error && <div className="text-destructive text-sm">{error}</div>}
 

@@ -22,22 +22,24 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
           <Badge
             key="all"
             variant={!selectedGenre ? "default" : "outline"}
-            className="cursor-pointer whitespace-nowrap bg-cineniche-blue hover:bg-cineniche-blue/90"
+            className={`cursor-pointer whitespace-nowrap ${!selectedGenre ? 'bg-cineniche-blue hover:bg-cineniche-blue/90' : 'hover:text-cineniche-blue'}`}
             onClick={() => onSelectGenre(undefined)}
           >
             All Genres
           </Badge>
           
-          {genres.map((genre) => (
-            <Badge
-              key={genre}
-              variant={selectedGenre === genre ? "default" : "outline"}
-              className={`cursor-pointer whitespace-nowrap ${selectedGenre === genre ? 'bg-cineniche-blue hover:bg-cineniche-blue/90' : 'hover:text-cineniche-blue'}`}
-              onClick={() => onSelectGenre(genre)}
-            >
-              {genre}
-            </Badge>
-          ))}
+          {genres
+            .filter((genre) => genre.trim() !== "")
+            .map((genre) => (
+              <Badge
+                key={genre}
+                variant={selectedGenre === genre ? "default" : "outline"}
+                className={`cursor-pointer whitespace-nowrap ${selectedGenre === genre ? 'bg-cineniche-blue hover:bg-cineniche-blue/90' : 'hover:text-cineniche-blue'}`}
+                onClick={() => onSelectGenre(genre)}
+              >
+                {genre}
+              </Badge>
+            ))}
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
